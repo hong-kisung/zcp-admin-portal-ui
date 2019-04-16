@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zcp-estimate-ui-deployment
+  labels:
+    app: zcp-estimate-ui
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: zcp-estimate-ui
+    spec:
+      containers:
+      - name: zcp-estimate-ui
+        image: pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-estimate-ui:0.0.1
+        ports:
+        - containerPort: 80
+        - containerPort: 443  
