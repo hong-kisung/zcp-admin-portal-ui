@@ -50,6 +50,11 @@ export default {
 	],
 	watch: {
 		versionId: function() {
+			if(this.versionId == undefined) {
+				this.generalInfo = {};
+				return;
+			}
+			
 			this.$http.get('/general/history/' + this.versionId).then(response => {
 				if(response && response.data) {
 					this.generalInfo = response.data;

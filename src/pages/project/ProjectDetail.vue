@@ -107,7 +107,9 @@ export default {
 		},
 		getProject() {
 			this.$http.get('/project/'+this.projectId).then(response => {
-				this.project = response.data;
+				if(response && response.data) {
+					this.project = response.data;
+				}
 			})
 		},
 		estimateSaved() {

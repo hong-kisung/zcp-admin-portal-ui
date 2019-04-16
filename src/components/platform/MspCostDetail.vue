@@ -6,10 +6,10 @@
           <v-card-text>
 		    <v-layout wrap>
 			  <v-flex xs12 sm6 md6>
-				<VTextFieldWithValidation rules="" data-vv-name="version" v-model="productMspCostVersion.version" label="버전" readonly/>
+				<v-text-field v-model="productMspCostVersion.version" label="버전" readonly/>
 			  </v-flex>
 			  <v-flex xs12 sm6 md6>
-				<VTextFieldWithValidation rules="" data-vv-name="createdDt" v-model="productMspCostVersion.createdDt" label="생성일시" readonly/>
+				<v-text-field v-model="productMspCostVersion.createdDt" label="생성일시" readonly/>
 			  </v-flex>
 			  <v-flex xs12 sm12>
 				<VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="productMspCostVersion.description" label="설명"/>
@@ -66,6 +66,11 @@
 		      </template>
 		      
 		    </template>
+			<template v-slot:no-data>
+  			  <td class="text-xs-center" colspan="13">
+    			No data available
+  			  </td>
+			</template>
 		  </v-data-table>
  
           </v-card-text>
@@ -145,7 +150,9 @@ export default {
 	methods: {
 		initialize () {
 			this.$http.get('/platform/msp').then(response => {
-				this.productMspCostVersion = response.data;
+				if(response && response.data) {
+					this.productMspCostVersion = response.data;
+				}
 			})
 		},
 		save() {

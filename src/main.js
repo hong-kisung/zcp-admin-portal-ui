@@ -21,7 +21,7 @@ const config = {
 }
 
 const base = axios.create({
-  baseURL: 'http://localhost:8088'
+  baseURL: 'http://'+process.env.ZCP_ESTIMATE_BACKEND_SERVICE_HOST+':'+process.env.ZCP_ESTIMATE_BACKEND_SERVICE_PORT
 })
 
 Vue.prototype.$http = base;

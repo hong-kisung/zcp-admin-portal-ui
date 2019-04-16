@@ -120,7 +120,7 @@
 				</template>
 				<template v-slot:no-data>
       			  <td class="text-xs-center" colspan="13">
-        			{{ no_data_text }}
+        			No data available
       			  </td>
     			</template>
 			  </v-data-table>
@@ -160,7 +160,6 @@ export default {
 	data: () => ({
 	  	headers: [],
 		headerClass: "grey lighten-1 body-2 text-weight-bold",
-	  	no_data_text: 'No data available',
 	  	selected: [],
   		clusterDialog: false,
   		appsDialog: false,

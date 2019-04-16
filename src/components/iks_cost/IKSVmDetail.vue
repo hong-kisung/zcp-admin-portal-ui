@@ -6,10 +6,10 @@
 		  <v-card-text>
 		    <v-layout wrap>
 			  <v-flex xs12 sm6 md6>
-				<VTextFieldWithValidation rules="" data-vv-name="version" v-model="vmData.version" label="버전" readonly/>
+				<v-text-field v-model="vmData.version" label="버전" readonly/>
 			  </v-flex>
 			  <v-flex xs12 sm6 md6>
-				<VTextFieldWithValidation rules="" data-vv-name="createdDt" v-model="vmData.createdDt" label="생성일시" readonly/>
+				<v-text-field v-model="vmData.createdDt" label="생성일시" readonly/>
 			  </v-flex>
 			  <v-flex xs12 sm12>
 				<VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="vmData.description" label="설명"/>
@@ -71,6 +71,11 @@
 					</v-icon>
 				  </td>
 				</template>
+				<template v-slot:no-data>
+      			  <td class="text-xs-center" colspan="13">
+        			No data available
+      			  </td>
+    			</template>
 			  </v-data-table>
 	      </v-card-text>
  	      <v-card-actions>
@@ -148,6 +153,10 @@ export default {
     },
 	watch: {
 		versionId: function() {
+			if(this.versionId == undefined) {
+				this.vmData = {};
+				return;
+			}
 			this.$http.get('/iks_costs/vm/history/' + this.versionId).then(response => {
 				this.vmData = Object.assign({}, response.data);
 			})
@@ -173,10 +182,14 @@ export default {
 		},
 		initialize () {
 			this.$http.get('/general').then(response => {
-				this.iksGeneral = response.data;
+				if(response && response.data) {
+					this.iksGeneral = response.data;
+				}
 			})
 			this.$http.get('/iks_costs/vm').then(response => {
-				this.vmData = response.data;
+				if(response && response.data) {
+					this.vmData = response.data;
+				}
 			})
 		},
 		editItem (item) {
