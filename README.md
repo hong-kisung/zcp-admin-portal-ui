@@ -7,13 +7,13 @@ npm install
 
 # run localhost:8080
 npm run dev
-
-# build for production
-npm run build
 ```
 
 ### build
 ```
+# build for production
+npm run build
+
 docker build -t zcp-estimate-ui .
 docker tag zcp-estimate-ui pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-estimate-ui:0.0.1
 docker push pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-estimate-ui:0.0.1
