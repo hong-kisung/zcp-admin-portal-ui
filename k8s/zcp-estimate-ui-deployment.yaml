@@ -14,6 +14,7 @@ spec:
       containers:
       - name: zcp-estimate-ui
         image: pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-estimate-ui:0.0.1
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         - containerPort: 443  

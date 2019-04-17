@@ -55,7 +55,7 @@ export default {
 				return;
 			}
 			
-			this.$http.get('/general/history/' + this.versionId).then(response => {
+			this.$http.get('/api/general/history/' + this.versionId).then(response => {
 				if(response && response.data) {
 					this.generalInfo = response.data;
 				}
@@ -74,7 +74,7 @@ export default {
 		initialize() {
 			if(this.versionId != undefined) return;
 			
-			this.$http.get('/general').then(response => {
+			this.$http.get('/api/general').then(response => {
 				if(response && response.data) {
 					this.generalInfo = response.data;
 				}
@@ -84,7 +84,7 @@ export default {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
-						this.$http.put('/general', this.generalInfo).then(response => {
+						this.$http.put('/api/general', this.generalInfo).then(response => {
 							this.$refs.obs.reset();
 							this.initialize();
 							this.$emit('fire-saved');

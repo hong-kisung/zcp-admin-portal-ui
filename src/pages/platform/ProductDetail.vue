@@ -71,13 +71,13 @@ export default {
 				if(valid) {
 					if(confirm("변경된 내용을 저장하시겠습니까?")) {
 						if(this.newPage) {
-							this.$http.post('/platform/product', this.product).then(response => {
+							this.$http.post('/api/platform/product', this.product).then(response => {
 								this.product = response.data;
 								this.productId = this.product.id;
 								this.newPage = false;
 							})
 						} else {
-							this.$http.put('/platform/product/'+this.product.id, this.product).then(response => {
+							this.$http.put('/api/platform/product/'+this.product.id, this.product).then(response => {
 								this.getProduct(this.product.id);
 							})
 						}
@@ -91,7 +91,7 @@ export default {
 			history.go(-1);
 		},
 		getProduct() {
-			this.$http.get('/platform/product/'+this.productId).then(response => {
+			this.$http.get('/api/platform/product/'+this.productId).then(response => {
 				this.product = response.data;
 			})
 		}

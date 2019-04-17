@@ -154,7 +154,7 @@ export default {
 	},
 	watch: {
 		estimateId: function() {
-			this.$http.get('/project/' + this.projectId + '/estimate/history/' + this.estimateId).then(response => {
+			this.$http.get('/api/project/' + this.projectId + '/estimate/history/' + this.estimateId).then(response => {
 				this.estimate = response.data;
 				this.generalVersionId = this.estimate.generalId;
 				this.iksVmVersionId = this.estimate.iksVmVersionId;
@@ -172,10 +172,10 @@ export default {
 				return;
 			}
 			
-			this.$http.get('/project/' + this.projectId + '/estimate').then(response => {
+			this.$http.get('/api/project/' + this.projectId + '/estimate').then(response => {
 				this.estimate = response.data;
 				
-				this.$http.get('/general').then(response => {
+				this.$http.get('/api/general').then(response => {
 					this.iksGeneral = response.data;
 					this.generalVersionId = this.iksGeneral.id;
 					
@@ -185,7 +185,7 @@ export default {
 						this.generalVersionAlert = false;
 					}
 				});
-				this.$http.get('/iks_costs/vm').then(response => {
+				this.$http.get('/api/iks_costs/vm').then(response => {
 					this.vmVersion = response.data;
 					this.iksVmVersionId = this.vmVersion.id;
 					
@@ -195,7 +195,7 @@ export default {
 						this.iksVmVersionAlert = false;
 					}
 				});
-				this.$http.get('/iks_costs/storage').then(response => {
+				this.$http.get('/api/iks_costs/storage').then(response => {
 					this.storageVersion = response.data;
 					this.iksStorageVersionId = this.storageVersion.id;
 					
@@ -205,7 +205,7 @@ export default {
 						this.iksStorageVersionAlert = false;
 					}
 				});
-				this.$http.get('/platform/msp').then(response => {
+				this.$http.get('/api/platform/msp').then(response => {
 					this.productMspCostVersion = response.data;
 					this.mspCostVersionId = this.productMspCostVersion.id;
 					
@@ -216,7 +216,7 @@ export default {
 					}
 				})
 				
-				this.$http.get('/platform/product').then(response => {
+				this.$http.get('/api/platform/product').then(response => {
 					var products = response.data;
 					for(var i = 0;i < products.length; i++) {
 						var product = {};
@@ -229,10 +229,10 @@ export default {
 			})
 		},
 		getTemplate(product) {
-			this.$http.get('/platform/product/' + product.productId + '/template').then(response => {
+			this.$http.get('/api/platform/product/' + product.productId + '/template').then(response => {
 				product.templates = response.data;
 			});
-			this.$http.get('/platform/product/' + product.productId + '/service').then(response => {
+			this.$http.get('/api/platform/product/' + product.productId + '/service').then(response => {
 				product.services = response.data;
 			});
 		},
@@ -270,7 +270,7 @@ export default {
 						this.estimate.iksStorageVersionId = this.storageVersion.id;
 						this.estimate.mspCostVersionId = this.productMspCostVersion.id;
 						
-						this.$http.put('/project/' + this.projectId + '/estimate', this.estimate).then(response => {
+						this.$http.put('/api/project/' + this.projectId + '/estimate', this.estimate).then(response => {
 							alert("저장되었습니다.");
 							this.initialize();
 							this.$emit('fire-saved');
@@ -281,7 +281,7 @@ export default {
 		},
 		remove() {
 			if(confirm('삭제하시겠습니까?')) {
-				this.$http.delete('/project/' + this.projectId + '/estimate/history/' + this.estimateId).then(response => {
+				this.$http.delete('/api/project/' + this.projectId + '/estimate/history/' + this.estimateId).then(response => {
 					alert("삭제되었습니다.");
 					this.$emit('fire-removed');
 				})

@@ -86,13 +86,13 @@ export default {
 				if(valid) {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
 						if(this.newPage) {
-							this.$http.post('/project', this.project).then(response => {
+							this.$http.post('/api/project', this.project).then(response => {
 								this.project = response.data;
 								this.projectId = this.project.id;
 								this.newPage = false;
 							})
 						} else {
-							this.$http.put('/project/'+this.project.id, this.project).then(response => {
+							this.$http.put('/api/project/'+this.project.id, this.project).then(response => {
 								this.getProject(this.project.id);
 							})
 						}
@@ -106,7 +106,7 @@ export default {
 			history.go(-1);
 		},
 		getProject() {
-			this.$http.get('/project/'+this.projectId).then(response => {
+			this.$http.get('/api/project/'+this.projectId).then(response => {
 				if(response && response.data) {
 					this.project = response.data;
 				}

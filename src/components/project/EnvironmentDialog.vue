@@ -54,7 +54,7 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/platform/product').then(response => {
+			this.$http.get('/api/platform/product').then(response => {
 				this.products = response.data
 			})
 		},

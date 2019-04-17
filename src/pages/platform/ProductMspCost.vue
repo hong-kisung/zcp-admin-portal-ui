@@ -40,7 +40,7 @@ export default {
     },
 	methods: {
 		initialize() {
-			this.$http.get('/platform/msp/history').then(response => {
+			this.$http.get('/api/platform/msp/history').then(response => {
 				this.historyList = response.data;
 			})
 		},

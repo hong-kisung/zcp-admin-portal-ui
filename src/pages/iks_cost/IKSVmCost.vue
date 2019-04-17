@@ -39,7 +39,7 @@ export default {
     },
 	methods: {
 		initialize () {
-			this.$http.get('/iks_costs/vm/history').then(response => {
+			this.$http.get('/api/iks_costs/vm/history').then(response => {
 				this.historyList = response.data;
 			})
 		},

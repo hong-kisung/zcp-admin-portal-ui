@@ -227,16 +227,16 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/code/hardware_type').then(response => {
+			this.$http.get('/api/code/hardware_type').then(response => {
 				this.hardwareTypeItems = response.data
 			})
-			this.$http.get('/code/file_storage_type').then(response => {
+			this.$http.get('/api/code/file_storage_type').then(response => {
 				this.fileStorageTypeItems = response.data
 			})
-			this.$http.get('/code/endurance_iops').then(response => {
+			this.$http.get('/api/code/endurance_iops').then(response => {
 				this.enduranceIopsItems = response.data
 			})
-			this.$http.get('/code/classification_type').then(response => {
+			this.$http.get('/api/code/classification_type').then(response => {
 				this.classificationTypes = response.data
 			})
 			

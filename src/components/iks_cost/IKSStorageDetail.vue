@@ -169,7 +169,7 @@ export default {
 				this.storageData = {};
 				return;
 			}
-			this.$http.get('/iks_costs/storage/history/' + this.versionId).then(response => {
+			this.$http.get('/api/iks_costs/storage/history/' + this.versionId).then(response => {
 				if(response && response.data) {
 					this.storageData = Object.assign({}, response.data);
 				}
@@ -192,12 +192,12 @@ export default {
     },
 	methods: {
 		initialize () {
-			this.$http.get('/general').then(response => {
+			this.$http.get('/api/general').then(response => {
 				if(response && response.data) {
 					this.iksGeneral = response.data;
 				}
 			})
-			this.$http.get('/iks_costs/storage').then(response => {
+			this.$http.get('/api/iks_costs/storage').then(response => {
 				if(response && response.data) {
 					this.storageData = response.data;
 				}
@@ -241,7 +241,7 @@ export default {
 			this.$refs.obsMain.validate().then(valid => {
 				if(valid) {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
-						this.$http.put('/iks_costs/storage', this.storageData).then(response => {
+						this.$http.put('/api/iks_costs/storage', this.storageData).then(response => {
 							alert("저장되었습니다.");
 							this.initialize();
 							this.$refs.obsMain.reset();

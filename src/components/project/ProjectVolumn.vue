@@ -212,14 +212,14 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/project/' + this.projectId + '/volumn').then(response => {
+			this.$http.get('/api/project/' + this.projectId + '/volumn').then(response => {
 				this.volumns = response.data;
 				this.calcTotalSum();
 			})
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/project/' + this.projectId + '/volumn', this.volumns).then(response => {
+				this.$http.put('/api/project/' + this.projectId + '/volumn', this.volumns).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.selected = [];

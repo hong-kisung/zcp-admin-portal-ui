@@ -136,7 +136,7 @@ export default {
     },
     watch: {
 		versionId: function() {
-			this.$http.get('/platform/msp/history/' + this.versionId).then(response => {
+			this.$http.get('/api/platform/msp/history/' + this.versionId).then(response => {
 				this.productMspCostVersion = Object.assign({}, response.data);
 			})
 		},
@@ -149,7 +149,7 @@ export default {
     },
 	methods: {
 		initialize () {
-			this.$http.get('/platform/msp').then(response => {
+			this.$http.get('/api/platform/msp').then(response => {
 				if(response && response.data) {
 					this.productMspCostVersion = response.data;
 				}
@@ -159,7 +159,7 @@ export default {
 			this.$refs.obsMain.validate().then(valid => {
 				if(valid) {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
-						this.$http.put('/platform/msp', this.productMspCostVersion).then(response => {
+						this.$http.put('/api/platform/msp', this.productMspCostVersion).then(response => {
 							alert("저장되었습니다.");
 							this.initialize();
 							this.selected = [];
