@@ -28,7 +28,7 @@ podTemplate(label:label,
         stage('BUILD') {
             container('node') {
                 sh 'npm install'
-                sh 'run build'
+                sh 'npm run build'
             }
         }
         
