@@ -1,0 +1,43 @@
+stage:
+- Checkout
+- Build
+# - Deploy
+
+Checkout:
+- node:
+  - apk add git
+  - git clone https://github.com/yoomisun2/zcp-estimate-ui.git
+
+Build:
+- node:
+  - npm install -g yarn
+  - cd console && yarn install && yarn build
+- maven:
+  - mvn clean install -Dmaven.repo.local=/root/.m2/${JOB_NAME}
+- docker:
+  - cd docker && docker build . -t $image
+  - docker images | grep cloudzcp
+- docker.push:
+    imageName: $image
+    credentialsId: dockerhub
+
+Deploy:
+- kubectl:
+  - apk add bash && cd $yaml && bash -x template.sh
+  - kubectl apply -R -f $yaml/.tmp
+  - kubectl scale deploy zcp-portal-ui --replicas 1 -n $namespace
+
+env:
+  image: cloudzcp/zcp-estimate:0.1
+  yaml: k8s/template
+
+agent:
+  profile: [maven, docker, kubectl]
+  containers:
+  - name: node
+    image: node:8-alpine   # https://hub.docker.com/r/library/node/
+    ttyEnabled: true
+    command: cat
+  volumes:
+  - pvc:zcp-jenkins-mvn-repo: /root/.m2
+  serviceAccount: zcp-system-admin
