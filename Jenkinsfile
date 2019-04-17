@@ -22,19 +22,19 @@ podTemplate(label:label,
             def repo = checkout scm
             env.SCM_INFO = repo.inspect()
         }
-        stage('Dependencies') {
+        /*stage('Dependencies') {
             sh 'npm install'
         }
 
-        /*stage('BUILD') {
+        stage('BUILD') {
             container('maven') {
                 mavenBuild goal: 'clean package', systemProperties:['maven.repo.local':"/root/.m2/${JOB_NAME}"]
             }
-        }*/
+        }
         
         stage('Build') {
             sh 'npm run build'
-        }
+        }*/
         
         stage('BUILD DOCKER IMAGE') {
             container('docker') {
