@@ -22,17 +22,8 @@ podTemplate(label:label,
             def repo = checkout scm
             env.SCM_INFO = repo.inspect()
         }
-        
-        stage('Information') {
-          steps {
-            sh 'node -v'
-            sh 'npm -v'
-          }
-        }
         stage('Dependencies') {
-          steps {
             sh 'npm install'
-          }
         }
 
         /*stage('BUILD') {
@@ -42,20 +33,9 @@ podTemplate(label:label,
         }*/
         
         stage('Build') {
-          steps {
             sh 'npm run build'
-          }
         }
-        stage('Artifacts') {
-          steps {
-            sh 'tar -czf dist.tar.gz ./dist'
-            stash 'dist.tar.gz'
-            stash 'Dockerfile'
-            stash 'nginx.conf'
-            archiveArtifacts artifacts: 'dist.tar.gz', fingerprint: true
-          }
-        }
-
+        
         stage('BUILD DOCKER IMAGE') {
             container('docker') {
                 dockerCmd.build tag: "${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${BUILD_NUMBER}"
