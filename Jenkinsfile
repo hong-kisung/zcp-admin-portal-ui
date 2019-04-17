@@ -29,6 +29,7 @@ podTemplate(label:label,
             container('node') {
                 sh 'npm install'
                 sh 'npm update'
+                sh 'npm audit fix'
                 sh 'node -v'
                 sh 'npm -v'
                 sh 'npm run build'
