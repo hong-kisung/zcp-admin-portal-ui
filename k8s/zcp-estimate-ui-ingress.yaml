@@ -16,5 +16,5 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: zcp-estimate-ui
+          serviceName: zcp-estimate-ui-service
           servicePort: 80
