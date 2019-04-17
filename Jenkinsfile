@@ -11,6 +11,7 @@ podTemplate(label:label,
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8-alpine', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat', envVars: [
             envVar(key: 'DOCKER_HOST', value: 'tcp://jenkins-dind-service:2375 ')]),
+        containerTemplate(name: 'node', image: 'node', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl', ttyEnabled: true, command: 'cat')
     ],
     volumes: [
@@ -23,19 +24,17 @@ podTemplate(label:label,
             def repo = checkout scm
             env.SCM_INFO = repo.inspect()
         }
-        /*stage('Dependencies') {
-            sh 'npm install'
-        }
-
+        
         stage('BUILD') {
-            container('maven') {
-                mavenBuild goal: 'clean package', systemProperties:['maven.repo.local':"/root/.m2/${JOB_NAME}"]
+            container('node') {
+                sh 'npm install'
+                sh 'npm update'
+                sh 'npm audit fix'
+                sh 'node -v'
+                sh 'npm -v'
+                sh 'npm run build'
             }
         }
-        
-        stage('Build') {
-            sh 'npm run build'
-        }*/
         
         stage('BUILD DOCKER IMAGE') {
             container('docker') {
