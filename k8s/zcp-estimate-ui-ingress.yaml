@@ -4,6 +4,7 @@ metadata:
   annotations:
     #ingress.bluemix.net/ALB-ID: private-cr7a9b181c82674f478e461c648c3000da-alb1
     ingress.bluemix.net/redirect-to-https: "True"
+    ingress.bluemix.net/rewrite-path: "serviceName=zcp-estimate-backend-service rewrite=/"
   name: zcp-estimate-ui-ingress
   namespace: zcp-system
 spec:
@@ -18,3 +19,9 @@ spec:
       - backend:
           serviceName: zcp-estimate-ui-service
           servicePort: 80
+        path: /
+      - backend:
+          serviceName: zcp-estimate-backend-service
+          servicePort: 8088
+        path: /api
+          
