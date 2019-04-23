@@ -153,6 +153,12 @@ export default {
 				if(response && response.data) {
 					this.productMspCostVersion = response.data;
 				}
+			}).catch(error => {
+				if(error.response && error.response.data && error.response.data.status == 404) {
+					alert('조회된 데이터가 없습니다.');
+				} else {
+					alert(error.response.data.message);
+				}
 			})
 		},
 		save() {

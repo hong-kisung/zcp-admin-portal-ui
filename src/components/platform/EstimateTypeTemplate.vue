@@ -45,13 +45,18 @@
 			      <td class="text-xs-left">{{ classification.classificationName }}</td>
 			      <td class="text-xs-center">{{ classification.classificationType }}</td>
 				  <td class="justify-center layout px-0">
-					<v-icon small class="mr-2" @click="editAppsItem(props.item, classification)" >edit</v-icon>
-					<v-icon small @click="deleteApplication(props.item, classification)">delete</v-icon>
+					<v-icon small class="mr-2" @click="editAppsItem(props.item, classification, index)" >edit</v-icon>
+					<v-icon small @click="deleteAppItem(props.item, classification, index)">delete</v-icon>
 				  </td>
 		        </tr>
 		        </template>
 		      </template>
 		    </template>
+			<template v-slot:no-data>
+  			  <td class="text-xs-center" colspan="5">
+    			No data available
+  			  </td>
+			</template>
 		  </v-data-table>
  
           </v-card-text>
@@ -120,8 +125,8 @@ export default {
       	applicationDialog: false,
 
       	editedServIndex: -1,
-		defaultServItem: { classifications: []},
-		editedServItem: { classifications: []},
+		defaultServItem: { },
+		editedServItem: { },
 
       	editedAppsIndex: -1,
       	defaultAppsItem: {},
@@ -154,6 +159,8 @@ export default {
 		
 		openServiceDialog() {
 			this.selected = [];
+			this.editedServIndex = -1;
+			this.editedServItem = Object.assign({}, this.defaultServItem);
 			this.serviceDialog = true;
 		},
 		closeServiceDialog() {
@@ -172,7 +179,9 @@ export default {
 							return;
 						}
 					}
+					
 					this.services.push(this.editedServItem);
+					this.services[this.services.length -1].classifications = new Array();
 					this.closeServiceDialog();
 				}
 			});
@@ -191,8 +200,8 @@ export default {
 		openAppsDialog() {
 			if(this.selected.length == 1) {
 				this.editedServIndex = this.services.indexOf(this.selected[0]);
-				//this.editedAppsIndex = -1;
-				//this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
+				this.editedAppsIndex = -1;
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
 				this.applicationDialog = true;
 			}
 		},
@@ -205,9 +214,9 @@ export default {
 				this.editedAppsIndex = -1;
 			}, 300);
 		},
-		editAppsItem (servItem, appItem) {
+		editAppsItem (servItem, appItem, appIndex) {
 			this.editedServIndex = this.services.indexOf(servItem);
-			this.editedAppsIndex = this.services[this.editedServIndex].classifications.indexOf(appItem);
+			this.editedAppsIndex = appIndex;
 			this.editedAppsItem = Object.assign({}, appItem);
 			this.applicationDialog = true;
 		},
@@ -215,7 +224,7 @@ export default {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
 					if (this.editedAppsIndex > -1) {
-						Object.assign(this.services[this.editedServIndex].classifications[this.editedAppsIndex], this.editedAppsItem);
+						this.$set(this.services[this.editedServIndex].classifications, this.editedAppsIndex, this.editedAppsItem);
 					} else {
 						this.services[this.editedServIndex].classifications.push(this.editedAppsItem);
 					}
@@ -223,9 +232,8 @@ export default {
 				}
 			});
 		},
-		deleteApplication(servItem, appItem) {
+		deleteAppItem(servItem, appItem, appIndex) {
 			const servIndex = this.services.indexOf(servItem);
-			const appIndex = this.services[servIndex].classifications.indexOf(appItem);
 			confirm('삭제하시겠습니까?') && this.services[servIndex].classifications.splice(appIndex, 1);
 		}
 	}

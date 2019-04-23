@@ -4,6 +4,8 @@
         <v-card slot-scope="{ invalid, validated }">
 		  <v-card-title>{{ formTitle }}</v-card-title>
 		  <v-card-text>
+		    <v-alert v-model="generalAlert" type="warning">{{generalAlertMessage}}</v-alert>
+		    <v-alert v-model="alert" dismissible type="info">{{alertMessage}}</v-alert>
 		    <v-layout wrap>
 			  <v-flex xs12 sm6 md6>
 				<v-text-field v-model="vmData.version" label="버전" readonly/>
@@ -47,8 +49,8 @@
 				  <td class="text-xs-right">{{ props.item.core }}</td>
 				  <td class="text-xs-right">{{ props.item.memory }}</td>
 				  <td class="text-xs-right">{{ props.item.nwSpeed }}</td>
-				  <td class="text-xs-right">{{ props.item.core - iksGeneral.platformCpuPerWorker }}</td>
-				  <td class="text-xs-right">{{ props.item.memory - iksGeneral.platformMemoryPerWorker }}</td>
+				  <td class="text-xs-right">{{ props.item.core | toAvailableCpu(iksGeneral.platformCpuPerWorker) }}</td>
+				  <td class="text-xs-right">{{ props.item.memory | toAvailableMemory(iksGeneral.platformMemoryPerWorker) }}</td>
 				  <td class="text-xs-right">{{ props.item.sharedPricePerHour | formatNumber }}</td>
 				  <td class="text-xs-right">{{ props.item.sharedPricePerHour | toMonthlyPrice | formatNumber }}</td>
 				  <td class="text-xs-right">{{ props.item.sharedPricePerHour | toMonthlySKPrice(iksGeneral.ibmDcRate) | formatNumber }}</td>
@@ -137,7 +139,11 @@ export default {
 		defaultItem: {},
 		
 		iksGeneral: {},
-		vmData: {}
+		vmData: {vms: []},
+		alert: false,
+		alertMessage: '',
+		generalAlert: false,
+		generalAlertMessage: ''
 	}),
 	props: [
 		'versionId',
@@ -151,46 +157,91 @@ export default {
 			return this.editedIndex === -1 ? 'VM 추가' : 'VM 수정';
 		}
     },
+    filters: {
+    	toAvailableCpu: function(value, platformCpuPerWorker) {
+    		if(platformCpuPerWorker == undefined) {
+    			return '표시할 수 없음';
+    		} else {
+    			return value - platformCpuPerWorker;
+    		}
+    	},
+    	toAvailableMemory: function(value, platformMemoryPerWorker) {
+    		if(platformMemoryPerWorker == undefined) {
+    			return '표시할 수 없음';
+    		} else {
+    			return value - platformMemoryPerWorker;
+    		}
+    	},
+    	toMonthlyPrice: function(value) {
+    		return value * 24 * 31;
+    	},
+    	toMonthlySKPrice: function(value, ibmDcRate) {
+    		if(ibmDcRate == undefined) {
+    			return '표시할 수 없음';
+    		} else {
+    			return value * 24 * 31 * (1 - ibmDcRate/100);
+    		}
+    	}
+    },
 	watch: {
 		versionId: function() {
-			if(this.versionId == undefined) {
-				this.vmData = {};
+			if(this.versionId <= 0) {
+				this.vmData = {vms: []};
 				return;
 			}
-			this.$http.get('/api/iks_costs/vm/history/' + this.versionId).then(response => {
-				this.vmData = Object.assign({}, response.data);
-			})
+			
+			this.getVmInfo('/api/iks_costs/vm/history/' + this.versionId);
 		},
 		dialog (val) {
 			val || this.closeDialog();
 		}
     },
-    filters: {
-    	toMonthlyPrice: function(value) {
-    		return value * 24 * 31;
-    	},
-    	toMonthlySKPrice: function(value, dcRate) {
-    		return value * 24 * 31 * (1 - dcRate/100);
-    	}
-    },
 	created () {
 		this.initialize();
     },
 	methods: {
-		test() {
-			return 12345;
-		},
 		initialize () {
+			this.getGeneralInfo();
+			
+			if(this.versionId == undefined) {
+				this.getVmInfo('/api/iks_costs/vm');
+			}
+		},
+		getGeneralInfo() {
 			this.$http.get('/api/general').then(response => {
-				if(response && response.data) {
+				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
+					this.generalAlert = false;
+					this.generalAlertMessage = '';
+				} else {
+					this.printGeneralErrorMessage();
 				}
+			}).catch(error => {
+				this.printGeneralErrorMessage(error.response.data.message);
 			})
-			this.$http.get('/api/iks_costs/vm').then(response => {
-				if(response && response.data) {
+		},
+		getVmInfo(url) {
+			this.$http.get(url).then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.vmData = response.data;
+					this.alert = false;
+					this.alertMessage = '';
+				} else {
+					this.printErrorMessage();
 				}
+			}).catch(error => {
+				this.printErrorMessage(error.response.data.message);
 			})
+		},
+		printErrorMessage(message) {
+			this.vmData = {vms: []};
+			this.alert = true;
+			this.alertMessage = message == undefined ? '조회된 IKS VM 비용 데이터가 없습니다.':message;
+		},
+		printGeneralErrorMessage(message) {
+			this.iksGeneral = {};
+			this.generalAlert = true;
+			this.generalAlertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다. 일부 항목의 값이 표시되지 않습니다.':message;
 		},
 		editItem (item) {
 			this.editedIndex = this.vmData.vms.indexOf(item);
@@ -232,7 +283,7 @@ export default {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
 						this.$http.put('/api/iks_costs/vm', this.vmData).then(response => {
 							alert("저장되었습니다.");
-							this.initialize();
+							this.getVmInfo('/api/iks_costs/vm');
 							this.$refs.obsMain.reset();
 							this.$emit('fire-saved');
 						});

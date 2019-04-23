@@ -3,6 +3,7 @@
         <v-card slot-scope="{ invalid, validated }">
 		  <v-card-title>{{ formTitle }}</v-card-title>
 		  <v-card-text>
+		    	<v-alert v-model="alert" dismissible type="info">{{alertMessage}}</v-alert>
 				<v-layout wrap>
 				  <v-flex xs12 sm6 md6>
 					<v-text-field v-model="generalInfo.version" label="버전" value="" readonly />
@@ -42,7 +43,9 @@
 <script>
 export default {
 	data: () => ({
-		generalInfo: {}
+		generalInfo: {},
+		alert: false,
+		alertMessage: ''
 	}),
 	props: [
 		'versionId',
@@ -50,16 +53,12 @@ export default {
 	],
 	watch: {
 		versionId: function() {
-			if(this.versionId == undefined) {
+			if(this.versionId <= 0) {
 				this.generalInfo = {};
 				return;
 			}
 			
-			this.$http.get('/api/general/history/' + this.versionId).then(response => {
-				if(response && response.data) {
-					this.generalInfo = response.data;
-				}
-			})
+			this.getGeneralInfo('/api/general/history/' + this.versionId);
 		}
 	},
 	computed: {
@@ -72,19 +71,34 @@ export default {
 	},
 	methods: {
 		initialize() {
-			if(this.versionId != undefined) return;
-			
-			this.$http.get('/api/general').then(response => {
-				if(response && response.data) {
+			if(this.versionId == undefined) {
+				this.getGeneralInfo('/api/general');
+			}
+		},
+		getGeneralInfo(url) {
+			this.$http.get(url).then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.generalInfo = response.data;
+					this.alert = false;
+					this.alertMessage = '';
+				} else {
+					this.printErrorMessage();
 				}
+			}).catch(error => {
+				this.printErrorMessage(error.response.data.message);
 			})
+		},
+		printErrorMessage(message) {
+			this.generalInto = {};
+			this.alert = true;
+			this.alertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다.':message;
 		},
 		save () {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
 						this.$http.put('/api/general', this.generalInfo).then(response => {
+							alert("저장되었습니다.");
 							this.$refs.obs.reset();
 							this.initialize();
 							this.$emit('fire-saved');

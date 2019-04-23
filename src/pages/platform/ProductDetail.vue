@@ -72,12 +72,14 @@ export default {
 					if(confirm("변경된 내용을 저장하시겠습니까?")) {
 						if(this.newPage) {
 							this.$http.post('/api/platform/product', this.product).then(response => {
+								alert("저장되었습니다.");
 								this.product = response.data;
 								this.productId = this.product.id;
 								this.newPage = false;
 							})
 						} else {
 							this.$http.put('/api/platform/product/'+this.product.id, this.product).then(response => {
+								alert("저장되었습니다.");
 								this.getProduct(this.product.id);
 							})
 						}

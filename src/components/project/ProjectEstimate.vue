@@ -20,20 +20,20 @@
 					<VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="estimate.description" label="설명" />
 				  </v-flex>
 				  <v-flex xs3 sm3 md3>
-					<span class="justify-center layout px-0">기준정보 버전 : {{generalVersionId}} <v-icon @click="viewGeneral()">search</v-icon></span>
-					<v-alert v-model="generalVersionAlert" dismissible type="warning">새로운 기준정보 버전이 있습니다. 견적서를 새로 작성하세요</v-alert>
+					<span class="justify-center layout px-0">기준정보 버전 : {{generalVersionId}} <v-icon @click="viewGeneral()" v-if="generalVersionId > 0">search</v-icon></span>
+					<v-alert v-model="generalVersionAlert" type="warning">{{generalVersionAlertMessage}}</v-alert>
 				  </v-flex>
 				  <v-flex xs3 sm3 md3>
-					<span class="justify-center layout px-0">IKS VM Cost 버전 : {{iksVmVersionId}} <v-icon @click="viewIksVm()">search</v-icon></span>
-					<v-alert v-model="iksVmVersionAlert" dismissible type="warning">새로운 IKS VM Cost 버전이 있습니다. 견적서를 새로 작성하세요</v-alert>
+					<span class="justify-center layout px-0">IKS VM Cost 버전 : {{iksVmVersionId}} <v-icon @click="viewIksVm()" v-if="iksVmVersionId > 0">search</v-icon></span>
+					<v-alert v-model="iksVmVersionAlert" type="warning">{{iksVmVersionAlertMesssage}}</v-alert>
 				  </v-flex>
 				  <v-flex xs3 sm3 md3>
-					<span class="justify-center layout px-0">IKS Storage Cost 버전 : {{iksStorageVersionId}} <v-icon @click="viewIksStorage()">search</v-icon></span>
-					<v-alert v-model="iksStorageVersionAlert" dismissible type="warning">새로운 IKS Storage Cost 버전이 있습니다. 견적서를 새로 작성하세요</v-alert>
+					<span class="justify-center layout px-0">IKS Storage Cost 버전 : {{iksStorageVersionId}} <v-icon @click="viewIksStorage()" v-if="iksStorageVersionId > 0">search</v-icon></span>
+					<v-alert v-model="iksStorageVersionAlert" type="warning">{{iksStorageVersionAlertMesssage}}</v-alert>
 				  </v-flex>
 				  <v-flex xs3 sm3 md3>
-					<span class="justify-center layout px-0">MSP Cost 버전 : {{mspCostVersionId}} <v-icon @click="viewMspCost()">search</v-icon></span>
-					<v-alert v-model="mspCostVersionAlert" dismissible type="warning">새로운 MSP Cost 버전이 있습니다. 견적서를 새로 작성하세요</v-alert>
+					<span class="justify-center layout px-0">MSP Cost 버전 : {{mspCostVersionId}} <v-icon @click="viewMspCost()" v-if="mspCostVersionId > 0">search</v-icon></span>
+					<v-alert v-model="mspCostVersionAlert" type="warning">{{mspCostVersionAlertMesssage}}</v-alert>
 				  </v-flex>
 				</v-layout>
 		    </v-card-text>
@@ -138,9 +138,13 @@ export default {
       	mspCostDialog: false,
       	mspCostVersionId: 0,
       	
+      	generalVersionAlertMessage: '',
       	generalVersionAlert: false,
+      	iksVmVersionAlertMesssage: '',
       	iksVmVersionAlert: false,
+      	iksStorageVersionAlertMesssage: '',
       	iksStorageVersionAlert: false,
+      	mspCostVersionAlertMesssage: '',
       	mspCostVersionAlert: false,
       	
       	productReferences : []
@@ -173,59 +177,111 @@ export default {
 			}
 			
 			this.$http.get('/api/project/' + this.projectId + '/estimate').then(response => {
-				this.estimate = response.data;
+				if(response && response.data) {
+					this.estimate = response.data;
+				}
 				
-				this.$http.get('/api/general').then(response => {
+				this.getGeneralInfo();
+				this.getVmInfo();
+				this.getStorageInfo();
+				this.getMspInfo();
+				this.getProductInfo();
+			})
+		},
+		getGeneralInfo() {
+			this.$http.get('/api/general').then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
 					this.generalVersionId = this.iksGeneral.id;
 					
 					if(this.estimate.id > 0 && this.estimate.generalId != this.iksGeneral.id) {
-						this.generalVersionAlert = true;
-					} else {
-						this.generalVersionAlert = false;
+						this.printGeneralErrorMessage('새로운 기준정보 버전이 있습니다. 견적서를 새로 작성하세요');
 					}
-				});
-				this.$http.get('/api/iks_costs/vm').then(response => {
+				} else {
+					this.printGeneralErrorMessage('조회된 기준정보 데이터가 없습니다.');
+				}
+			}).catch(error => {
+				this.printGeneralErrorMessage(error.response.data.message);
+			})
+		},
+		printGeneralErrorMessage(message, flag) {
+			this.iksGeneral = {};
+			this.generalVersionAlert = true;
+			this.generalVersionAlertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다. ':message;
+		},
+		getVmInfo() {
+			this.$http.get('/api/iks_costs/vm').then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.vmVersion = response.data;
 					this.iksVmVersionId = this.vmVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.iksVmVersionId != this.vmVersion.id) {
-						this.iksVmVersionAlert = true;
-					} else {
-						this.iksVmVersionAlert = false;
+						this.printVmErrorMessage('새로운 IKS VM Cost 버전이 있습니다. 견적서를 새로 작성하세요');
 					}
-				});
-				this.$http.get('/api/iks_costs/storage').then(response => {
+				} else {
+					this.printVmErrorMessage('조회된 IKS VM Cost 데이터가 없습니다.');
+				}
+			}).catch(error => {
+				this.printVmErrorMessage(error.response.data.message);
+			})
+		},
+		printVmErrorMessage(message) {
+			this.vmVersion = {};
+			this.iksVmVersionAlert = true;
+			this.iksVmVersionAlertMesssage = message == undefined ? '조회된 IKS VM Cost 데이터가 없습니다.':message;
+		},
+		getStorageInfo() {
+			this.$http.get('/api/iks_costs/storage').then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.storageVersion = response.data;
 					this.iksStorageVersionId = this.storageVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.iksStorageVersionId != this.storageVersion.id) {
-						this.iksStorageVersionAlert = true;
-					} else {
-						this.iksStorageVersionAlert = false;
+						this.printStorageErrorMessage('새로운 IKS Storage Cost 버전이 있습니다. 견적서를 새로 작성하세요');
 					}
-				});
-				this.$http.get('/api/platform/msp').then(response => {
+				} else {
+					this.printStorageErrorMessage('조회된 IKS Storage Cost 데이터가 없습니다.');
+				}
+			}).catch(error => {
+				this.printStorageErrorMessage(error.response.data.message);
+			})
+		},
+		printStorageErrorMessage(message) {
+			this.storageVersion = {};
+			this.iksStorageVersionAlert = true;
+			this.iksStorageVersionAlertMesssage = message == undefined ? '조회된 IKS Storage Cost 데이터가 없습니다.':message;
+		},
+		getMspInfo() {
+			this.$http.get('/api/platform/msp').then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.productMspCostVersion = response.data;
 					this.mspCostVersionId = this.productMspCostVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
-						this.mspCostVersionAlert = true;
-					} else {
-						this.mspCostVersionAlert = false;
+						this.printMspErrorMessage('새로운 MSP Cost 버전이 있습니다. 견적서를 새로 작성하세요');
 					}
-				})
-				
-				this.$http.get('/api/platform/product').then(response => {
-					var products = response.data;
-					for(var i = 0;i < products.length; i++) {
-						var product = {};
-						product.productId = products[i].id;
-						product.productName = products[i].name;
-						this.productReferences.push(product);
-						this.getTemplate(product);
-					}
-				})
+				} else {
+					this.printMspErrorMessage('조회된 MSP Cost 데이터가 없습니다.');
+				}
+			}).catch(error => {
+				this.printMspErrorMessage(error.response.data.message);
+			})
+		},
+		printMspErrorMessage(message) {
+			this.productMspCostVersion = {};
+			this.mspCostVersionAlert = true;
+			this.mspCostVersionAlertMesssage = message == undefined ? '조회된 MSP Cost 데이터가 없습니다.':message;
+		},
+		getProductInfo() {
+			this.$http.get('/api/platform/product').then(response => {
+				var products = response.data;
+				for(var i = 0;i < products.length; i++) {
+					var product = {};
+					product.productId = products[i].id;
+					product.productName = products[i].name;
+					this.productReferences.push(product);
+					this.getTemplate(product);
+				}
 			})
 		},
 		getTemplate(product) {

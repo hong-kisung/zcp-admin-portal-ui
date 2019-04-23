@@ -4,6 +4,8 @@
         <v-card slot-scope="{ invalid, validated }">
 		  <v-card-title>{{ formTitle }}</v-card-title>
 		  <v-card-text>
+		    <v-alert v-model="generalAlert" type="warning">{{generalAlertMessage}}</v-alert>
+		    <v-alert v-model="alert" dismissible type="info">{{alertMessage}}</v-alert>
 		    <v-layout wrap>
 			  <v-flex xs12 sm6 md6>
 				<v-text-field v-model="storageData.version" label="버전" readonly/>
@@ -149,7 +151,11 @@ export default {
 		defaultItem: {},
 		
 		storageData:{},
-		iksGeneral: {}
+		iksGeneral: {},
+		alert: false,
+		alertMessage: '',
+		generalAlert: false,
+		generalAlertMessage: ''
 	}),
   	props: [
 		'versionId',
@@ -163,45 +169,81 @@ export default {
 			return this.editedIndex === -1 ? 'Storage 추가' : 'Storage 수정';
 		}
     },
+    filters: {
+    	toMonthlyPrice: function(value, dcRate, exchangeRate) {
+    		if(dcRate == undefined || exchangeRate == undefined) {
+    			return '표시할 수 없음';
+    		} else {
+    			return Math.ceil(value * 24 * 31 * (1 - dcRate/100) * exchangeRate);
+    		}
+    	},
+    	toYearlyPrice: function(value) {
+    		if(Number.isInteger(value)) {
+    			return value * 12;
+    		} else {
+    			return '표시할 수 없음';
+    		}
+    	}
+    },
     watch: {
 		versionId: function() {
-			if(this.versionId == undefined) {
-				this.storageData = {};
+			if(this.versionId <= 0) {
+				this.storageData = {fileStorages: []};
 				return;
 			}
-			this.$http.get('/api/iks_costs/storage/history/' + this.versionId).then(response => {
-				if(response && response.data) {
-					this.storageData = Object.assign({}, response.data);
-				}
-			})
+			
+			this.getStorageInfo('/api/iks_costs/storage/history/' + this.versionId);
 		},
 		dialog (val) {
 			val || this.closeDialog();
 		}
-    },
-    filters: {
-    	toMonthlyPrice: function(value, dcRate, exchangeRate) {
-    		return Math.ceil(value * 24 * 31 * (1 - dcRate/100) * exchangeRate);
-    	},
-    	toYearlyPrice: function(value) {
-    		return value * 12;
-    	}
     },
     created () {
 		this.initialize();
     },
 	methods: {
 		initialize () {
+			this.getGeneralInfo();
+			
+			if(this.versionId == undefined) {
+				this.getStorageInfo('/api/iks_costs/storage');
+			}
+		},
+		getGeneralInfo() {
 			this.$http.get('/api/general').then(response => {
-				if(response && response.data) {
+				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
+					this.generalAlert = false;
+					this.generalAlertMessage = '';
+				} else {
+					this.printGeneralErrorMessage();
 				}
+			}).catch(error => {
+				this.printGeneralErrorMessage(error.response.data.message);
 			})
-			this.$http.get('/api/iks_costs/storage').then(response => {
-				if(response && response.data) {
+		},
+		getStorageInfo(url) {
+			this.$http.get(url).then(response => {
+				if(response && response.data && response.data.id > 0) {
 					this.storageData = response.data;
+					this.alert = false;
+					this.alertMessage = '';
+				} else {
+					this.printErrorMessage();
 				}
+			}).catch(error => {
+				this.printErrorMessage(error.response.data.message);
 			})
+		},
+		printErrorMessage(message) {
+			this.storageData = {fileStorages: []};
+			this.alert = true;
+			this.alertMessage = message == undefined ? '조회된 IKS Storage 비용 데이터가 없습니다.':message;
+		},
+		printGeneralErrorMessage(message) {
+			this.iksGeneral = {};
+			this.generalAlert = true;
+			this.generalAlertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다. 일부 항목의 값이 표시되지 않습니다.':message;
 		},
 		editItem (item) {
 			this.editedIndex = this.storageData.fileStorages.indexOf(item);
@@ -243,7 +285,7 @@ export default {
 					if(confirm('변경된 내용을 저장하시겠습니까?')) {
 						this.$http.put('/api/iks_costs/storage', this.storageData).then(response => {
 							alert("저장되었습니다.");
-							this.initialize();
+							this.getStorageInfo('/api/iks_costs/storage');
 							this.$refs.obsMain.reset();
 							this.$emit('fire-saved');
 						})

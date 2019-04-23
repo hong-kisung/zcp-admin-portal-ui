@@ -59,8 +59,8 @@
 			      <td class="text-xs-center">{{ application.backupYn }}</td>
 			      <td class="text-xs-left">{{ application.description }}</td>
 				  <td class="justify-center layout px-0">
-					<v-icon small class="mr-2" @click="editAppsItem(props.item, application)" >edit</v-icon>
-					<v-icon small @click="deleteApplication(props.item, application)">delete</v-icon>
+					<v-icon small class="mr-2" @click="editAppsItem(props.item, application, applicationIndex)" >edit</v-icon>
+					<v-icon small @click="deleteAppItem(props.item, application, applicationIndex)">delete</v-icon>
 				  </td>
 		        </tr>
 		        </template>
@@ -191,8 +191,8 @@ export default {
       	applicationDialog: false,
 
       	editedServIndex: -1,
-		defaultServItem: { applications: []},
-		editedServItem: { applications: []},
+		defaultServItem: { },
+		editedServItem: { },
 
       	editedAppsIndex: -1,
       	defaultAppsItem: {},
@@ -242,6 +242,8 @@ export default {
 		
 		openServiceDialog() {
 			this.selected = [];
+			this.editedServIndex = -1;
+			this.editedServItem = Object.assign({}, this.defaultServItem);
 			this.serviceDialog = true;
 		},
 		closeServiceDialog() {
@@ -261,6 +263,7 @@ export default {
 						}
 					}
 					this.addonService.services.push(this.editedServItem);
+					this.addonService.services[this.addonService.services.length -1].applications = new Array();
 					this.closeServiceDialog();
 				}
 			});
@@ -280,8 +283,8 @@ export default {
 		openAppsDialog() {
 			if(this.selected.length == 1) {
 				this.editedServIndex = this.addonService.services.indexOf(this.selected[0]);
-				//this.editedAppsIndex = -1;
-				//this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
+				this.editedAppsIndex = -1;
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
 				this.applicationDialog = true;
 			}
 		},
@@ -294,9 +297,9 @@ export default {
 				this.editedAppsIndex = -1;
 			}, 300);
 		},
-		editAppsItem (servItem, appItem) {
+		editAppsItem (servItem, appItem, appIndex) {
 			this.editedServIndex = this.addonService.services.indexOf(servItem);
-			this.editedAppsIndex = this.addonService.services[this.editedServIndex].applications.indexOf(appItem);
+			this.editedAppsIndex = appIndex;
 			this.editedAppsItem = Object.assign({}, appItem);
 			this.applicationDialog = true;
 		},
@@ -313,9 +316,8 @@ export default {
 				}
 			});
 		},
-		deleteApplication(servItem, appItem) {
+		deleteAppItem(servItem, appItem, appIndex) {
 			const servIndex = this.addonService.services.indexOf(servItem);
-			const appIndex = this.addonService.services[servIndex].applications.indexOf(appItem);
 			if(confirm('삭제하시겠습니까?')) {
 				this.addonService.services[servIndex].applications.splice(appIndex, 1);
 				this.summary();
