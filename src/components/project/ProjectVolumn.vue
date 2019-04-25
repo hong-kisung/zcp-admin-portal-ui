@@ -269,7 +269,7 @@ export default {
 				}
 				
 				this.selected = [];
-				this.calcTotalSum();
+				this.summary();
 			}
 		},
 		
@@ -290,7 +290,7 @@ export default {
 			const appIndex = this.volumns.clusters[index].applications.indexOf(appItem);
 			if(confirm('삭제하시겠습니까?')) {
 				this.volumns.clusters[index].applications.splice(appIndex, 1);
-				this.calcTotalSum();
+				this.summary();
 			}
 		},
 		closeAppsDialog () {
@@ -311,34 +311,42 @@ export default {
 						this.volumns.clusters[this.editedIndex].applications.push(this.editedAppsItem);
 					}
 					this.calcAppSum(this.editedAppsItem);
-					this.calcTotalSum();
+					this.summary();
 					this.closeAppsDialog();
 				}
 			});
 		},
 		
-		calcTotalSum() {
-			var sumMemory = 0;
-			var sumCpu = 0;
-			this.volumns.clusters.forEach(function(cluster, index) {
-				cluster.applications.forEach(function(app, index) {
-					if(app.podMemoryLimitSum != undefined) sumMemory += app.podMemoryLimitSum;
-					if(app.podMemoryLimitSum != undefined) sumCpu += app.podCpuLimitSum;
-				});
-			});
-
-			this.volumns.sumMemory = Math.ceil(sumMemory/1024);
-			this.volumns.sumCpu = sumCpu/1000;
+		summary() {
+			this.volumns.sumMemory = 0;
+			this.volumns.sumCpu = 0;
+			for(var i = 0; i < this.volumns.clusters.length; i++) {
+				this.volumns.clusters[i].sumMemory = 0;
+				this.volumns.clusters[i].sumCpu = 0;
+			
+				var sumMemory = 0;
+				var sumCpu = 0;
+				for(var j = 0; j < this.volumns.clusters[i].applications.length; j++) {
+					if(this.volumns.clusters[i].applications[j].podMemoryLimitSum) sumMemory += this.volumns.clusters[i].applications[j].podMemoryLimitSum;
+					if(this.volumns.clusters[i].applications[j].podCpuLimitSum) sumCpu += this.volumns.clusters[i].applications[j].podCpuLimitSum;
+				}
+				
+				this.volumns.clusters[i].sumMemory = Math.ceil(sumMemory/1024);
+				this.volumns.clusters[i].sumCpu = sumCpu/1000;
+				
+				this.volumns.sumMemory += this.volumns.clusters[i].sumMemory;
+				this.volumns.sumCpu += this.volumns.clusters[i].sumCpu;
+			}
 		},
 		calcAppSum(application) {
-			if(application.replicaCount == undefined)  {
+			if(!application.replicaCount)  {
 				return;
 			}
 			
-			if(application.podMemoryRequest != undefined) application.podMemoryRequestSum = application.replicaCount * application.podMemoryRequest;
-			if(application.podMemoryLimit != undefined) application.podMemoryLimitSum = application.replicaCount * application.podMemoryLimit;
-			if(application.podCpuRequest != undefined) application.podCpuRequestSum = application.replicaCount * application.podCpuRequest;
-			if(application.podCpuLimit != undefined) application.podCpuLimitSum = application.replicaCount * application.podCpuLimit;
+			if(application.podMemoryRequest) application.podMemoryRequestSum = application.replicaCount * application.podMemoryRequest;
+			if(application.podMemoryLimit) application.podMemoryLimitSum = application.replicaCount * application.podMemoryLimit;
+			if(application.podCpuRequest) application.podCpuRequestSum = application.replicaCount * application.podCpuRequest;
+			if(application.podCpuLimit) application.podCpuLimitSum = application.replicaCount * application.podCpuLimit;
 		}
 	}
 }

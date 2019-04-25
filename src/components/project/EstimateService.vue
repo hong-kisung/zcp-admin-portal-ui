@@ -271,11 +271,11 @@ export default {
 				}
 			}
 			
-			if(productTemplate == undefined) {
-				console.log('product template not found');
-			} else {
+			if(productTemplate) {
 				this.createProduct(productTemplate, cluster, productIndex, product);
 				this.$emit('fire-estimate-changed');
+			} else {
+				console.log('product template not found');
 			}
 		},
 		createProduct(productTemplate, cluster, productIndex, product) {
