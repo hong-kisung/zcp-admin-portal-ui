@@ -67,21 +67,21 @@
 				  <template v-else>
 				  <template v-for="(application, index) in props.item.applications">
 				  	<tr>
-		          	  <td v-if="index == 0" v-bind:rowspan="props.item.applications.length">
+		          	  <td v-if="index == 0" v-bind:rowspan="props.item.applications.length + 1">
 		            	<v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
 		          	  </td>
-				      <td class="text-xs-left" v-if="index == 0" v-bind:rowspan="props.item.applications.length">{{ props.item.name }}</td>
+				      <td class="text-xs-left" v-if="index == 0" v-bind:rowspan="props.item.applications.length + 1">{{ props.item.name }}</td>
 					  <td class="text-xs-left">{{ application.appName }}</td>
-					  <td class="text-xs-left">{{ application.appMemoryMin | formatNumber }}</td>
-					  <td class="text-xs-left">{{ application.appMemoryMax | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.replicaCount | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podMemoryRequest | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podMemoryLimit | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podCpuRequest | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podCpuLimit | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podMemoryRequestSum | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podMemoryLimitSum | formatNumber }}</td>
-					  <td class="text-xs-center">{{ application.podCpuRequestSum | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.appMemoryMin | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.appMemoryMax | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.replicaCount | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podMemoryRequest | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podMemoryLimit | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podCpuRequest | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podCpuLimit | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podMemoryRequestSum | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podMemoryLimitSum | formatNumber }}</td>
+					  <td class="text-xs-right">{{ application.podCpuRequestSum | formatNumber }}</td>
 					  <td class="text-xs-right">{{ application.podCpuLimitSum | formatNumber }}</td>
 					  <td class="justify-center layout px-0">
 						<v-icon small class="mr-2" @click="editAppsItem(props.item, application)">edit</v-icon>
@@ -89,14 +89,25 @@
 					  </td>
 				    </tr>
 				  </template>
+				  
+				  <tr>
+				      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right" colspan="8">소계</td>
+					  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">Memory (GB)</td>
+					  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{props.item.sumMemory | formatNumber}}</td>
+					  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">CPU (Core)</td>
+					  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{props.item.sumCpu | formatNumber}}</td>
+					  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">
+					  </td>
+			      </tr>
 				  </template>
 				</template>
+				
 			    <template v-slot:footer>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right" colspan="10"></td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">Mem Sum<br>(GB)</td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.memorySum | formatNumber}}</td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">CPU Sum<br>(Core)</td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.cpuSum | formatNumber}}</td>
+			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right" colspan="10">합계</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">Memory (GB)</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.sumMemory | formatNumber}}</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">CPU (Core)</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.sumCpu | formatNumber}}</td>
 				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">
 				  </td>
 			    </template>
@@ -214,7 +225,6 @@ export default {
 		initialize() {
 			this.$http.get('/api/project/' + this.projectId + '/volumn').then(response => {
 				this.volumns = response.data;
-				this.calcTotalSum();
 			})
 		},
 		save() {
@@ -308,17 +318,17 @@ export default {
 		},
 		
 		calcTotalSum() {
-			var memorySum = 0;
-			var cpuSum = 0;
+			var sumMemory = 0;
+			var sumCpu = 0;
 			this.volumns.clusters.forEach(function(cluster, index) {
 				cluster.applications.forEach(function(app, index) {
-					if(app.podMemoryLimitSum != undefined) memorySum += app.podMemoryLimitSum;
-					if(app.podMemoryLimitSum != undefined) cpuSum += app.podCpuLimitSum;
+					if(app.podMemoryLimitSum != undefined) sumMemory += app.podMemoryLimitSum;
+					if(app.podMemoryLimitSum != undefined) sumCpu += app.podCpuLimitSum;
 				});
 			});
 
-			this.volumns.memorySum = Math.ceil(memorySum/1024);
-			this.volumns.cpuSum = cpuSum/1000;
+			this.volumns.sumMemory = Math.ceil(sumMemory/1024);
+			this.volumns.sumCpu = sumCpu/1000;
 		},
 		calcAppSum(application) {
 			if(application.replicaCount == undefined)  {
