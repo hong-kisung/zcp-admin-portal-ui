@@ -5,7 +5,7 @@
 			  <v-card-title>{{ formDialogTitle }}</v-card-title>
 			  <v-card-text>
 			    <v-layout wrap>
-				<v-flex xs4>
+				<v-flex xs6>
 		          <VSelectWithValidation
 		            rules="required"
 		            data-vv-name="clusterName"
@@ -17,7 +17,7 @@
 		            chips
 		          />
 				</v-flex>
-				<v-flex xs4>
+				<v-flex xs6>
 		          <VSelectWithValidation
 		            rules="required"
 		            data-vv-name="productName"
@@ -29,7 +29,7 @@
 		            chips
 		          />
 				</v-flex>
-				<v-flex xs4>
+				<v-flex xs6>
 		          <VSelectWithValidation
 		            rules="required"
 		            data-vv-name="serviceName"
@@ -53,7 +53,7 @@
 		            chips
 		          />
 				</v-flex>
-				<v-flex xs6>
+				<v-flex xs12 v-show="showAddonApplication">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="addonIdTemp"
@@ -61,15 +61,15 @@
 		            :items="addonApplicationItems"
 		            item-text="applicationName"
 		            item-value="id"
-		            :disabled="!showaddonApplication"
 		            label="Addon Application"
 		            return-object
 		            v-on:change="changeApplication"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
 
-				<v-flex xs12 sm6 md6 v-show="!showLaborCostInput">
+				<v-flex xs12 sm6 md6 v-show="editedItem.classificationType == 'VM'">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="iksVmId"
@@ -81,9 +81,10 @@
 		            return-object
 		            v-on:change="changeMachineType"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
-				<v-flex xs12 sm6 md6 v-show="!showLaborCostInput">
+				<v-flex xs12 sm6 md6 v-show="editedItem.classificationType == 'VM'">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="hardwareType"
@@ -92,9 +93,10 @@
 		            label="Hardware Type"
 		            v-on:change="changeHardwareType"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
-				<v-flex xs12 sm12 md12 v-show="!showLaborCostInput">
+				<v-flex xs4 v-show="showAddonApplication">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="storageType"
@@ -102,9 +104,10 @@
 		            :items="fileStorageTypeItems"
 		            label="Storage Type"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
-				<v-flex xs12 sm6 md6 v-show="!showLaborCostInput">
+				<v-flex xs4 v-show="showAddonApplication">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="enduranceIops"
@@ -112,9 +115,10 @@
 		            :items="enduranceIopsItems"
 		            label="Storage Performance"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
-				<v-flex xs12 sm6 md6 v-show="!showLaborCostInput">
+				<v-flex xs4 v-show="showAddonApplication">
 		          <VSelectWithValidation
 		            rules=""
 		            data-vv-name="storageSize"
@@ -125,6 +129,7 @@
 		            label="Storage Size"
 		            v-on:change="changeStorageSize"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
 				<v-flex xs12 sm12 md12 v-show="!showLaborCostInput">
@@ -139,6 +144,7 @@
 		            :label="editedItem.classificationName + ' (Monthly) 선택'"
 		            v-on:change="changeMspCost"
 		            chips
+		            deletable-chips
 		          />
 				</v-flex>
 				<v-flex xs12 sm12 md12 v-show="showLaborCostInput">
@@ -176,7 +182,7 @@ export default {
 		
 		dialog: false,
 		showLaborCostInput: false,
-		showaddonApplication: false
+		showAddonApplication: false
 	}),
 	props: [
 		'editedItem',
@@ -287,10 +293,10 @@ export default {
 						pricePerHour = vmData.dedicatedPricePerHour;
 					}
 					
-					this.editedItem.pricePerMonthly = pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.editedItem.number;
+					this.editedItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100)) * this.editedItem.number;
 				}
 				
-			} else if(this.editedItem.classificationType == 'File_Storage') {
+			} else if(this.editedItem.classificationType == 'File_Storage' || this.editedItem.classificationType == 'Block_Storage') {
 				var storageData;
 				for(var i = 0; i < this.storageVersion.fileStorages.length; i++){
 					if(this.storageVersion.fileStorages[i].disk == this.editedItem.storageSize) {
@@ -316,7 +322,7 @@ export default {
 					pricePerHour = storageData.iops4PricePerHour;
 				}
 				
-				this.editedItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.iksGeneral.exchangeRate * this.editedItem.number);
+				this.editedItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.iksGeneral.exchangeRate) * this.editedItem.number;
 
 			} else if(this.editedItem.classificationType == 'IP_Allocation') {
 				this.editedItem.pricePerMonthly = this.iksGeneral.ipAllocation;
@@ -337,7 +343,7 @@ export default {
 			this.addonApplicationItems = [];
 			this.mspCostItems.length = [];
 			this.showLaborCostInput = false;
-			this.showaddonApplication = false;
+			this.showAddonApplication = false;
 		},
 		changeCluster(selectedItem) {
 			this.productItems.length = [];
@@ -394,7 +400,7 @@ export default {
 			this.editedItem.addonApplicationName = '';
 			this.editedItem.addonIdTemp = '';
 			this.addonApplicationItems.length = [];
-			this.showaddonApplication = false;
+			this.showAddonApplication = false;
 			this.showLaborCostInput = false;
 			
 			this.classificationItemIndex = this.classificationItems.indexOf(selectedItem);
@@ -404,7 +410,7 @@ export default {
 				this.editedItem.classificationType = this.productReferences[this.productItemIndex].templates.storageService[this.serviceItemIndex].classifications[this.classificationItemIndex].classificationType;
 			}
 			
-			if(this.editedItem.classificationType == 'File_Storage') {
+			if(this.editedItem.classificationType == 'File_Storage' || this.editedItem.classificationType == 'Block_Storage') {
 				for(var i = 0; i < this.productReferences[this.productItemIndex].services.length; i++) {
 					for(var index = 0; index < this.productReferences[this.productItemIndex].services[i].applications.length; index++) {
 						var app = this.productReferences[this.productItemIndex].services[i].applications[index];
@@ -413,7 +419,7 @@ export default {
 						} 
 					}
 				}
-				this.showaddonApplication = true;
+				this.showAddonApplication = true;
 				
 			} else if(this.editedItem.classificationType == 'Labor_Cost') {
 				var product = this.findProductFromMspCost();
@@ -431,21 +437,40 @@ export default {
 			}
 		},
 		changeApplication(selectedItem) {
-			this.editedItem.addonId = selectedItem.id;
-			this.editedItem.addonApplicationName = selectedItem.applicationName;
+			if(selectedItem) {
+				this.editedItem.addonId = selectedItem.id;
+				this.editedItem.addonApplicationName = selectedItem.applicationName;
+			} else {
+				this.editedItem.addonId = 0;
+				this.editedItem.addonApplicationName = '';
+			}
 		},
 		changeMachineType(selectedItem) {
-			this.editedItem.iksVmId = selectedItem.id;
-			this.editedItem.iksVmName = selectedItem.name;
+			if(selectedItem) {
+				this.editedItem.iksVmId = selectedItem.id;
+				this.editedItem.iksVmName = selectedItem.name;
+			} else {
+				this.editedItem.iksVmId = 0;
+				this.editedItem.iksVmName = '';
+			}
 		},
 		changeHardwareType(selectedItem) {
 		},
 		changeStorageSize(selectedItem) {
-			this.editedItem.storageSize = selectedItem;
+			if(selectedItem) {
+				this.editedItem.storageSize = selectedItem;
+			} else {
+				this.editedItem.storageSize = 0;
+			}
+			
 		},
 		changeMspCost(selectedItem) {
-			var selectedIndex = this.mspCostItems.indexOf(selectedItem);
-			this.editedItem.pricePerMonthly = this.findProductFromMspCost().mspCosts[selectedIndex].cost;
+			if(selectedItem) {
+				var selectedIndex = this.mspCostItems.indexOf(selectedItem);
+				this.editedItem.pricePerMonthly = this.findProductFromMspCost().mspCosts[selectedIndex].cost;
+			} else {
+				this.editedItem.pricePerMonthly = 0;
+			}
 		}
 	}
 }

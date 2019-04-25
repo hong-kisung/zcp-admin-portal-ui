@@ -18,13 +18,13 @@
 					<VTextFieldWithValidation rules="required|numeric" data-vv-name="exchangeRate" v-model="generalInfo.exchangeRate" label="매매기준환율" class="right-input" suffix="원" :readonly="!editable" />
 				  </v-flex>
 				  <v-flex xs12 sm6 md6>
-					<VTextFieldWithValidation rules="required|numeric" data-vv-name="platformCpuPerWorker" v-model="generalInfo.platformCpuPerWorker" label="Platform CPU/Worker" class="right-input" :readonly="!editable" />
+					<VTextFieldWithValidation rules="required|numeric" data-vv-name="platformCpuPerWorker" v-model="generalInfo.platformCpuPerWorker" label="Platform Resolved CPU" class="right-input" :readonly="!editable" />
 				  </v-flex>
 				  <v-flex xs12 sm6 md6>
-					<VTextFieldWithValidation rules="required|numeric" data-vv-name="platformMemoryPerWorker" v-model="generalInfo.platformMemoryPerWorker" label="Platform Memory/Worker" class="right-input" :readonly="!editable" />
+					<VTextFieldWithValidation rules="required|numeric" data-vv-name="platformMemoryPerWorker" v-model="generalInfo.platformMemoryPerWorker" label="Platform Resolved Memory" class="right-input" :readonly="!editable" />
 				  </v-flex>
 				  <v-flex xs12 sm12 md12>
-					<VTextFieldWithValidation rules="required|numeric" data-vv-name="ipAllocation" v-model="generalInfo.ipAllocation" label="IP Allocation" class="right-input" suffix="원" :readonly="!editable" />
+					<VTextFieldWithValidation rules="required|numeric" data-vv-name="ipAllocation" v-model="generalInfo.ipAllocation" label="IP Allocation Cost" class="right-input" suffix="원" :readonly="!editable" />
 				  </v-flex>
 				  <v-flex xs12 sm12 md12>
 					<VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="generalInfo.description" label="설명" :readonly="!editable" />

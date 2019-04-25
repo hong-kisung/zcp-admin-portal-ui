@@ -179,7 +179,7 @@ export default {
     		if(ibmDcRate == undefined) {
     			return '표시할 수 없음';
     		} else {
-    			return value * 24 * 31 * (1 - ibmDcRate/100);
+    			return Math.ceil(value * 24 * 31 * (1 - ibmDcRate/100));
     		}
     	}
     },
