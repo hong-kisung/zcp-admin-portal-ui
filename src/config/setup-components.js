@@ -14,7 +14,7 @@ import EstimateTemplate from '../components/platform/EstimateTemplate.vue';
 import EstimateTypeTemplate from '../components/platform/EstimateTypeTemplate.vue';
 import MspCostDetail from '../components/platform/MspCostDetail.vue';
 
-import ProjectVolumn from '../components/project/ProjectVolumn.vue';
+import ProjectVolume from '../components/project/ProjectVolume.vue';
 import ProjectEstimate from '../components/project/ProjectEstimate.vue';
 import EstimateService from '../components/project/EstimateService.vue';
 import EstimateSummary from '../components/project/EstimateSummary.vue';
@@ -40,7 +40,7 @@ function setupComponents(Vue) {
 	Vue.component('product-estimate-type-template', EstimateTypeTemplate);
 	Vue.component('product-msp-cost-detail', MspCostDetail);
 	
-	Vue.component('project-volumn', ProjectVolumn);
+	Vue.component('project-volume', ProjectVolume);
 	Vue.component('project-estimate', ProjectEstimate);
 	Vue.component('estimate-service', EstimateService);
 	Vue.component('estimate-summary', EstimateSummary);

@@ -4,7 +4,7 @@
 		  <v-card-text>
 			  <v-data-table
 				:headers="headers"
-				:items="volumns.clusters"
+				:items="volumes.environments"
 				item-key="name"
 				class="elevation-1"
 				v-model="selected"
@@ -84,8 +84,8 @@
 					  <td class="text-xs-right">{{ application.podCpuRequestSum | formatNumber }}</td>
 					  <td class="text-xs-right">{{ application.podCpuLimitSum | formatNumber }}</td>
 					  <td class="justify-center layout px-0">
-						<v-icon small class="mr-2" @click="editAppsItem(props.item, application)">edit</v-icon>
-						<v-icon small @click="deleteAppsItem(props.item, application)">delete</v-icon>
+						<v-icon small class="mr-2" @click="editAppsItem(props.item, application, index)">edit</v-icon>
+						<v-icon small @click="deleteAppsItem(props.item, application, index)">delete</v-icon>
 					  </td>
 				    </tr>
 				  </template>
@@ -105,9 +105,9 @@
 			    <template v-slot:footer>
 			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right" colspan="10">합계</td>
 				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">Memory (GB)</td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.sumMemory | formatNumber}}</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumes.sumMemory | formatNumber}}</td>
 				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">CPU (Core)</td>
-				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumns.sumCpu | formatNumber}}</td>
+				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{volumes.sumCpu | formatNumber}}</td>
 				  <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">
 				  </td>
 			    </template>
@@ -120,6 +120,7 @@
 	      </v-card-text>
  	      <v-card-actions>
 		    <v-btn small left color="primary" @click="openClusterDialog">Environment 추가</v-btn>
+		    <v-btn small left color="primary" @click="editCluster" v-bind:disabled="selected.length != 1">Environment 수정</v-btn>
 		    <v-btn small left color="primary" @click="deleteCluster" v-bind:disabled="selected.length == 0">Environment 삭제</v-btn>
 		    <v-btn small left color="primary" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</v-btn>
 		    <v-spacer></v-spacer>
@@ -130,7 +131,7 @@
 	 	<v-dialog v-model="clusterDialog" max-width="500px">
 	 	  <ValidationObserver ref="obs2">
 		    <v-card slot-scope="{ invalid, validated }">
-		      <v-card-title>Environment 추가</v-card-title>
+		      <v-card-title>{{ formClusterDialogTitle }}</v-card-title>
 			  <v-card-text>
 			    <v-flex xs12>
 				  <VTextFieldWithValidation rules="required|max:10" data-vv-name="name" v-model="editedItem.name" label="Environment"/>
@@ -197,7 +198,7 @@ export default {
 	  	headers: [],
 		headerClass: "grey lighten-1 body-2 text-weight-bold",
 	  	no_data_text: 'No data available',
-  		volumns: {},
+  		volumes: {},
 	  	selected: [],
   		clusterDialog: false,
   		appsDialog: false,
@@ -214,6 +215,9 @@ export default {
 		'projectId'
 	],
 	computed: {
+		formClusterDialogTitle () {
+			return this.editedIndex === -1 ? 'Environment 추가' : 'Environment 수정';
+		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'Application 추가' : 'Application 수정';
 		}
@@ -223,40 +227,56 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/project/' + this.projectId + '/volumn').then(response => {
-				this.volumns = response.data;
+			this.$http.get('/api/project/' + this.projectId + '/volume').then(response => {
+				this.volumes = response.data;
 			})
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/project/' + this.projectId + '/volumn', this.volumns).then(response => {
+				this.$http.put('/api/project/' + this.projectId + '/volume', this.volumes).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.selected = [];
+					this.$emit('fire-saved');
 				})
 			}
 		},
 		openClusterDialog() {
 			this.selected = [];
+			this.editedIndex = -1;
+			this.editedItem = Object.assign({}, this.defaultItem);
+			this.clusterDialog = true;
+		},
+		editCluster() {
+			this.editedIndex = this.volumes.environments.indexOf(this.selected[0]);
+			this.editedItem = Object.assign({}, this.selected[0]);
 			this.clusterDialog = true;
 		},
 		closeClusterDialog() {
 			this.clusterDialog = false;
 			this.$refs.obs2.reset();
 			setTimeout(() => {
+				this.selected = [];
+				this.editedIndex = -1;
 				this.editedItem = Object.assign({}, this.defaultItem);
 			}, 300);
 		},
 		saveClusterDialog() {
 			this.$refs.obs2.validate().then(valid => {
 				if(valid) {
-					for(var i = 0; i < this.volumns.clusters.length; i++) {
-						if(this.volumns.clusters[i].name == this.editedItem.name) {
+					for(var i = 0; i < this.volumes.environments.length; i++) {
+						if(i != this.editedIndex && this.volumes.environments[i].name == this.editedItem.name) {
 							alert('존재하는 Environment입니다. 다시 입력하세요.');
 							return;
 						}
 					}
-					this.volumns.clusters.push(this.editedItem);
+					
+					if (this.editedIndex > -1) {
+						this.$set(this.volumes.environments, this.editedIndex, this.editedItem);
+					} else {
+						this.volumes.environments.push(this.editedItem);
+						this.volumes.environments[this.volumes.environments.length -1].applications = new Array();
+					}
 					this.closeClusterDialog();
 				}
 			});
@@ -264,8 +284,8 @@ export default {
 		deleteCluster() {
 			if(confirm('삭제하시겠습니까?')) {
 				for(var i = 0; i < this.selected.length; i++) {
-					const index = this.volumns.clusters.indexOf(this.selected[i]);
-					this.volumns.clusters.splice(index, 1);
+					const index = this.volumes.environments.indexOf(this.selected[i]);
+					this.volumes.environments.splice(index, 1);
 				}
 				
 				this.selected = [];
@@ -274,22 +294,23 @@ export default {
 		},
 		
 		openAppsDialog() {
-			this.editedIndex = this.volumns.clusters.indexOf(this.selected[0]);
-			//this.editedIndex = -1;
-			//this.editedItem = Object.assign({}, this.defaultItem);
-			this.appsDialog = true;
+			if(this.selected.length == 1) {
+				this.editedIndex = this.volumes.environments.indexOf(this.selected[0]);
+				this.editedAppsIndex = -1;
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
+				this.appsDialog = true;
+			}
 		},
-		editAppsItem(item, appItem) {
-			this.editedIndex = this.volumns.clusters.indexOf(item);
-			this.editedAppsIndex = this.volumns.clusters[this.editedIndex].applications.indexOf(appItem);
+		editAppsItem(item, appItem, appIndex) {
+			this.editedIndex = this.volumes.environments.indexOf(item);
+			this.editedAppsIndex = appIndex;
 			this.editedAppsItem = Object.assign({}, appItem);
 			this.appsDialog = true;
 		},
-		deleteAppsItem(item, appItem) {
-			const index = this.volumns.clusters.indexOf(item);
-			const appIndex = this.volumns.clusters[index].applications.indexOf(appItem);
+		deleteAppsItem(item, appItem, appIndex) {
+			const index = this.volumes.environments.indexOf(item);
 			if(confirm('삭제하시겠습니까?')) {
-				this.volumns.clusters[index].applications.splice(appIndex, 1);
+				this.volumes.environments[index].applications.splice(appIndex, 1);
 				this.summary();
 			}
 		},
@@ -297,8 +318,8 @@ export default {
 			this.appsDialog = false;
 			this.$refs.obs.reset();
 			setTimeout(() => {
+				this.editedIndex = -1;
 				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
-				this.editedServIndex = -1;
 				this.editedAppsIndex = -1;
 			}, 300);
 		},
@@ -306,9 +327,9 @@ export default {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
 					if (this.editedAppsIndex > -1) {
-						this.$set(this.volumns.clusters[this.editedIndex].applications, this.editedAppsIndex, this.editedAppsItem);
+						this.$set(this.volumes.environments[this.editedIndex].applications, this.editedAppsIndex, this.editedAppsItem);
 					} else {
-						this.volumns.clusters[this.editedIndex].applications.push(this.editedAppsItem);
+						this.volumes.environments[this.editedIndex].applications.push(this.editedAppsItem);
 					}
 					this.calcAppSum(this.editedAppsItem);
 					this.summary();
@@ -318,24 +339,24 @@ export default {
 		},
 		
 		summary() {
-			this.volumns.sumMemory = 0;
-			this.volumns.sumCpu = 0;
-			for(var i = 0; i < this.volumns.clusters.length; i++) {
-				this.volumns.clusters[i].sumMemory = 0;
-				this.volumns.clusters[i].sumCpu = 0;
+			this.volumes.sumMemory = 0;
+			this.volumes.sumCpu = 0;
+			for(var i = 0; i < this.volumes.environments.length; i++) {
+				this.volumes.environments[i].sumMemory = 0;
+				this.volumes.environments[i].sumCpu = 0;
 			
 				var sumMemory = 0;
 				var sumCpu = 0;
-				for(var j = 0; j < this.volumns.clusters[i].applications.length; j++) {
-					if(this.volumns.clusters[i].applications[j].podMemoryLimitSum) sumMemory += this.volumns.clusters[i].applications[j].podMemoryLimitSum;
-					if(this.volumns.clusters[i].applications[j].podCpuLimitSum) sumCpu += this.volumns.clusters[i].applications[j].podCpuLimitSum;
+				for(var j = 0; j < this.volumes.environments[i].applications.length; j++) {
+					if(this.volumes.environments[i].applications[j].podMemoryLimitSum) sumMemory += this.volumes.environments[i].applications[j].podMemoryLimitSum;
+					if(this.volumes.environments[i].applications[j].podCpuLimitSum) sumCpu += this.volumes.environments[i].applications[j].podCpuLimitSum;
 				}
 				
-				this.volumns.clusters[i].sumMemory = Math.ceil(sumMemory/1024);
-				this.volumns.clusters[i].sumCpu = sumCpu/1000;
+				this.volumes.environments[i].sumMemory = Math.ceil(sumMemory/1024);
+				this.volumes.environments[i].sumCpu = sumCpu/1000;
 				
-				this.volumns.sumMemory += this.volumns.clusters[i].sumMemory;
-				this.volumns.sumCpu += this.volumns.clusters[i].sumCpu;
+				this.volumes.sumMemory += this.volumes.environments[i].sumMemory;
+				this.volumes.sumCpu += this.volumes.environments[i].sumCpu;
 			}
 		},
 		calcAppSum(application) {

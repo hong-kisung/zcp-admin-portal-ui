@@ -5,7 +5,7 @@
 		  <v-card-text>
 			  <v-data-table
 				:headers="headers"
-				:items="estimate.clusters"
+				:items="estimate.environments"
 				class="elevation-1"
 				select-all
 				hide-actions
@@ -23,12 +23,12 @@
 				<template v-slot:items="props">
 				  <template v-for="(product, productIndex) in props.item.products">
 					  <tr>
-					    <td class="font-weight-bold text-xs-center" v-if="productIndex == 0" :rowspan="props.item.products.length">{{ props.item.clusterName }}</td>
+					    <td class="font-weight-bold text-xs-center" v-if="productIndex == 0" :rowspan="props.item.products.length">{{ props.item.environmentName }}</td>
 					    <td class="font-weight-bold text-xs-left">{{ product.estimateType == 'CloudZService' ? product.productName : product.productName + ' Storage' }}</td>
 					    <td class="text-xs-right">{{ product.cloudCost | formatNumber }}</td>
 					    <td class="text-xs-right">{{ product.laborCost | formatNumber }}</td>
 					    <td class="text-xs-right">{{ product.totalCost | formatNumber }}</td>
-					    <td class="text-xs-right">{{ product.pricePerGB | formatNumber }}</td>
+					    <td class="text-xs-right">{{ product.pricePerGb | formatNumber }}</td>
 					  </tr>
 				  </template>
 				</template>

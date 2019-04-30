@@ -38,14 +38,19 @@
 		    <v-tab href="#tab-4" v-if="!newPage">견적서 이력</v-tab>
 		
 		    <v-tab-item value="tab-2" v-if="!newPage">
-		    	<project-volumn v-bind:projectId="projectId" />
+		    	<project-volume 
+		    		v-bind:projectId="projectId"
+		    		v-on:fire-saved="volumeSaved" 
+		    	/>
 		    </v-tab-item>
 		    <v-tab-item value="tab-3" v-if="!newPage">
-			  <project-estimate 
+			  	<project-estimate 
 			  		v-bind:projectId="projectId"
 			  		v-bind:editable="true"
+			  		v-bind:volumeRefreshStatus="volumeRefreshStatus"
+			  		v-on:fire-volume-refresh-finished="changeVolumeRefreshStatus" 
 			  		v-on:fire-saved="estimateSaved" 
-			  />
+			  	/>
 		    </v-tab-item>
 		    <v-tab-item value="tab-4" v-if="!newPage">
 		    	<project-estimate-history 
@@ -68,7 +73,8 @@ export default {
 		active: null,
 	  	headers: [],
       	project: {},
-      	refreshStatus: false
+      	refreshStatus: false,
+      	volumeRefreshStatus: false
 	}),
 	created () {
 		this.initialize()
@@ -117,6 +123,12 @@ export default {
 		},
 		changeRefreshStatus() {
 			this.refreshStatus = false;
+		},
+		volumeSaved() {
+			this.volumeRefreshStatus = true;
+		},
+		changeVolumeRefreshStatus() {
+			this.volumeRefreshStatus = false;
 		}
 	}
 }

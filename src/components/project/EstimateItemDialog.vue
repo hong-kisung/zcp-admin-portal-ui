@@ -8,12 +8,12 @@
 				<v-flex xs6>
 		          <VSelectWithValidation
 		            rules="required"
-		            data-vv-name="clusterName"
-		            v-model="editedItem.clusterName"
-		            :items="clusterItems"
+		            data-vv-name="environmentName"
+		            v-model="editedItem.environmentName"
+		            :items="environmentItems"
 		            :disabled="disabledEnv"
 		            label="Environment"
-		            v-on:change="changeCluster"
+		            v-on:change="changeEnvironment"
 		            chips
 		          />
 				</v-flex>
@@ -121,12 +121,13 @@
 				<v-flex xs4 v-show="showAddonApplication">
 		          <VSelectWithValidation
 		            rules=""
-		            data-vv-name="storageSize"
-		            v-model.number="editedItem.storageSizeTemp"
+		            data-vv-name="iksFileStorageId"
+		            v-model.number="editedItem.iksFileStorageIdTemp"
 		            :items="storageVersion.fileStorages"
 		            item-text="disk"
-		            item-value="disk"
+		            item-value="id"
 		            label="Storage Size"
+		            return-object
 		            v-on:change="changeStorageSize"
 		            chips
 		            deletable-chips
@@ -164,11 +165,11 @@
 <script>
 export default {
 	data: () => ({
-		clusterItems: [],
+		environmentItems: [],
 		productItems: [],
 		serviceItems: [],
 		classificationItems: [],
-		clusterItemIndex: -1,
+		environmentItemIndex: -1,
 		productItemIndex: -1,
 		serviceItemIndex: -1,
 		classificationItemIndex: -1,
@@ -198,7 +199,7 @@ export default {
 	],
 	computed: {
 		formDialogTitle () {
-			return this.editedItem.id === undefined ? 'Classification 추가' : 'Classification 수정';
+			return !this.editedItem.id ? 'Classification 추가' : 'Classification 수정';
 		},
 		disabledEnv () {
 			return this.isNewAppsItem ? false : true;
@@ -210,20 +211,20 @@ export default {
 			if(this.appsDialog) {
 				this.clearData();
 
-				var clusters = this.estimate.clusters;
-				for(var i = 0; i < clusters.length; i++) {
-					this.clusterItems.push(clusters[i].clusterName);
+				var environments = this.estimate.environments;
+				for(var i = 0; i < environments.length; i++) {
+					this.environmentItems.push(environments[i].environmentName);
 				}
 
 				if(!this.isNewAppsItem) {
-					this.changeCluster(this.editedItem.clusterName);
+					this.changeEnvironment(this.editedItem.environmentName);
 					this.changeProduct(this.editedItem.productName);
 					this.changeService(this.editedItem.serviceName);
 					this.changeClassification(this.editedItem.classificationName);
 					
 					this.editedItem.addonIdTemp = this.editedItem.addonId;
 					this.editedItem.iksVmIdTemp = this.editedItem.iksVmId;
-					this.editedItem.storageSizeTemp = this.editedItem.storageSize;
+					this.editedItem.iksFileStorageIdTemp = this.editedItem.iksFileStorageId;
 				}
 			}
 		}
@@ -256,7 +257,6 @@ export default {
 		saveAppsDialog() {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
-					this.calculate();
 					this.dialog = false;
 					this.clearData();
 					this.$refs.obs.reset();
@@ -264,104 +264,34 @@ export default {
 				}
 			});
 		},
-		calculate() {
-			if(this.editedItem.classificationType == 'VM') {
-				var vmData;
-				for(var i = 0; i < this.vmVersion.vms.length; i++){
-					if(this.vmVersion.vms[i].id == this.editedItem.iksVmId) {
-						vmData = this.vmVersion.vms[i];
-						break;
-					}
-				}
-				
-				if(vmData == undefined || this.editedItem.number == undefined || this.editedItem.number == 0) {
-					this.editedItem.cores = 0;
-					this.editedItem.memory = 0;
-					this.editedItem.pricePerMonthly = 0;
-					this.editedItem.pricePerYearly = 0;
-					return;
-				} else {
-					this.editedItem.cores = vmData.core * this.editedItem.number;
-					this.editedItem.memory = vmData.memory * this.editedItem.number;
-				}
-				
-				if(this.editedItem.hardwareType != undefined && this.editedItem.hardwareType != "") {
-					var pricePerHour = 0;
-					if(this.editedItem.hardwareType == 'shared') {
-						pricePerHour = vmData.sharedPricePerHour;
-					} else if(this.editedItem.hardwareType == 'dedicated') {
-						pricePerHour = vmData.dedicatedPricePerHour;
-					}
-					
-					this.editedItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100)) * this.editedItem.number;
-				}
-				
-			} else if(this.editedItem.classificationType == 'File_Storage' || this.editedItem.classificationType == 'Block_Storage') {
-				var storageData;
-				for(var i = 0; i < this.storageVersion.fileStorages.length; i++){
-					if(this.storageVersion.fileStorages[i].disk == this.editedItem.storageSize) {
-						storageData = this.storageVersion.fileStorages[i];
-						break;
-					}
-				}
-				
-				if(storageData == undefined || this.editedItem.enduranceIops == undefined || this.editedItem.enduranceIops == "" || this.editedItem.number == undefined || this.editedItem.number == 0) {
-					this.editedItem.pricePerMonthly = 0;
-					this.editedItem.pricePerYearly = 0;
-					return;
-				} 
-				
-				var pricePerHour = 0;
-				if(this.editedItem.enduranceIops == 0.25) {
-					pricePerHour = storageData.iops1PricePerHour;
-				} else if(this.editedItem.enduranceIops == 2) {
-					pricePerHour = storageData.iops2PricePerHour;
-				} else if(this.editedItem.enduranceIops == 4) {
-					pricePerHour = storageData.iops3PricePerHour;
-				} else if(this.editedItem.enduranceIops = 10) {
-					pricePerHour = storageData.iops4PricePerHour;
-				}
-				
-				this.editedItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.iksGeneral.exchangeRate) * this.editedItem.number;
-
-			} else if(this.editedItem.classificationType == 'IP_Allocation') {
-				this.editedItem.pricePerMonthly = this.iksGeneral.ipAllocation;
-				
-			} else if(this.editedItem.classificationType == 'Labor_Cost') {
-				//nothing
-			}
-
-			if(this.editedItem.pricePerMonthly != undefined) {
-				this.editedItem.pricePerYearly = this.editedItem.pricePerMonthly * 12;
-			}
-		},
 		clearData() {
-			this.clusterItems.length = [];
-			this.productItems.length = [];
-			this.serviceItems.length = [];
-			this.classificationItems.length = [];
+			this.environmentItems = [];
+			this.productItems = [];
+			this.serviceItems = [];
+			this.classificationItems = [];
 			this.addonApplicationItems = [];
-			this.mspCostItems.length = [];
+			this.mspCostItems = [];
 			this.showLaborCostInput = false;
 			this.showAddonApplication = false;
 		},
-		changeCluster(selectedItem) {
-			this.productItems.length = [];
-			this.serviceItems.length = [];
-			this.classificationItems.length = [];
-			this.addonApplicationItems.length = [];
-			this.mspCostItems.length = [];
+		changeEnvironment(selectedItem) {
+			this.productItems = [];
+			this.serviceItems = [];
+			this.classificationItems = [];
+			this.addonApplicationItems = [];
+			this.mspCostItems = [];
 			
-			this.clusterItemIndex = this.clusterItems.indexOf(selectedItem);
+			this.environmentItemIndex = this.environmentItems.indexOf(selectedItem);
+			this.editedItem.environmentId = this.estimate.environments[this.environmentItemIndex].environmentId;
 			for(var i = 0; i < this.productReferences.length; i++) {
 				this.productItems.push(this.productReferences[i].productName);
 			}
 		},
 		changeProduct(selectedItem) {
-			this.serviceItems.length = [];
-			this.classificationItems.length = [];
-			this.addonApplicationItems.length = [];
-			this.mspCostItems.length = [];
+			this.serviceItems = [];
+			this.classificationItems = [];
+			this.addonApplicationItems = [];
+			this.mspCostItems = [];
 			
 			this.productItemIndex = this.productItems.indexOf(selectedItem);
 			this.editedItem.productId = this.productReferences[this.productItemIndex].productId;
@@ -379,9 +309,9 @@ export default {
 			}
 		},
 		changeService(selectedItem) {
-			this.classificationItems.length = [];
-			this.addonApplicationItems.length = [];
-			this.mspCostItems.length = [];
+			this.classificationItems = [];
+			this.addonApplicationItems = [];
+			this.mspCostItems = [];
 			
 			this.serviceItemIndex = this.serviceItems.indexOf(selectedItem);
 			var classifications;
@@ -399,7 +329,7 @@ export default {
 			this.editedItem.addonId = 0;
 			this.editedItem.addonApplicationName = '';
 			this.editedItem.addonIdTemp = '';
-			this.addonApplicationItems.length = [];
+			this.addonApplicationItems = [];
 			this.showAddonApplication = false;
 			this.showLaborCostInput = false;
 			
@@ -458,9 +388,11 @@ export default {
 		},
 		changeStorageSize(selectedItem) {
 			if(selectedItem) {
-				this.editedItem.storageSize = selectedItem;
+				this.editedItem.iksFileStorageId = selectedItem.id;
+				this.editedItem.iksFileStorageDisk = selectedItem.disk
 			} else {
-				this.editedItem.storageSize = 0;
+				this.editedItem.iksFileStorageId = 0;
+				this.editedItem.iksFileStorageDisk = 0;
 			}
 			
 		},

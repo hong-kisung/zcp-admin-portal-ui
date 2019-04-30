@@ -50,6 +50,7 @@
  			v-bind:storageVersion="storageVersion"
  			v-bind:productMspCostVersion="productMspCostVersion"
  			v-bind:productReferences="productReferences"
+ 			v-bind:projectVolumes="projectVolumes"
  			v-bind:editable="editable"
  			v-on:fire-estimate-changed="changeEstimate"
 		/>
@@ -64,6 +65,7 @@
  			v-bind:storageVersion="storageVersion"
  			v-bind:productMspCostVersion="productMspCostVersion"
  			v-bind:productReferences="productReferences"
+ 			v-bind:projectVolumes="projectVolumes"
  			v-bind:editable="editable"
  			v-on:fire-estimate-changed="changeEstimate"
 		/>
@@ -125,9 +127,9 @@ export default {
 		storageVersion: {},
 		productMspCostVersion: {},
       	estimate: {
-      		cloudZService: {clusters: []}, 
-      		storageService: {clusters: []},
-      		summary: {clusters: []}
+      		cloudZService: {environments: []}, 
+      		storageService: {environments: []},
+      		summary: {environments: []}
       	},
       	generalDialog: false,
       	generalVersionId: 0,
@@ -147,12 +149,14 @@ export default {
       	mspCostVersionAlertMesssage: '',
       	mspCostVersionAlert: false,
       	
-      	productReferences : []
+      	productReferences : [],
+      	projectVolumes: {}
 	}),
 	props: [
 		'projectId',
 		'estimateId',
-		'editable'
+		'editable',
+		'volumeRefreshStatus'
 	],
 	computed: {
 	},
@@ -165,6 +169,12 @@ export default {
 				this.iksStorageVersionId = this.estimate.iksStorageVersionId;
 				this.mspCostVersionId = this.estimate.mspCostVersionId;
 			})
+		},
+		volumeRefreshStatus: function() {
+			if(this.volumeRefreshStatus) {
+				this.getVolumeInfo();
+				this.$emit('fire-volume-refresh-finished');
+			}
 		}
 	},
 	created () {
@@ -186,6 +196,12 @@ export default {
 				this.getStorageInfo();
 				this.getMspInfo();
 				this.getProductInfo();
+				this.getVolumeInfo();
+			})
+		},
+		getVolumeInfo() {
+			this.$http.get('/api/project/' + this.projectId + '/volume').then(response => {
+				this.projectVolumes = response.data;
 			})
 		},
 		getGeneralInfo() {
@@ -354,47 +370,47 @@ export default {
 			this.estimate.sumYearly = this.estimate.cloudZService.sumYearly + this.estimate.storageService.sumYearly;
 		},
 		summaryEstimateType(target) {
-			for(var i = 0; i < target.clusters.length; i++ ){
-				for(var j = 0; j < target.clusters[i].products.length; j++ ){
-					for(var k = 0; k < target.clusters[i].products[j].services.length; k++ ){
-						var service = target.clusters[i].products[j].services[k];
+			for(var i = 0; i < target.environments.length; i++ ){
+				for(var j = 0; j < target.environments[i].products.length; j++ ){
+					for(var k = 0; k < target.environments[i].products[j].services.length; k++ ){
+						var service = target.environments[i].products[j].services[k];
 						this.summaryClassifications(service);
-						//this.$set(target.clusters[i].products[j].services, k, service);
+						//this.$set(target.environments[i].products[j].services, k, service);
 					}
 					
-					var product = target.clusters[i].products[j];
-					this.summaryServices(target.clusters[i].products[j]);
-					//this.$set(target.clusters[i].products, j, product);
+					var product = target.environments[i].products[j];
+					this.summaryServices(target.environments[i].products[j]);
+					//this.$set(target.environments[i].products, j, product);
 				}
 				
-				var cluster = target.clusters[i];
-				this.summaryProducts(cluster);
-				//this.$set(target.clusters, i, cluster);
+				var environment = target.environments[i];
+				this.summaryProducts(environment);
+				//this.$set(target.environments, i, environment);
 			}
 			
-			this.summaryClusters(target);
+			this.summaryEnvironments(target);
 		},
-		summaryClusters(estimateType) {
+		summaryEnvironments(estimateType) {
 			var sumMonthly = 0;
 			var sumYearly = 0;
-			for(var i = 0; i < estimateType.clusters.length; i++ ){
-				sumMonthly += estimateType.clusters[i].sumMonthly;
-				sumYearly += estimateType.clusters[i].sumYearly;
+			for(var i = 0; i < estimateType.environments.length; i++ ){
+				sumMonthly += estimateType.environments[i].sumMonthly;
+				sumYearly += estimateType.environments[i].sumYearly;
 			}
 			
 			estimateType.sumMonthly = sumMonthly;
 			estimateType.sumYearly = sumYearly;
 		},
-		summaryProducts(cluster) {
+		summaryProducts(environment) {
 			var sumMonthly = 0;
 			var sumYearly = 0;
-			for(var i = 0; i < cluster.products.length; i++ ){
-				sumMonthly += cluster.products[i].sumMonthly;
-				sumYearly += cluster.products[i].sumYearly;
+			for(var i = 0; i < environment.products.length; i++ ){
+				sumMonthly += environment.products[i].sumMonthly;
+				sumYearly += environment.products[i].sumYearly;
 			}
 			
-			cluster.sumMonthly = sumMonthly;
-			cluster.sumYearly = sumYearly;
+			environment.sumMonthly = sumMonthly;
+			environment.sumYearly = sumYearly;
 		},
 		summaryServices(product) {
 			var sumMonthly = 0;

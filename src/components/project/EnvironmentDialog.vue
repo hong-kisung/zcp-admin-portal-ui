@@ -5,7 +5,15 @@
 		      <v-card-title>Environment 추가</v-card-title>
 			  <v-card-text>
 			    <v-flex xs12>
-				  <VTextFieldWithValidation rules="required|max:10" data-vv-name="clusterName" v-model="editedItem.clusterName" label="Environment"/>
+		          <VSelectWithValidation
+		            rules="required"
+		            data-vv-name="environmentName"
+		            v-model="editedItem.environmentName"
+		            :items="environmentItems"
+		            label="Environment"
+		            chips
+		            deletable-chips
+		          />
 			    </v-flex>
 			    <v-flex xs12>
 			      <div class="subheading font-weight-light">Product 선택</div>
@@ -21,8 +29,8 @@
 			  </v-card-text>
 			  <v-card-actions>
 			    <v-spacer></v-spacer>
-			    <v-btn color="blue darken-1" flat @click="closeClusterDialog">취소</v-btn>
-			    <v-btn color="blue darken-1" flat @click="saveClusterDialog" v-bind:disabled="invalid">저장</v-btn>
+			    <v-btn color="blue darken-1" flat @click="closeEnvironmentDialog">취소</v-btn>
+			    <v-btn color="blue darken-1" flat @click="saveEnvironmentDialog" v-bind:disabled="invalid">저장</v-btn>
 			  </v-card-actions>
 		    </v-card>
 		  </ValidationObserver>
@@ -31,13 +39,15 @@
 <script>
 export default {
 	data: () => ({
+		environmentItems: [],
 		products: [],
 		dialog: false
 	}),
 	props: [
 		'editedItem',
 		'estimate',
-		'clusterDialog'
+		'projectVolumes',
+		'environmentDialog'
 	],
 	computed: {
 		formDialogTitle () {
@@ -45,8 +55,16 @@ export default {
 		}
 	},
 	watch: {
-		clusterDialog: function (){
-			this.dialog = this.clusterDialog;
+		environmentDialog: function (){
+			this.dialog = this.environmentDialog;
+		},
+		projectVolumes: function() {
+			if(this.projectVolumes && this.projectVolumes.environments) {
+				this.environmentItems = [];
+				for(var i = 0; i < this.projectVolumes.environments.length; i++) {
+					this.environmentItems[i] = this.projectVolumes.environments[i].name;
+				}
+			}
 		}
 	},
 	created () {
@@ -58,17 +76,19 @@ export default {
 				this.products = response.data
 			})
 		},
-		closeClusterDialog() {
+		closeEnvironmentDialog() {
 			this.$emit('fire-dialog-closed');
 			this.$refs.obs.reset();
 			this.dialog = false;
 		},
-		saveClusterDialog() {
+		saveEnvironmentDialog() {
 			this.$refs.obs.validate().then(valid => {
 				if(valid) {
-					for(var i = 0; i < this.estimate.clusters.length; i++) {
-						if(this.estimate.clusters[i].clusterName == this.editedItem.clusterName) {
-							alert('존재하는 Environment입니다. 다시 입력하세요.');
+					var selectedIndex = this.environmentItems.indexOf(this.editedItem.environmentName);
+					
+					for(var i = 0; i < this.estimate.environments.length; i++) {
+						if(this.estimate.environments[i].environmentId == this.projectVolumes.environments[selectedIndex].id) {
+							alert('존재하는 Environment입니다. 다시 선택하세요.');
 							return;
 						}
 					}
@@ -77,6 +97,8 @@ export default {
 						alert('Product를 선택하세요.');
 						return;
 					}
+					
+					this.editedItem.environmentId = this.projectVolumes.environments[selectedIndex].id;
 					
 					this.$emit('fire-dialog-saved');
 					this.$refs.obs.reset();
