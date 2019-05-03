@@ -37,6 +37,10 @@
 				  </v-flex>
 				</v-layout>
 		    </v-card-text>
+ 	        <v-card-actions v-if="generalVersionAlert || iksVmVersionAlert || iksStorageVersionAlert || mspCostVersionAlert">
+		      <v-spacer></v-spacer>
+		      <v-btn right color="primary" v-if="editable" @click="apply">견적서 Update</v-btn>
+	        </v-card-actions>
 		  </v-card>
 		</ValidationObserver>
       </v-flex>
@@ -52,7 +56,9 @@
  			v-bind:productReferences="productReferences"
  			v-bind:projectVolumes="projectVolumes"
  			v-bind:editable="editable"
+ 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
  			v-on:fire-estimate-changed="changeEstimate"
+ 			v-on:fire-update-reference-finished='finishReferenceUpdate'
 		/>
       </v-flex>
       <v-flex lg12>
@@ -67,7 +73,9 @@
  			v-bind:productReferences="productReferences"
  			v-bind:projectVolumes="projectVolumes"
  			v-bind:editable="editable"
+ 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
  			v-on:fire-estimate-changed="changeEstimate"
+ 			v-on:fire-update-reference-finished='finishReferenceUpdate'
 		/>
       </v-flex>
       <v-flex lg12>
@@ -150,7 +158,8 @@ export default {
       	mspCostVersionAlert: false,
       	
       	productReferences : [],
-      	projectVolumes: {}
+      	projectVolumes: {},
+      	referenceUpdateStatus: false
 	}),
 	props: [
 		'projectId',
@@ -163,11 +172,15 @@ export default {
 	watch: {
 		estimateId: function() {
 			this.$http.get('/api/project/' + this.projectId + '/estimate/history/' + this.estimateId).then(response => {
-				this.estimate = response.data;
-				this.generalVersionId = this.estimate.generalId;
-				this.iksVmVersionId = this.estimate.iksVmVersionId;
-				this.iksStorageVersionId = this.estimate.iksStorageVersionId;
-				this.mspCostVersionId = this.estimate.mspCostVersionId;
+				if(response && response.data) {
+					this.estimate = response.data;
+					this.generalVersionId = this.estimate.generalId;
+					this.iksVmVersionId = this.estimate.iksVmVersionId;
+					this.iksStorageVersionId = this.estimate.iksStorageVersionId;
+					this.mspCostVersionId = this.estimate.mspCostVersionId;
+				}
+			}).catch(error => {
+				alert(error.response.data.message);
 			})
 		},
 		volumeRefreshStatus: function() {
@@ -191,12 +204,23 @@ export default {
 					this.estimate = response.data;
 				}
 				
+				this.generalVersionAlert = false;
+				this.generalVersionAlertMessage = '';
+				this.iksVmVersionAlert = false;
+				this.iksVmVersionAlertMesssage = '';
+				this.iksStorageVersionAlert = false;
+				this.iksStorageVersionAlertMesssage = '';
+				this.mspCostVersionAlert = false;
+				this.mspCostVersionAlertMesssage = '';
+
 				this.getGeneralInfo();
 				this.getVmInfo();
 				this.getStorageInfo();
 				this.getMspInfo();
 				this.getProductInfo();
 				this.getVolumeInfo();
+			}).catch(error => {
+				alert(error.response.data.message);
 			})
 		},
 		getVolumeInfo() {
@@ -211,7 +235,7 @@ export default {
 					this.generalVersionId = this.iksGeneral.id;
 					
 					if(this.estimate.id > 0 && this.estimate.generalId != this.iksGeneral.id) {
-						this.printGeneralErrorMessage('새로운 기준정보 버전이 있습니다. 견적서를 새로 작성하세요');
+						this.printGeneralErrorMessage('견적서의 기준정보가 최신 버전이 아닙니다.');
 					}
 				} else {
 					this.printGeneralErrorMessage('조회된 기준정보 데이터가 없습니다.');
@@ -221,7 +245,7 @@ export default {
 			})
 		},
 		printGeneralErrorMessage(message, flag) {
-			this.iksGeneral = {};
+			//this.iksGeneral = {};
 			this.generalVersionAlert = true;
 			this.generalVersionAlertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다. ':message;
 		},
@@ -232,7 +256,7 @@ export default {
 					this.iksVmVersionId = this.vmVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.iksVmVersionId != this.vmVersion.id) {
-						this.printVmErrorMessage('새로운 IKS VM Cost 버전이 있습니다. 견적서를 새로 작성하세요');
+						this.printVmErrorMessage('견적서의 IKS VM Cost가 최신 버전이 아닙니다');
 					}
 				} else {
 					this.printVmErrorMessage('조회된 IKS VM Cost 데이터가 없습니다.');
@@ -242,7 +266,7 @@ export default {
 			})
 		},
 		printVmErrorMessage(message) {
-			this.vmVersion = {};
+			//this.vmVersion = {};
 			this.iksVmVersionAlert = true;
 			this.iksVmVersionAlertMesssage = message == undefined ? '조회된 IKS VM Cost 데이터가 없습니다.':message;
 		},
@@ -253,7 +277,7 @@ export default {
 					this.iksStorageVersionId = this.storageVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.iksStorageVersionId != this.storageVersion.id) {
-						this.printStorageErrorMessage('새로운 IKS Storage Cost 버전이 있습니다. 견적서를 새로 작성하세요');
+						this.printStorageErrorMessage('견적서의 IKS Storage Cost가 최신 버전이 아닙니다');
 					}
 				} else {
 					this.printStorageErrorMessage('조회된 IKS Storage Cost 데이터가 없습니다.');
@@ -263,7 +287,7 @@ export default {
 			})
 		},
 		printStorageErrorMessage(message) {
-			this.storageVersion = {};
+			//this.storageVersion = {};
 			this.iksStorageVersionAlert = true;
 			this.iksStorageVersionAlertMesssage = message == undefined ? '조회된 IKS Storage Cost 데이터가 없습니다.':message;
 		},
@@ -274,7 +298,7 @@ export default {
 					this.mspCostVersionId = this.productMspCostVersion.id;
 					
 					if(this.estimate.id > 0 && this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
-						this.printMspErrorMessage('새로운 MSP Cost 버전이 있습니다. 견적서를 새로 작성하세요');
+						this.printMspErrorMessage('견적서의 MSP Cost가 최신 버전이 아닙니다');
 					}
 				} else {
 					this.printMspErrorMessage('조회된 MSP Cost 데이터가 없습니다.');
@@ -284,7 +308,7 @@ export default {
 			})
 		},
 		printMspErrorMessage(message) {
-			this.productMspCostVersion = {};
+			//this.productMspCostVersion = {};
 			this.mspCostVersionAlert = true;
 			this.mspCostVersionAlertMesssage = message == undefined ? '조회된 MSP Cost 데이터가 없습니다.':message;
 		},
@@ -332,6 +356,20 @@ export default {
 		},
 		closeMspCostDialog() {
 			this.mspCostDialog = false;
+		},
+		apply() {
+			if(confirm('최신 버전의 비용으로 다시 계산하시겠습니까?')) {
+				this.referenceUpdateStatus = true;
+			}
+		},
+		finishReferenceUpdate() {
+			this.referenceUpdateStatus = false;
+			this.generalVersionAlert = false;
+			this.iksVmVersionAlert = false;
+			this.iksStorageVersionAlert = false;
+			this.mspCostVersionAlert = false;
+			this.changeEstimate();
+			alert("견적서 업데이트가 완료되었습니다.");
 		},
 		save() {
 			this.$refs.obs.validate().then(valid => {

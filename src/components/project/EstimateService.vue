@@ -71,7 +71,7 @@
 				      <td class="font-weight-bold text-xs-center" v-if="productIndex == 0 && serviceIndex == 0 && index == 0" v-bind:rowspan="getRowspan(0, props.item.products)">{{ props.item.environmentName }}</td>
 					  <td class="font-weight-bold text-xs-center" v-if="serviceIndex == 0 && index == 0" v-bind:rowspan="getRowspan(1, product.services)">{{ product.productName }}</td>
 					  <td class="font-weight-bold text-xs-center" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
-					  <td class="font-weight-bold text-xs-left">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
+					  <td class="font-weight-bold text-xs-left" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
 					  <td class="text-xs-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-xs-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
 					  <td class="text-xs-center">{{ classification.storageType }}</td>
@@ -80,8 +80,8 @@
 					  <td class="text-xs-center">{{ classification.number | formatNumber }}</td>
 					  <td class="text-xs-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
 					  <td class="text-xs-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
-					  <td class="text-xs-right">{{ classification.pricePerMonthly | formatNumber }}</td>
-					  <td class="text-xs-right">{{ classification.pricePerYearly | formatNumber }}</td>
+					  <td class="text-xs-right" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.pricePerMonthly | formatNumber }}</td>
+					  <td class="text-xs-right" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.pricePerYearly | formatNumber }}</td>
 					  <td class="justify-center layout px-0" v-if="editable">
 						<v-icon small class="mr-2" @click="editAppsItem(props.item.environmentName, productIndex, serviceIndex, index, classification)">edit</v-icon>
 						<v-icon small @click="deleteAppsItem(props.item.environmentName, productIndex, serviceIndex, index, classification)">delete</v-icon>
@@ -196,9 +196,33 @@ export default {
 		'productMspCostVersion',
 		'productReferences',
 		'projectVolumes',
-		'editable'
+		'editable',
+		'referenceUpdateStatus'
 	],
 	computed: {
+	},
+	watch: {
+		referenceUpdateStatus: function() {
+			if(!this.referenceUpdateStatus) {
+				return;
+			}
+			
+			// update estimate_items
+			if(this.estimate.environments) {
+				for(let env of this.estimate.environments) {
+					for(let product of env.products) {
+						for(let service of product.services) {
+							for(let classification of service.classifications) {
+								this.updateReference(classification);
+								this.calculate(classification, true);
+							}
+						}
+					}
+				}
+			}
+			
+			this.$emit('fire-update-reference-finished');
+		}
 	},
 	created () {
 		this.initialize()
@@ -206,7 +230,6 @@ export default {
 	methods: {
 		initialize() {
 		},
-		
 		getRowspan(colIndex, items, item) {
 			var rowCount = 0;
 			if(colIndex == 0) {
@@ -379,7 +402,7 @@ export default {
 			}, 300);
 		},
 		saveAppsDialog () {
-			this.calculate();
+			this.calculate(this.editedAppsItem);
 			
 			if (this.editedApps.index > -1) {
 				// edit
@@ -439,77 +462,125 @@ export default {
 			}
 			return -1;
 		},
-		calculate() {
-			if(this.editedAppsItem.classificationType == 'VM') {
+		updateReference(estimateItem) {
+			if(estimateItem.classificationType == 'VM') {
+				if(estimateItem.iksVmId <= 0) {
+					return;
+				}
+				
 				var vmData;
-				for(var i = 0; i < this.vmVersion.vms.length; i++){
-					if(this.vmVersion.vms[i].id == this.editedAppsItem.iksVmId) {
-						vmData = this.vmVersion.vms[i];
+				for(const vm of this.vmVersion.vms) {
+					if(vm.name == estimateItem.iksVmName) {
+						vmData = vm;
 						break;
 					}
 				}
 				
-				if(!vmData || !this.editedAppsItem.number || this.editedAppsItem.number == 0) {
-					this.editedAppsItem.cores = 0;
-					this.editedAppsItem.memory = 0;
-					this.editedAppsItem.pricePerMonthly = 0;
-					this.editedAppsItem.pricePerYearly = 0;
+				estimateItem.iksVmId = vmData ? vmData.id : 0;
+				estimateItem.iksVmName = vmData? vmData.name : '';
+				estimateItem.updated = true;
+				
+				if(!vmData) {
+					console.log('matched vm is not found');
+				}
+				
+			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
+				if(estimateItem.iksFileStorageId <= 0) {
 					return;
-				} else {
-					this.editedAppsItem.cores = vmData.core * this.editedAppsItem.number;
-					this.editedAppsItem.memory = vmData.memory * this.editedAppsItem.number;
 				}
 				
-				if(this.editedAppsItem.hardwareType && this.editedAppsItem.hardwareType != "") {
-					var pricePerHour = 0;
-					if(this.editedAppsItem.hardwareType == 'shared') {
-						pricePerHour = vmData.sharedPricePerHour;
-					} else if(this.editedAppsItem.hardwareType == 'dedicated') {
-						pricePerHour = vmData.dedicatedPricePerHour;
-					}
-					
-					this.editedAppsItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100)) * this.editedAppsItem.number;
-				}
-				
-			} else if(this.editedAppsItem.classificationType == 'File_Storage' || this.editedAppsItem.classificationType == 'Block_Storage') {
 				var storageData;
-				for(var i = 0; i < this.storageVersion.fileStorages.length; i++){
-					if(this.storageVersion.fileStorages[i].id == this.editedAppsItem.iksFileStorageId) {
-						storageData = this.storageVersion.fileStorages[i];
+				for(const fileStorage of this.storageVersion.fileStorages) {
+					if(fileStorage.disk == estimateItem.iksFileStorageDisk) {
+						storageData = fileStorage;
 						break;
 					}
 				}
 				
-				if(!storageData || !this.editedAppsItem.enduranceIops || this.editedAppsItem.enduranceIops == "" || !this.editedAppsItem.number || this.editedAppsItem.number == 0) {
-					this.editedAppsItem.pricePerMonthly = 0;
-					this.editedAppsItem.pricePerYearly = 0;
-					return;
-				} 
-				
-				var pricePerHour = 0;
-				if(this.editedAppsItem.enduranceIops == 0.25) {
-					pricePerHour = storageData.iops1PricePerHour;
-				} else if(this.editedAppsItem.enduranceIops == 2) {
-					pricePerHour = storageData.iops2PricePerHour;
-				} else if(this.editedAppsItem.enduranceIops == 4) {
-					pricePerHour = storageData.iops3PricePerHour;
-				} else if(this.editedAppsItem.enduranceIops = 10) {
-					pricePerHour = storageData.iops4PricePerHour;
+				estimateItem.iksFileStorageId = storageData ? storageData.id : 0;
+				estimateItem.iksFileStorageDisk = storageData ? storageData.disk : 0;
+				estimateItem.updated = true;
+
+				if(!storageData) {
+					console.log('matched file storage is not found');
 				}
-				
-				this.editedAppsItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.iksGeneral.exchangeRate) * this.editedAppsItem.number;
-
-			} else if(this.editedItem.classificationType == 'IP_Allocation') {
-				this.editedAppsItem.pricePerMonthly = this.iksGeneral.ipAllocation;
-				
-			} else if(this.editedAppsItem.classificationType == 'Labor_Cost') {
-				//nothing
-			}
-
-			if(this.editedAppsItem.pricePerMonthly) {
-				this.editedAppsItem.pricePerYearly = this.editedAppsItem.pricePerMonthly * 12;
 			}
 		},
+		calculate(estimateItem) {
+			if(estimateItem.classificationType == 'VM') {
+				var vmData;
+				for(const vm of this.vmVersion.vms) {
+					if(vm.id == estimateItem.iksVmId) {
+						vmData = vm;
+						break;
+					}
+				}
+				
+				if(vmData) {
+					if(estimateItem.number && estimateItem.number > 0) {
+						estimateItem.cores = vmData.core * estimateItem.number;
+						estimateItem.memory = vmData.memory * estimateItem.number;
+					} else {
+						estimateItem.cores = 0;
+						estimateItem.memory = 0;
+					}
+					
+					if(estimateItem.hardwareType && estimateItem.hardwareType != "") {
+						var pricePerHour = 0;
+						if(estimateItem.hardwareType == 'shared') {
+							pricePerHour = vmData.sharedPricePerHour;
+						} else if(estimateItem.hardwareType == 'dedicated') {
+							pricePerHour = vmData.dedicatedPricePerHour;
+						}
+						
+						estimateItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100)) * estimateItem.number;
+					} else {
+						estimateItem.pricePerMonthly = 0;
+					}
+				} else {
+					estimateItem.pricePerMonthly = 0;
+				}
+				
+			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
+				var storageData;
+				for(const fileStorage of this.storageVersion.fileStorages) {
+					if(fileStorage.id == estimateItem.iksFileStorageId) {
+						storageData = fileStorage;
+						break;
+					}
+				}
+				
+				if(storageData && estimateItem.enduranceIops && estimateItem.enduranceIops != "" && estimateItem.number && estimateItem.number > 0) {
+					var pricePerHour = 0;
+					if(estimateItem.enduranceIops == 0.25) {
+						pricePerHour = storageData.iops1PricePerHour;
+					} else if(estimateItem.enduranceIops == 2) {
+						pricePerHour = storageData.iops2PricePerHour;
+					} else if(estimateItem.enduranceIops == 4) {
+						pricePerHour = storageData.iops3PricePerHour;
+					} else if(estimateItem.enduranceIops = 10) {
+						pricePerHour = storageData.iops4PricePerHour;
+					}
+					
+					estimateItem.pricePerMonthly = Math.ceil(pricePerHour * 24 * 31 * (1 - this.iksGeneral.ibmDcRate/100) * this.iksGeneral.exchangeRate) * estimateItem.number;
+				} else {
+					estimateItem.pricePerMonthly = 0;
+				}
+
+			} else if(this.editedItem.classificationType == 'IP_Allocation') {
+				estimateItem.pricePerMonthly = this.iksGeneral.ipAllocation;
+				
+			} else if(estimateItem.classificationType == 'Labor_Cost') {
+				//nothing
+			}
+			
+			if(estimateItem.pricePerMonthly || estimateItem.pricePerMonthly == 0) {
+				if(estimateItem.pricePerMonthly * 12 != estimateItem.pricePerYearly) {
+					estimateItem.updated = true;
+				}
+				estimateItem.pricePerYearly = estimateItem.pricePerMonthly * 12;
+			}
+		}
 	}
 }
 </script>
