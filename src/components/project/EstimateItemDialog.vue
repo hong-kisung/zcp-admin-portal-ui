@@ -326,9 +326,9 @@ export default {
 			}
 		},
 		changeClassification(selectedItem) {
-			this.editedItem.addonId = 0;
-			this.editedItem.addonApplicationName = '';
-			this.editedItem.addonIdTemp = '';
+			//this.editedItem.addonId = 0;
+			//this.editedItem.addonApplicationName = '';
+			//this.editedItem.addonIdTemp = '';
 			this.addonApplicationItems = [];
 			this.showAddonApplication = false;
 			this.showLaborCostInput = false;
@@ -340,11 +340,22 @@ export default {
 				this.editedItem.classificationType = this.productReferences[this.productItemIndex].templates.storageService[this.serviceItemIndex].classifications[this.classificationItemIndex].classificationType;
 			}
 			
-			if(this.editedItem.classificationType == 'File_Storage' || this.editedItem.classificationType == 'Block_Storage') {
+			if(this.editedItem.classificationType == 'File_Storage') {
 				for(var i = 0; i < this.productReferences[this.productItemIndex].services.length; i++) {
 					for(var index = 0; index < this.productReferences[this.productItemIndex].services[i].applications.length; index++) {
 						var app = this.productReferences[this.productItemIndex].services[i].applications[index];
 						if(app.storageType == 'File' || app.storageType == 'Object') {
+							this.addonApplicationItems.push(app);
+						} 
+					}
+				}
+				this.showAddonApplication = true;
+				
+			} else if(this.editedItem.classificationType == 'Block_Storage') {
+				for(var i = 0; i < this.productReferences[this.productItemIndex].services.length; i++) {
+					for(var index = 0; index < this.productReferences[this.productItemIndex].services[i].applications.length; index++) {
+						var app = this.productReferences[this.productItemIndex].services[i].applications[index];
+						if(app.storageType == 'Block') {
 							this.addonApplicationItems.push(app);
 						} 
 					}
