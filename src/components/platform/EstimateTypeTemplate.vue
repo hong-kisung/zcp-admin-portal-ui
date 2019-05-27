@@ -1,7 +1,6 @@
 <template>
 	<div>
         <v-card>
-          <v-card-title class="font-weight-bold">{{ title }}</v-card-title>
           <v-card-text>
             
 		   <v-data-table

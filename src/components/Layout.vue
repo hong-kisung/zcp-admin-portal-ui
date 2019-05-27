@@ -71,7 +71,7 @@
           <v-list-tile-action>
             <v-icon>report</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title :class="[{'active': selectedIndex === 5}, 'item-title' ]">원가 견적</v-list-tile-title>
+          <v-list-tile-title :class="[{'active': selectedIndex === 5}, 'item-title' ]">Project</v-list-tile-title>
         </v-list-tile>
       </v-list>
       

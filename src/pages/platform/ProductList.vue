@@ -11,29 +11,33 @@
               :key="product.id"
               xs3
             >
-              <v-card hover @click="viewProduct(product)">
+              <v-card class="mx-auto" max-width="400">
 		        <v-card-title primary-title>
-		          <div>
-		            <div class="headline" v-text="product.name"></div>
-		            <span class="grey--text" v-text="product.description"></span><br><br>
-		            <span class="grey--text">add-on services: <span class="grey--text" v-text="product.serviceCount"></span></span><br>
-		            <span class="grey--text">생성일시: <span class="grey--text" v-text="product.createdDt"></span></span>
-		          </div>
+		          <div class="headline" v-text="product.name"></div>
+		          <v-spacer></v-spacer>
+		          <v-icon right @click="viewProduct(product)">create</v-icon>
 		        </v-card-title>
-              </v-card>
-              </router-link>
-            </v-flex>
-            
-            <v-flex xs3>
-              <v-card hover @click="addProduct">
-		        <v-card-title primary-title>
+		        <v-card-text>
 		          <div>
-		            <div class="headline">Product 추가</div>
+		            <span class="grey--text">생성일시: <span class="grey--text" v-text="product.createdDt"></span></span><br><br>
+		            <span class="grey--text" v-text="product.description"></span>
 		          </div>
-			      <v-btn icon>
-			        <v-icon>add</v-icon>
-			      </v-btn>
-		        </v-card-title>
+		        </v-card-text>
+		        <v-card-actions>
+		          <v-spacer></v-spacer>
+			      <v-tooltip top>
+			        <template v-slot:activator="{ on }">
+			          <v-icon class="mr-2" v-on="on" @click="viewAddonService(product)">settings</v-icon>
+			        </template>
+			        <span>Add-on Service 관리</span>
+			      </v-tooltip>
+			      <v-tooltip top>
+			        <template v-slot:activator="{ on }">
+			          <v-icon class="mr-2" v-on="on" @click="viewCostEstimate(product)">settings</v-icon>
+			        </template>
+			        <span>원가 견적서 템플릿 관리</span>
+			      </v-tooltip>
+		        </v-card-actions>
               </v-card>
             </v-flex>
           </v-layout>
@@ -41,15 +45,41 @@
       </v-card>
       </v-flex>
     </v-layout>
+    <productDetailPopup
+    	v-bind:productId="productId"
+    	v-bind:dialogVisibility="productDetailDialog"
+    	v-on:fire-dialog-saved="saveProductDetailDialog"
+    	v-on:fire-dialog-closed="closeProductDetailDialog"
+    />
+    <addOnServicesPopup 
+    	v-bind:productId="productId"
+    	v-bind:dialogVisibility="addonServiceDialog"
+    	v-on:fire-dialog-saved="closeAddonServiceDialog"
+    	v-on:fire-dialog-closed="closeAddonServiceDialog"
+    />
+    <costEstimatePopup 
+    	v-bind:productId="productId"
+    	v-bind:dialogVisibility="costEstimateDialog"
+    	v-on:fire-dialog-saved="closeCostEstimateDialog"
+    	v-on:fire-dialog-closed="closeCostEstimateDialog"
+    />
   </v-container>
 </template>
 
 <script>
+import productDetailPopup from './ProductDetailPopup';
+import addOnServicesPopup from './AddOnServicesPopup';
+import costEstimatePopup from './CostEstimatePopup';
+
 export default {
 	data: () => ({
-      products: [
-      ]
+      	products: [],
+      	productDetailDialog: false,
+      	addonServiceDialog: false,
+      	costEstimateDialog: false,
+      	productId: 0
 	}),
+	components: { productDetailPopup, addOnServicesPopup, costEstimatePopup },
 	created () {
 		this.initialize()
 	},
@@ -63,7 +93,29 @@ export default {
 			this.$router.push({ name: 'product_new'});
 		},
 		viewProduct(product) {
-			this.$router.push({ name: 'product_detail', params: { productId: product.id }});
+			this.productId = product.id;
+			this.productDetailDialog = true;
+		},
+		saveProductDetailDialog() {
+			this.productDetailDialog = false;
+			this.initialize();
+		},
+		closeProductDetailDialog() {
+			this.productDetailDialog = false;
+		},
+		viewAddonService(product) {
+			this.productId = product.id;
+			this.addonServiceDialog = true;
+		},
+		closeAddonServiceDialog() {
+			this.addonServiceDialog = false;
+		},
+		viewCostEstimate(product) {
+			this.productId = product.id;
+			this.costEstimateDialog = true;
+		},
+		closeCostEstimateDialog() {
+			this.costEstimateDialog = false;
 		}
 	}
 }

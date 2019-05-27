@@ -35,8 +35,8 @@ function setupComponents(Vue) {
 	Vue.component('iks-vm-detail', IKSVmDetail);
 	Vue.component('iks-storage-detail', IKSStorageDetail);
 	
-	Vue.component('add-on-services', AddOnServices);
-	Vue.component('product-template', EstimateTemplate);
+//	Vue.component('add-on-services', AddOnServices);
+//	Vue.component('product-template', EstimateTemplate);
 	Vue.component('product-estimate-type-template', EstimateTypeTemplate);
 	Vue.component('product-msp-cost-detail', MspCostDetail);
 	
