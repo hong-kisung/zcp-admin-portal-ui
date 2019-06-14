@@ -1,50 +1,57 @@
 <template>
-	<v-dialog v-model="dialogVisibility" persistent width="1500px">
-        <v-card min-height="800px">
-          <v-card-title class="title">원가 견적서 템플릿</v-card-title>
-          <v-card-text>
-		    <v-layout row wrap>
-		      <v-flex lg12>
-				  <v-tabs
-				    v-model="active"
-				    color="grey darken-1"
-				    dark
-				    slider-color="yellow"
-				  >
-				    <v-tab href="#tab-1">Cloud Z Service</v-tab>
-				    <v-tab href="#tab-2">Application Storage Service</v-tab>
-				
-				    <v-tab-item value="tab-1">
-						<product-estimate-type-template 
-							v-bind:services="estimateTemplate.cloudZService"
-				 			v-bind:classificationTypeItems="classificationTypeItems"
-				 			v-bind:title="cloudZServiceTitle"
-						/>
-						    </v-tab-item>
-						    <v-tab-item value="tab-2">
-						<product-estimate-type-template 
-							v-bind:services="estimateTemplate.storageService"
-				 			v-bind:classificationTypeItems="classificationTypeItems"
-				 			v-bind:title="storageServiceTitle"
-						/>
-				    </v-tab-item>
-				  </v-tabs>
-		      </v-flex>
-    		</v-layout>
-    	  </v-card-text>
- 	      <v-card-actions>
-		    <v-spacer></v-spacer>
-		    <v-btn right color="primary" @click="cancel">취소</v-btn>
-		    <v-btn right color="primary" @click="saveService">저장</v-btn>
-	      </v-card-actions>
-        </v-card>
-	</v-dialog>
+<div>
+  <mdb-modal size="xl" :show="dialogVisible" @close="cancel" scrollable>
+    <mdb-modal-body class="cost-estimate-modal-body">
+        <h4 class="mt-1 mb-2 text-center"><strong>원가 견적서 템플릿</strong></h4>
+	    <mdb-tabs
+	      :active="0"
+	      default
+	      :links="[
+	        { text: 'Cloud Z Service' },
+	        { text: 'Application Storage Service' }
+	      ]"
+	      :transition-duration="0.5"
+	      transition-style="linear">
+	      <template :slot="'Cloud Z Service'">
+			<estimateTypeTemplateTab 
+				v-bind:services="estimateTemplate.cloudZService"
+	 			v-bind:classificationTypeItems="classificationTypeItems"
+	 			v-bind:title="cloudZServiceTitle"
+			/>
+	      </template>
+	      <template :slot="'Application Storage Service'">
+			<estimateTypeTemplateTab 
+				v-bind:services="estimateTemplate.storageService"
+	 			v-bind:classificationTypeItems="classificationTypeItems"
+	 			v-bind:title="storageServiceTitle"
+			/>
+	      </template>
+        </mdb-tabs>
+        <div class="mt-3 text-right">
+	        <mdb-btn size="md" outline="primary" @click="cancel">닫기</mdb-btn>
+	        <mdb-btn size="md" color="primary" @click="saveService">저장</mdb-btn>                   
+        </div>
+    </mdb-modal-body>
+  </mdb-modal>
+	
+</div> 
 </template>
 
 <script>
+import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
+import { mdbTabs } from 'mdbvue'
+import estimateTypeTemplateTab from './EstimateTypeTemplate'
+
 export default {
+  	components: {
+    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
+    	mdbTabs,
+    	estimateTypeTemplateTab
+  	},
 	data: () => ({
-		dialog: false,
 		active: null,
 		cloudZServiceTitle: 'Cloud Z Service',
 		storageServiceTitle: 'Application Storage Service',
@@ -53,7 +60,7 @@ export default {
 	}),
 	props: [
 		'productId',
-		'dialogVisibility'
+		'dialogVisible'
 	],
     watch: {
 		productId: function() {
@@ -64,9 +71,6 @@ export default {
 			
 			this.getCostEstimate();
 		},
-		dialogVisibility: function() {
-			this.dialog = this.dialogVisibility;
-		}
     },
 	computed: {
     },
@@ -91,20 +95,19 @@ export default {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				this.$http.put('/api/platform/product/'+ this.productId +'/template', this.estimateTemplate).then(response => {
 					alert("저장되었습니다.");
-					//this.initialize();
-					
-					this.dialog = false;
 					this.$emit('fire-dialog-saved');
 				})
 			}
 		},
 		cancel() {
-			this.dialog = false;
 			this.$emit('fire-dialog-closed');
 		}
 	}
 }
 </script>
 
-<style>
+<style scoped>
+.cost-estimate-modal-body {
+  min-height: 500px;
+}
 </style>

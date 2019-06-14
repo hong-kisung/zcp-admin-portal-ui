@@ -1,30 +1,47 @@
 <template>
-  <v-container fluid grid-list-xl>
-    <h2> Platform MSP Costs</h2>
-    <v-layout row wrap>
-      <v-flex lg12>
-		<product-msp-cost-detail v-bind:editable="true" 
-								 v-on:fire-saved="initialize"
-								/>
-      </v-flex>
-      <v-flex lg12>
-            <history-list v-bind:historyList="historyList" 
-            			  v-on:fire-detail-clicked="showHistoryDetail"
-            			  />
-     </v-flex>
-    </v-layout>
-    
- 	<v-dialog lazy v-model="detailDialog" max-width="800px">
-		<product-msp-cost-detail v-bind:editable="false"
-								 v-bind:versionId="versionId" 
-								 v-on:fire-dialog-closed="closeDetailDialog"
-								 />
-	</v-dialog>
-  </v-container>
+  <section>
+    <mdb-row>
+      <mdb-col>
+		<product-msp-cost-detail
+			v-bind:editable="true"
+			v-on:fire-saved="initialize"
+		/>
+      </mdb-col>
+    </mdb-row>
+    <mdb-row class="mt-3">
+      <mdb-col>
+        <history-list 
+        	v-bind:historyList="historyList" 
+        	v-on:fire-detail-clicked="showHistoryDetail"
+        />
+      </mdb-col>
+    </mdb-row>
+    <mdb-modal size="lg" :show="detailDialog" scrollable>
+      <mdb-modal-body>
+		<product-msp-cost-detail
+			v-bind:editable="false"
+		   	v-bind:versionId="versionId"
+		   	v-on:fire-dialog-closed="closeDetailDialog"
+		/>
+	  </mdb-modal-body>
+	</mdb-modal>
+  </section>
 </template>
 
 <script>
+import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
+import productMspCostDetail from './MspCostDetail'
+import historyList from '@/pages/iks_cost/HistoryList'
+
 export default {
+  	components: {
+    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
+    	productMspCostDetail, 
+    	historyList
+  	},
 	data: () => ({
 		historyList: [],
 		detailDialog: false,

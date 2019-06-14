@@ -1,36 +1,36 @@
 <template>
-      <v-dialog v-model="dialogVisibility" persistent width="500px">
-        <ValidationObserver ref="obs">
-          <v-card slot-scope="{ invalid, validated }">
-		    <v-card-text>
-				<v-layout wrap>
-				  <v-flex xs12 sm12 sm12>
-					<VTextFieldWithValidation rules="required|max:50" data-vv-name="name" v-model="product.name" label="Product명" readonly />
-				  </v-flex>
-				  <v-flex xs12 sm12 md12>
-					<VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="product.description" label="설명" />
-				  </v-flex>
-				</v-layout>
-		    </v-card-text>
-		    <v-card-actions>
-		      <v-spacer></v-spacer>
-		      <v-btn right color="primary" @click="cancel">취소</v-btn>
-		      <v-btn right color="primary" @click="saveProduct" v-bind:disabled="invalid">저장</v-btn>
-		    </v-card-actions>
-		  </v-card>
-		</ValidationObserver>
-      </v-dialog>
+  <mdb-modal centered :show="dialogVisible" @close="cancel">
+    <mdb-modal-body>
+      <mdb-card-title class="text-center">{{ product.name }}</mdb-card-title>
+      <form class="grey-text">
+        <mdb-input type="text" label="설명" v-model="product.description"/>
+      </form>
+      <div class="mt-5 text-center">
+        <mdb-btn size="md" outline="primary" @click="cancel">닫기</mdb-btn>
+        <mdb-btn size="md" color="primary" @click="saveProduct">저장</mdb-btn>                   
+      </div>
+    </mdb-modal-body>
+  </mdb-modal>
 </template>
 
 <script>
+import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
+import { mdbInput } from 'mdbvue'
+
 export default {
+  	components: {
+    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
+    	mdbInput
+  	},
 	data: () => ({
-		dialog: false,
       	product: {}
 	}),
   	props: [
 		'productId',
-		'dialogVisibility'
+		'dialogVisible'
 	],
     watch: {
 		productId: function() {
@@ -41,38 +41,22 @@ export default {
 			
 			this.getProduct();
 		},
-		dialogVisibility: function() {
-			this.dialog = this.dialogVisibility;
-		}
     },
 	created () {
 		this.initialize()
 	},
 	methods: {
 		initialize() {
-			if(this.productId <= 0) {
-				return;
-			}
-
-			this.getProduct();
 		},
 		saveProduct() {
-			this.$refs.obs.validate().then(valid => {
-				if(valid) {
-					if(confirm("변경된 내용을 저장하시겠습니까?")) {
-						this.$http.put('/api/platform/product/'+this.product.id, this.product).then(response => {
-							alert("저장되었습니다.");
-							this.$refs.obs.reset();
-							
-							this.dialog = false;
-							this.$emit('fire-dialog-saved');
-						})
-					}
-				}
-			});
+			if(confirm("변경된 내용을 저장하시겠습니까?")) {
+				this.$http.put('/api/platform/product/'+this.product.id, this.product).then(response => {
+					alert("저장되었습니다.");
+					this.$emit('fire-dialog-saved');
+				})
+			}
 		},
 		cancel() {
-			this.dialog = false;
 			this.$emit('fire-dialog-closed');
 		},
 		getProduct() {

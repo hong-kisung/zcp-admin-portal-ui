@@ -5,10 +5,10 @@ import General from '../pages/iks_cost/General.vue'
 import IKSVmCost from '../pages/iks_cost/IKSVmCost.vue'
 import IKSStorageCost from '../pages/iks_cost/IKSStorageCost.vue'
 import ProductList from '../pages/platform/ProductList.vue'
-import ProductDetail from '../pages/platform/ProductDetail.vue'
 import ProductMspCost from '../pages/platform/ProductMspCost.vue'
 import ProjectList from '../pages/project/ProjectList.vue'
-import ProjectDetail from '../pages/project/ProjectDetail.vue'
+import ProjectVolume from '../pages/project/ProjectVolume.vue'
+import ProjectCostEstimate from '../pages/project/ProjectCostEstimate.vue'
 
 Vue.use(Router)
 
@@ -18,6 +18,7 @@ export default new Router({
 			path: '/general',
 			name: 'general',
 			component: General,
+		    alias: '/',
 			meta: {
 				allowAnonymous: true
 			}
@@ -47,22 +48,6 @@ export default new Router({
 			}
 		},
 		{
-			path: '/product_new',
-			name: 'product_new',
-			component: ProductDetail,
-			meta: {
-				allowAnonymous: true
-			}
-		},
-		{
-			path: '/product/:productId',
-			name: 'product_detail',
-			component: ProductDetail,
-			meta: {
-				allowAnonymous: true
-			}
-		},
-		{
 			path: '/product_msp',
 			name: 'product_msp',
 			component: ProductMspCost,
@@ -79,20 +64,25 @@ export default new Router({
 			}
 		},
 		{
-			path: '/product_new',
-			name: 'project_new',
-			component: ProjectDetail,
+			path: '/project/:projectId/volume',
+			name: 'project_volume',
+			component: ProjectVolume,
 			meta: {
 				allowAnonymous: true
 			}
 		},
 		{
-			path: '/project/:projectId',
-			name: 'project_detail',
-			component: ProjectDetail,
+			path: '/project/:projectId/cost_estimate',
+			name: 'project_cost_estimate',
+			component: ProjectCostEstimate,
 			meta: {
 				allowAnonymous: true
 			}
-		}
+	    },
+	    {
+	      path: '*',
+	      props: { page: 5 },
+	      redirect: '/404'
+	    }
 	]
 })

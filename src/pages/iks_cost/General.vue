@@ -1,54 +1,75 @@
 <template>
-  <v-container fluid grid-list-xl>
-    <h2> 기준정보 </h2>
-    <v-layout row wrap>
-      <v-flex lg12>
+  <section>
+    <mdb-row>
+      <mdb-col>
 		<general-detail v-bind:editable="true" 
 						v-on:fire-saved="initialize"
-						/>
-      </v-flex>
-      <v-flex lg12>
-       <v-card >
-         <v-card-title class="title">History</v-card-title>
-         <v-card-text>
-		  <v-data-table
-			class="table"
-			disable-initial-sort
-			:headers="headers"
-			:items="history"
-			:rows-per-page-items="[10, 25]">
-			<template v-slot:items="props">
-			  <td class="text-xs-center">{{ props.item.version }}</td>
-			  <td class="text-xs-right">{{ props.item.ibmDcRate }}%</td>
-			  <td class="text-xs-right">{{ props.item.platformCpuPerWorker }}</td>
-			  <td class="text-xs-right">{{ props.item.platformMemoryPerWorker }}</td>
-			  <td class="text-xs-right">{{ props.item.exchangeRate }}원</td>
-			  <td class="text-xs-right">{{ props.item.ipAllocation }}원</td>
-			  <td class="text-xs-left">{{ props.item.description }}</td>
-			  <td class="text-xs-center">{{ props.item.createdDt }}</td>
-			</template>
-		  </v-data-table>
-         </v-card-text>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+		/>
+      </mdb-col>
+    </mdb-row>
+    <mdb-row class="mt-3">
+      <mdb-col>
+        <mdb-card>
+          <mdb-card-body>
+            <mdb-card-title>History</mdb-card-title>
+		    <mdb-tbl sm bordered hover responsive>
+			    <colgroup>
+			      <col width="80">
+			      <col width="100">
+			      <col width="180">
+			      <col width="200">
+			      <col width="120">
+			      <col width="150">
+			      <col>
+			      <col width="180">
+			    </colgroup>
+		      <mdb-tbl-head>
+		        <tr>
+		          <th class="text-center">버전</th>
+		          <th class="text-center">IBM 할인율</th>
+		          <th class="text-center">Platform Resolved CPU</th>
+		          <th class="text-center">Platform Resolved Memory</th>
+		          <th class="text-center">매매기준환율</th>
+		          <th class="text-center">IP Allocation Cost</th>
+		          <th class="text-center">설명</th>
+		          <th class="text-center">생성일시</th>
+		        </tr>
+		      </mdb-tbl-head>
+		      <mdb-tbl-body>
+				<tr v-for="(item) in history">
+				  <td class="text-center">{{ item.version }}</td>
+				  <td class="text-center">{{ item.ibmDcRate }}%</td>
+				  <td class="text-center">{{ item.platformCpuPerWorker }}</td>
+				  <td class="text-center">{{ item.platformMemoryPerWorker }}</td>
+				  <td class="text-right">{{ item.exchangeRate }} 원</td>
+				  <td class="text-right">{{ item.ipAllocation }} 원</td>
+				  <td class="text-left">{{ item.description }}</td>
+				  <td class="text-center">{{ item.createdDt }}</td>
+				</tr>
+		      </mdb-tbl-body>
+		    </mdb-tbl>
+          </mdb-card-body>
+        </mdb-card>
+      </mdb-col>
+    </mdb-row>
+  </section>
 </template>
 
 <script>
+import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal } from 'mdbvue' 
+import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
+import generalDetail from './GeneralDetail'
+
 export default {
+  	components: {
+    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbTbl, mdbTblHead, mdbTblBody,
+    	generalDetail
+  	},
 	data: () => ({
 		history: [],
-		headers: [
-			{ text: 'Version', value: 'version', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: 'IBM 할인율', value: 'ibmDcRate', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: 'Platform CPU/Worker', value: 'platformCpuPerWorker', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: 'Platform Memory/Worker', value: 'platformMemoryPerWorker', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: '매매기준환율', value: 'exchangeRate', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: 'IP Allocation', value: 'ipAllocation', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: '설명', value: 'description', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] },
-			{ text: '생성일시', value: 'createdDt', align: 'center', sortable: true, class:['grey lighten-1 body-2 text-weight-bold'] }
-		]
 	}),
 	created () {
 		this.initialize()
@@ -63,5 +84,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 </style>

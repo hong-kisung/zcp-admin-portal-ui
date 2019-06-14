@@ -1,77 +1,57 @@
 <template>
-  <v-container fluid grid-list-xl>
-    <h2> Platform Product </h2>
-    <v-layout row wrap>
-      <v-flex lg12>
-      <v-card>
-        <v-container fluid grid-list-md>
-          <v-layout row wrap>
-            <v-flex
-              v-for="product in products"
-              :key="product.id"
-              xs3
-            >
-              <v-card class="mx-auto" max-width="400">
-		        <v-card-title primary-title>
-		          <div class="headline" v-text="product.name"></div>
-		          <v-spacer></v-spacer>
-		          <v-icon right @click="viewProduct(product)">create</v-icon>
-		        </v-card-title>
-		        <v-card-text>
-		          <div>
-		            <span class="grey--text">생성일시: <span class="grey--text" v-text="product.createdDt"></span></span><br><br>
-		            <span class="grey--text" v-text="product.description"></span>
-		          </div>
-		        </v-card-text>
-		        <v-card-actions>
-		          <v-spacer></v-spacer>
-			      <v-tooltip top>
-			        <template v-slot:activator="{ on }">
-			          <v-icon class="mr-2" v-on="on" @click="viewAddonService(product)">settings</v-icon>
-			        </template>
-			        <span>Add-on Service 관리</span>
-			      </v-tooltip>
-			      <v-tooltip top>
-			        <template v-slot:activator="{ on }">
-			          <v-icon class="mr-2" v-on="on" @click="viewCostEstimate(product)">settings</v-icon>
-			        </template>
-			        <span>원가 견적서 템플릿 관리</span>
-			      </v-tooltip>
-		        </v-card-actions>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card>
-      </v-flex>
-    </v-layout>
+  <section>
+    <mdb-row>
+      <mdb-col md="3" v-for="product in products" :key="product.id">
+        <mdb-card>
+          <mdb-card-body>
+            <a class="rotate-btn float-right" @click="viewProduct(product)">
+              <mdb-icon icon="cog" class="fa-lg"></mdb-icon>
+            </a>
+            <h4>{{ product.name }}</h4>
+            <mdb-card-text>
+              <p>{{ product.description}}</p>
+              <p class="text-muted">{{ product.createdDt }}</p>
+            </mdb-card-text>
+            <mdb-btn size="sm" color="success" @click="viewAddonService(product)">Add-on Service 관리</mdb-btn>
+            <mdb-btn size="sm" color="primary" @click="viewCostEstimate(product)">원가 견적서 템플릿 관리</mdb-btn>
+          </mdb-card-body>
+        </mdb-card>
+      </mdb-col>
+    </mdb-row>
+
     <productDetailPopup
     	v-bind:productId="productId"
-    	v-bind:dialogVisibility="productDetailDialog"
+    	v-bind:dialogVisible="productDetailDialog"
     	v-on:fire-dialog-saved="saveProductDetailDialog"
     	v-on:fire-dialog-closed="closeProductDetailDialog"
     />
     <addOnServicesPopup 
     	v-bind:productId="productId"
-    	v-bind:dialogVisibility="addonServiceDialog"
-    	v-on:fire-dialog-saved="closeAddonServiceDialog"
+    	v-bind:dialogVisible="addonServiceDialog"
     	v-on:fire-dialog-closed="closeAddonServiceDialog"
     />
     <costEstimatePopup 
     	v-bind:productId="productId"
-    	v-bind:dialogVisibility="costEstimateDialog"
-    	v-on:fire-dialog-saved="closeCostEstimateDialog"
+    	v-bind:dialogVisible="costEstimateDialog"
     	v-on:fire-dialog-closed="closeCostEstimateDialog"
     />
-  </v-container>
+  </section>
 </template>
 
 <script>
-import productDetailPopup from './ProductDetailPopup';
-import addOnServicesPopup from './AddOnServicesPopup';
-import costEstimatePopup from './CostEstimatePopup';
+import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal } from 'mdbvue' 
+import productDetailPopup from './ProductDetailPopup'
+import addOnServicesPopup from './AddOnServicesPopup'
+import costEstimatePopup from './CostEstimatePopup'
 
 export default {
+  	components: {
+    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal,
+    	productDetailPopup, addOnServicesPopup, costEstimatePopup
+  	},
 	data: () => ({
       	products: [],
       	productDetailDialog: false,
@@ -79,7 +59,6 @@ export default {
       	costEstimateDialog: false,
       	productId: 0
 	}),
-	components: { productDetailPopup, addOnServicesPopup, costEstimatePopup },
 	created () {
 		this.initialize()
 	},

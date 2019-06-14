@@ -1,29 +1,49 @@
 <template>
-  <v-container fluid grid-list-xl>
-    <h2> IKS Storage 비용</h2>
-    <v-layout row wrap>
-      <v-flex lg12>
-			<iks-storage-detail v-bind:editable="true"
-							    v-on:fire-saved="initialize"
-							    />
-
-      </v-flex>
-      <v-flex lg12>
-            <history-list v-bind:historyList="historyList" v-on:fire-detail-clicked="showHistoryDetail"/>
-     </v-flex>
-    </v-layout>
-
- 	<v-dialog v-model="detailDialog" max-width="1400px">
-		  <iks-storage-detail v-bind:editable="false"
-						      v-bind:versionId="versionId"
-						      v-on:fire-dialog-closed="closeDetailDialog"
-						      />
-	</v-dialog>
-  </v-container>
+  <section>
+    <mdb-row>
+      <mdb-col>
+		<iks-storage-detail 
+			v-bind:editable="true"
+			v-on:fire-saved="initialize"
+		/>
+      </mdb-col>
+    </mdb-row>
+    <mdb-row class="mt-3">
+      <mdb-col>
+        <history-list 
+        	v-bind:historyList="historyList" 
+        	v-on:fire-detail-clicked="showHistoryDetail"
+        />
+      </mdb-col>
+    </mdb-row>
+    <mdb-modal size="xl" :show="detailDialog" scrollable>
+      <mdb-modal-body>
+		<iks-storage-detail 
+			v-bind:editable="false"
+			v-bind:versionId="versionId"
+			v-on:fire-dialog-closed="closeDetailDialog"
+		/>
+	  </mdb-modal-body>
+	</mdb-modal>
+  </section>
 </template>
 
 <script>
+import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
+import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
+import iksStorageDetail from './IKSStorageDetail'
+import historyList from './HistoryList'
+
 export default {
+  	components: {
+    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
+    	mdbTbl, mdbTblHead, mdbTblBody,
+    	iksStorageDetail,
+    	historyList
+  	},
     data: () => ({
 		historyList: [],
 		detailDialog: false,
@@ -54,6 +74,3 @@ export default {
 }
   
 </script>
-
-<style>
-</style>

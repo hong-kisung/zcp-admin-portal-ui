@@ -1,190 +1,163 @@
 <template>
-	<v-dialog v-model="dialogVisibility" persistent width="1500px">
-        <v-card min-height="800px">
-          <v-card-title class="title">Add-on Services</v-card-title>
-          <v-card-text>
-            
-		   <v-data-table
-		    class="elevation-1"
-		    v-model="selected"
-		    :headers="headers"
-		    :items="addonService.services"
-		    item-key="serviceName"
-		    select-all
-		    hide-actions>
-		    
-			<template v-slot:headers="props">
-			  <tr>
-			    <th :class="headerClass"></th>
-				<th :class="headerClass">Service</th>
-				<th :class="headerClass">Application</th>
-				<th :class="headerClass">CPU(Millicore)</th>
-				<th :class="headerClass">Memory(MB)</th>
-				<th :class="headerClass">Disk(GB)</th>
-				<th :class="headerClass">Storage Type</th>
-				<th :class="headerClass">Backup(Y/N)</th>
-				<th :class="headerClass">Etc</th>
-				<th :class="headerClass">Actions</th>
-			  </tr>
-			</template>
-		    <template v-slot:items="props">
-		    
-		      <template v-if="props.item.applications.length == 0">
+<div>
+  <mdb-modal size="xl" :show="dialogVisible" @close="cancel" scrollable>
+    <mdb-modal-body>
+        <h4 class="mt-1 mb-2 text-center"><strong>Add-on Service</strong></h4>
+	    <mdb-tbl sm bordered hover responsive>
+	      <mdb-tbl-head>
+	        <tr>
+	          <th class="text-center">Service</th>
+	          <th class="text-center">Application</th>
+	          <th class="text-center">CPU(Millicore)</th>
+	          <th class="text-center">Memory(MB)</th>
+	          <th class="text-center">Disk(GB)</th>
+	          <th class="text-center">Storage Type</th>
+	          <th class="text-center">Backup(Y/N)</th>
+	          <th class="text-center">Etc</th>
+	          <th class="text-center">Actions</th>
+	        </tr>
+	      </mdb-tbl-head>
+	      <mdb-tbl-body>
+	        <template v-for="(item, index) in addonService.services">
+	          <template v-if="item.applications.length == 0">
 		        <tr>
-		          <td>
-		            <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
-		          </td>
-		          <td class="font-weight-bold text-xs-center">{{ props.item.serviceName }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left">소계</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.cpu | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.memory | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.disk | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">{{ props.item.storageType }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center">{{ props.item.backupYn }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left">{{ props.item.description }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left"></td>
+		          <th class="text-left" scope="row">
+		            <div class="custom-control custom-checkbox custom-control-inline">
+		              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
+		              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
+		            </div>
+		          </th>
+			      <td class="grey lighten-2 text-left">소계</td>
+			      <td class="grey lighten-2 text-right">{{ item.cpu | formatNumber }}</td>
+			      <td class="grey lighten-2 text-right">{{ item.memory | formatNumber }}</td>
+			      <td class="grey lighten-2 text-right">{{ item.disk | formatNumber }}</td>
+			      <td class="grey lighten-2 text-center">{{ item.storageType }}</td>
+			      <td class="grey lighten-2 text-center">{{ item.backupYn }}</td>
+			      <td class="grey lighten-2 text-left">{{ item.description }}</td>
+			      <td class="grey lighten-2 text-left"></td>
 		        </tr>
-		      </template>
-		      <template v-else>
-		        <template v-for="(application, applicationIndex) in props.item.applications">
-		        <tr>
-		          <td v-if="applicationIndex == 0" :rowspan="props.item.applications.length + 1">
-		            <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
-		          </td>
-		          <td class="font-weight-bold text-xs-center" v-if="applicationIndex == 0" :rowspan="props.item.applications.length + 1">{{ props.item.serviceName }}</td>
-			      <td class="text-xs-left">{{ application.applicationName }}</td>
-			      <td class="text-xs-right">{{ application.cpu | formatNumber }}</td>
-			      <td class="text-xs-right">{{ application.memory | formatNumber }}</td>
-			      <td class="text-xs-right">{{ application.disk | formatNumber }}</td>
-			      <td class="text-xs-center">{{ application.storageType }}</td>
-			      <td class="text-xs-center">{{ application.backupYn }}</td>
-			      <td class="text-xs-left">{{ application.description }}</td>
-				  <td class="justify-center layout px-0">
-					<v-icon small class="mr-2" @click="editAppsItem(props.item, application, applicationIndex)" >edit</v-icon>
-					<v-icon small @click="deleteAppItem(props.item, application, applicationIndex)">delete</v-icon>
+	          </template>
+	          <template v-else>
+		        <tr v-for="(application, applicationIndex) in item.applications">
+		          <th class="text-left" scope="row" v-if="applicationIndex == 0" :rowspan="item.applications.length + 1">
+		            <div class="custom-control custom-checkbox custom-control-inline">
+		              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
+		              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
+		            </div>
+		          </th>
+			      <td class="text-left">{{ application.applicationName }}</td>
+			      <td class="text-right">{{ application.cpu | formatNumber }}</td>
+			      <td class="text-right">{{ application.memory | formatNumber }}</td>
+			      <td class="text-right">{{ application.disk | formatNumber }}</td>
+			      <td class="text-center">{{ application.storageType }}</td>
+			      <td class="text-center">{{ application.backupYn }}</td>
+			      <td class="text-left">{{ application.description }}</td>
+				  <td class="text-center">
+				    <a class="rotate-btn" @click="editAppsItem(item, application, applicationIndex)">
+				      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
+	                </a>
+	                &nbsp;
+				    <a class="rotate-btn" @click="deleteAppItem(item, application, applicationIndex)">
+				      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
+	                </a>
 				  </td>
 		        </tr>
-		        </template>
-		
 			    <tr>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left">소계</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.sumCpu | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.sumMemory | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ props.item.sumDisk | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left"></td>
+			      <td class="grey lighten-2 text-left">소계</td>
+			      <td class="grey lighten-2 text-right">{{ item.sumCpu | formatNumber }}</td>
+			      <td class="grey lighten-2 text-right">{{ item.sumMemory | formatNumber }}</td>
+			      <td class="grey lighten-2 text-right">{{ item.sumDisk | formatNumber }}</td>
+			      <td class="grey lighten-2 text-center"></td>
+			      <td class="grey lighten-2 text-center"></td>
+			      <td class="grey lighten-2 text-left"></td>
+			      <td class="grey lighten-2 text-left"></td>
 		        </tr>
-		      </template>
-		      
-		    </template>
-			<template v-slot:footer>
-			    <tr>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right" colspan="3">합계</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ addonService.totalCpu | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ addonService.totalMemory | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-right">{{ addonService.totalDisk | formatNumber }}</td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-center"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left"></td>
-			      <td class="grey lighten-2 blue--text text--darken-4 font-weight-bold text-xs-left"></td>
-		        </tr>
-			</template>
-			<template v-slot:no-data>
-  			  <td class="text-xs-center" colspan="10">
-    			{{ no_data_text }}
-  			  </td>
-			</template>
-		  </v-data-table>
- 
-          </v-card-text>
-		  <v-card-actions>
-		    <v-btn small left color="primary" @click="openServiceDialog">Add-on Service 추가</v-btn>
-		    <v-btn small left color="primary" @click="deleteService" v-bind:disabled="selected.length == 0">Add-on Service 삭제</v-btn>
-		    <v-btn small left color="primary" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</v-btn>
-		    <v-spacer></v-spacer>
-		    <v-btn right color="primary" @click="cancel">취소</v-btn>
-		    <v-btn right color="primary" @click="saveService">저장</v-btn>
-		  </v-card-actions>
-        </v-card>
+	          </template>
+	        </template>
+		    <tr>
+		      <td class="grey lighten-2 text-left" colspan="2">합계</td>
+		      <td class="grey lighten-2 text-right">{{ addonService.totalCpu | formatNumber }}</td>
+		      <td class="grey lighten-2 text-right">{{ addonService.totalMemory | formatNumber }}</td>
+		      <td class="grey lighten-2 text-right">{{ addonService.totalDisk | formatNumber }}</td>
+		      <td class="grey lighten-2 text-center"></td>
+		      <td class="grey lighten-2 text-center"></td>
+		      <td class="grey lighten-2 text-left"></td>
+		      <td class="grey lighten-2 text-left"></td>
+	        </tr>
+	      </mdb-tbl-body>
+	    </mdb-tbl>
+        <mdb-row>
+          <mdb-col md="6" class="text-left">
+	        <mdb-btn size="sm" color="secondary" @click="openServiceDialog">Add-on Service 추가</mdb-btn>
+	        <mdb-btn size="sm" color="secondary" @click="deleteService" v-bind:disabled="selected.length == 0">Add-on Service 삭제</mdb-btn>
+	        <mdb-btn size="sm" color="default" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</mdb-btn>
+          </mdb-col>
+          <mdb-col md="6" class="text-right">
+	        <mdb-btn size="md" outline="primary" @click="cancel">닫기</mdb-btn>
+	        <mdb-btn size="md" color="primary" @click="saveService">저장</mdb-btn>                   
+          </mdb-col>
+        </mdb-row>
+    </mdb-modal-body>
+  </mdb-modal>
 		  
-	 	<v-dialog v-model="serviceDialog" max-width="500px">
-	 	    <ValidationObserver ref="obs2">
-		      <v-card slot-scope="{ invalid, validated }">
-		        <v-card-title>Add-on Service 추가</v-card-title>
-			    <v-card-text>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="required|max:50" data-vv-name="serviceName" v-model="editedServItem.serviceName" label="서비스명"/>
-			      </v-flex>
-			    </v-card-text>
-			    <v-card-actions>
-			      <v-spacer></v-spacer>
-			      <v-btn color="blue darken-1" flat @click="closeServiceDialog">취소</v-btn>
-			      <v-btn color="blue darken-1" flat @click="saveServiceDialog" v-bind:disabled="invalid">저장</v-btn>
-			    </v-card-actions>
-		      </v-card>
-		    </ValidationObserver>
-		</v-dialog>
+  <mdb-modal :show="serviceDialog" @close="closeServiceDialog">
+    <mdb-modal-body class="mx-3 grey-text">
+      <h5 class="mt-1 mb-2 text-center">Service 추가</h5>
+      <mdb-input label="서비스명" v-model="editedServItem.serviceName"/>
+      <div class="mt-5 text-center">
+        <mdb-btn outline="primary" size="md" @click="closeServiceDialog">취소</mdb-btn>
+        <mdb-btn color="primary" size="md" @click="saveServiceDialog">저장</mdb-btn>                   
+      </div>
+    </mdb-modal-body>
+  </mdb-modal>
 		
-	 	<v-dialog v-model="applicationDialog" max-width="400px">
-	 	    <ValidationObserver ref="obs">
-		      <v-card slot-scope="{ invalid, validated }">
-		        <v-card-title>{{ formTitle }}</v-card-title>
-			    <v-card-text>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="required|max:50" data-vv-name="applicationName" v-model="editedAppsItem.applicationName" label="Application 명"/>
-			      </v-flex>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="numeric" data-vv-name="cpu" v-model.number="editedAppsItem.cpu" label="CPU (Millicore)"/>
-			      </v-flex>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="numeric" data-vv-name="memory" v-model.number="editedAppsItem.memory" label="Memory (MB)"/>
-			      </v-flex>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="numeric" data-vv-name="disk" v-model.number="editedAppsItem.disk" label="Disk (GB)"/>
-			      </v-flex>
-			      <v-flex xs12>
-		            <VSelectWithValidation
-		              rules=""
-		              data-vv-name="storageType"
-		              v-model="editedAppsItem.storageType"
-		              :items="storageTypeItems"
-		              label="Storage Type"
-		            />
-			      </v-flex>
-			      <v-flex xs12>
-		            <VSelectWithValidation
-		              rules=""
-		              data-vv-name="backupYn"
-		              v-model="editedAppsItem.backupYn"
-		              :items="backupYnItems"
-		              label="Backup(Y/N)"
-		            />
-			      </v-flex>
-			      <v-flex xs12>
-				    <VTextFieldWithValidation rules="max:100" data-vv-name="description" v-model="editedAppsItem.description" label="Etc"/>
-			      </v-flex>
-			    </v-card-text>
-			    <v-card-actions>
-			      <v-spacer></v-spacer>
-			      <v-btn color="blue darken-1" flat @click="closeAppsDialog">취소</v-btn>
-			      <v-btn color="blue darken-1" flat @click="saveAppsDialog" v-bind:disabled="invalid">저장</v-btn>
-			    </v-card-actions>
-		      </v-card>
-		    </ValidationObserver>
-		</v-dialog>
-	</v-dialog>
+  <mdb-modal :show="applicationDialog" @close="closeAppsDialog">
+    <mdb-modal-body class="mx-3 grey-text">
+      <h5 class="mt-1 mb-2 text-center">{{ formTitle }}</h5>
+      <mdb-input type="text" label="Application 명" v-model="editedAppsItem.applicationName"/>
+      <mdb-input type="number" label="CPU (Millicore)" v-model="editedAppsItem.cpu"/>
+      <mdb-input type="number" label="Memory (MB)" v-model="editedAppsItem.memory"/>
+      <mdb-input type="number" label="Disk (GB)" v-model="editedAppsItem.disk"/>
+      <div>
+        <label for="storageType">Storage Type</label>
+	    <select class="form-control" id="storageType" v-model="editedAppsItem.storageType">
+	      <option value=""></option>
+	      <option v-for="(item, index) in storageTypeItems" :value="item">{{ item }}</option>
+	    </select>
+      </div>
+      <div class="mt-3">
+        <label for="backupYn">Backup(Y/N)</label>
+	    <select class="form-control" id="backupYn" v-model="editedAppsItem.backupYn">
+	      <option value=""></option>
+	      <option v-for="(item, index) in backupYnItems" :value="item">{{ item }}</option>
+	    </select>
+      </div>
+      <mdb-input label="Etc" v-model="editedAppsItem.description"/>
+      <div class="mt-5 text-center">
+        <mdb-btn outline="primary" size="md" @click="closeAppsDialog">취소</mdb-btn>
+        <mdb-btn color="primary" size="md" @click="saveAppsDialog">저장</mdb-btn>                   
+      </div>
+    </mdb-modal-body>
+  </mdb-modal>
+	
+</div> 
 </template>
 
 <script>
+import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
+import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
+import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
+import { mdbInput } from 'mdbvue'
+
 export default {
+  	components: {
+    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
+    	mdbIcon, mdbBtn,
+    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
+    	mdbInput,
+    	mdbTbl, mdbTblHead, mdbTblBody
+  	},
 	data: () => ({
-		headers: [],
-		headerClass: "grey lighten-1 body-2 text-weight-bold",
-		no_data_text: 'No data available',
-		
-		dialog: false,
 		storageTypeItems: [],
 		backupYnItems: [],
       	addonService: {services: [], totalCpu: 0, totalMemory: 0, totalDisk: 0},
@@ -203,7 +176,7 @@ export default {
 	}),
 	props: [
 		'productId',
-		'dialogVisibility'
+		'dialogVisible'
 	],
     watch: {
 		productId: function() {
@@ -213,9 +186,6 @@ export default {
 			}
 			
 			this.getAddonService();
-		},
-		dialogVisibility: function() {
-			this.dialog = this.dialogVisibility;
 		},
 		serviceDialog (val) {
 			val || this.closeServiceDialog();
@@ -255,14 +225,10 @@ export default {
 				this.$http.put('/api/platform/product/'+ this.productId +'/service', this.addonService.services).then(response => {
 					alert("저장되었습니다.");
 					this.selected = [];
-					
-					this.dialog = false;
-					this.$emit('fire-dialog-saved');
 				})
 			}
 		},
 		cancel() {
-			this.dialog = false;
 			this.$emit('fire-dialog-closed');
 		},
 		
@@ -274,25 +240,25 @@ export default {
 		},
 		closeServiceDialog() {
 			this.serviceDialog = false;
-			this.$refs.obs2.reset();
 			setTimeout(() => {
 				this.editedServItem = Object.assign({}, this.defaultServItem);
 			}, 300);
 		},
 		saveServiceDialog() {
-			this.$refs.obs2.validate().then(valid => {
-				if(valid) {
-					for(var i = 0; i < this.addonService.services.length; i++) {
-						if(this.addonService.services[i].serviceName == this.editedServItem.serviceName) {
-							alert('존재하는 Add-on Service입니다. 다시 입력하세요.');
-							return;
-						}
-					}
-					this.addonService.services.push(this.editedServItem);
-					this.addonService.services[this.addonService.services.length -1].applications = new Array();
-					this.closeServiceDialog();
+			if(!this.editedServItem.serviceName) {
+				alert('서비스명 값을 입력하세요');
+				return;
+			}
+			
+			for(var i = 0; i < this.addonService.services.length; i++) {
+				if(this.addonService.services[i].serviceName == this.editedServItem.serviceName) {
+					alert('존재하는 Add-on Service입니다. 다시 입력하세요.');
+					return;
 				}
-			});
+			}
+			this.addonService.services.push(this.editedServItem);
+			this.addonService.services[this.addonService.services.length -1].applications = new Array();
+			this.closeServiceDialog();
 		},
 		deleteService() {
 			if(confirm('삭제하시겠습니까?')) {
@@ -316,7 +282,6 @@ export default {
 		},
 		closeAppsDialog() {
 			this.applicationDialog = false;
-			this.$refs.obs.reset();
 			setTimeout(() => {
 				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
 				this.editedServIndex = -1;
@@ -330,17 +295,18 @@ export default {
 			this.applicationDialog = true;
 		},
 		saveAppsDialog () {
-			this.$refs.obs.validate().then(valid => {
-				if(valid) {
-					if (this.editedAppsIndex > -1) {
-						this.$set(this.addonService.services[this.editedServIndex].applications, this.editedAppsIndex, this.editedAppsItem);
-					} else {
-						this.addonService.services[this.editedServIndex].applications.push(this.editedAppsItem);
-					}
-					this.closeAppsDialog();
-					this.summary();
-				}
-			});
+			if (!this.editedAppsItem.applicationName) {
+				alert('Application명 값을 입력하세요');
+				return;
+			}
+			
+			if (this.editedAppsIndex > -1) {
+				this.$set(this.addonService.services[this.editedServIndex].applications, this.editedAppsIndex, this.editedAppsItem);
+			} else {
+				this.addonService.services[this.editedServIndex].applications.push(this.editedAppsItem);
+			}
+			this.closeAppsDialog();
+			this.summary();
 		},
 		deleteAppItem(servItem, appItem, appIndex) {
 			const servIndex = this.addonService.services.indexOf(servItem);
