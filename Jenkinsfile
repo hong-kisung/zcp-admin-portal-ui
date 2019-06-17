@@ -47,7 +47,6 @@ podTemplate(label:label,
                 yaml.update file: 'k8s/zcp-estimate-ui-deployment.yaml', update: ['.spec.template.spec.containers[0].image': "${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${BUILD_NUMBER}"]
 
                 kubeCmd.apply file: 'k8s/zcp-estimate-ui-deployment.yaml', wait: 1000, recoverOnFail: false, namespace: K8S_NAMESPACE
-                kubeCmd.apply file: 'k8s/zcp-estimate-ui-ingress.yaml', namespace: K8S_NAMESPACE
             }
         }
     }
