@@ -10,7 +10,7 @@
 			      <col width="150">
 			      <col width="150">
 			      <col width="150">
-			      <col width="150">
+			      <!--col width="150"-->
 			      <col width="180">
 			    </colgroup>
 		      <mdb-tbl-head>
@@ -19,7 +19,7 @@
 		          <th class="text-center">기본정보</th>
 		          <th class="text-center">용량산정</th>
 		          <th class="text-center">원가견적</th>
-		          <th class="text-center">실견적</th>
+		          <!--th class="text-center">실견적</th-->
 		          <th class="text-center">생성일시</th>
 		        </tr>
 		      </mdb-tbl-head>
@@ -35,9 +35,9 @@
 				  <td class="text-center">
 				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="goCostEstimate(item)">원가견적</button>
 				  </td>
-				  <td class="text-center">
+				  <!--td class="text-center">
 				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="goActualEstimate(item)">실견적</button>
-				  </td>
+				  </td-->
 				  <td class="text-center">{{ item.createdDt }}</td>
 				</tr>
 		      </mdb-tbl-body>

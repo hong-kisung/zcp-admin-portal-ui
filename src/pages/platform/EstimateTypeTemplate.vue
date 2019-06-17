@@ -166,8 +166,8 @@ export default {
 				return;
 			}
 			
-			for(var i = 0; i < this.services.length; i++) {
-				if(this.services[i].serviceName == this.editedServItem.serviceName) {
+			for(let service of this.services) {
+				if(service.serviceName == this.editedServItem.serviceName) {
 					alert('존재하는 Service입니다. 다시 입력하세요.');
 					return;
 				}
@@ -179,8 +179,8 @@ export default {
 		},
 		deleteService() {
 			if(confirm('삭제하시겠습니까?')) {
-				for(var i = 0; i < this.selected.length; i++) {
-					const index = this.services.indexOf(this.selected[i]);
+				for(let item of this.selected) {
+					const index = this.services.indexOf(item);
 					this.services.splice(index, 1);
 				}
 				

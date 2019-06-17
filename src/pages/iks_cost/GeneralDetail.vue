@@ -3,41 +3,41 @@
     <mdb-card-body>
       <mdb-card-text>{{ formTitle }}</mdb-card-text>
       <mdb-row>
-        <mdb-col md="6">
-	  	  <mdb-input label="버전" v-model="generalInfo.version" disabled/>
+        <mdb-col sm="6">
+	  	  <mdb-input size="sm" label="버전" v-model="generalInfo.version" disabled/>
         </mdb-col>
-        <mdb-col md="6">
-	   	  <mdb-input label="생성일시" v-model="generalInfo.createdDt" disabled/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="6">
-	  	  <mdb-input type="number" label="Platform Resolved CPU" v-model="generalInfo.platformCpuPerWorker"/>
-        </mdb-col>
-        <mdb-col md="6">
-	   	  <mdb-input type="number" label="Platform Resolved Memory" v-model="generalInfo.platformMemoryPerWorker"/>
+        <mdb-col sm="6">
+	   	  <mdb-input size="sm" label="생성일시" v-model="generalInfo.createdDt" disabled/>
         </mdb-col>
       </mdb-row>
       <mdb-row>
-        <mdb-col md="4">
-	   	  <mdb-input type="number" label="IBM 할인율" v-model="generalInfo.ibmDcRate">
+        <mdb-col sm="6">
+	  	  <mdb-input size="sm" type="number" label="Platform Resolved CPU" v-model="generalInfo.platformCpuPerWorker"/>
+        </mdb-col>
+        <mdb-col sm="6">
+	   	  <mdb-input size="sm" type="number" label="Platform Resolved Memory" v-model="generalInfo.platformMemoryPerWorker"/>
+        </mdb-col>
+      </mdb-row>
+      <mdb-row>
+        <mdb-col sm="4">
+	   	  <mdb-input size="sm" type="number" label="IBM 할인율" v-model="generalInfo.ibmDcRate">
 	        <span class="input-group-text md-addon" slot="append">%</span>
 	  	  </mdb-input>
         </mdb-col>
-        <mdb-col md="4">
-	   	  <mdb-input type="number" label="매매기준환율" v-model="generalInfo.exchangeRate">
+        <mdb-col sm="4">
+	   	  <mdb-input size="sm" type="number" label="매매기준환율" v-model="generalInfo.exchangeRate">
 	   	    <span class="input-group-text md-addon" slot="append">원</span>
 	   	  </mdb-input>
         </mdb-col>
-        <mdb-col md="4">
-	   	  <mdb-input type="number" label="IP Allocation Cost" v-model="generalInfo.ipAllocation">
+        <mdb-col sm="4">
+	   	  <mdb-input size="sm" type="number" label="IP Allocation Cost" v-model="generalInfo.ipAllocation">
 	   	    <span class="input-group-text md-addon" slot="append">원</span>
 	   	  </mdb-input>
         </mdb-col>
       </mdb-row>
       <mdb-row>
-        <mdb-col md="12">
-	   	  <mdb-input label="설명" v-model="generalInfo.description"/>
+        <mdb-col sm="12">
+	   	  <mdb-input size="sm" label="설명" v-model="generalInfo.description"/>
         </mdb-col>
       </mdb-row>
       <mdb-row>

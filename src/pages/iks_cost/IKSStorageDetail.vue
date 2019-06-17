@@ -124,6 +124,18 @@
       </div>
     </mdb-modal-body>
   </mdb-modal>
+  <mdb-modal side position="bottom-right" info removeBackdrop :show="messageShow" @close="messageShow = false">
+    <mdb-modal-body>
+      <mdb-row class="mt-1 mb-2">
+        <mdb-col>
+          <p v-for="(message) in messages" class="text-sm-left"><strong>[{{ message.title }}]</strong> {{ message.text }}</p>
+        </mdb-col>
+      </mdb-row>
+    </mdb-modal-body>
+    <mdb-modal-footer center>
+      <mdb-btn color="primary" size="sm" @click="messageShow = false">확인</mdb-btn>
+    </mdb-modal-footer>
+  </mdb-modal>
         
 </div>
         
@@ -151,10 +163,8 @@ export default {
 		
 		storageData:{ fileStorages: [] },
 		iksGeneral: {},
-		alert: false,
-		alertMessage: '',
-		generalAlert: false,
-		generalAlertMessage: ''
+      	messageShow: false,
+      	messages: []
 	}),
   	props: [
 		'versionId',
@@ -171,7 +181,7 @@ export default {
     filters: {
     	toMonthlyPrice: function(value, dcRate, exchangeRate) {
     		if(dcRate == undefined || exchangeRate == undefined) {
-    			return '표시할 수 없음';
+    			return '';
     		} else {
     			return Math.ceil(value * 24 * 31 * (1 - dcRate/100) * exchangeRate);
     		}
@@ -180,7 +190,7 @@ export default {
     		if(Number.isInteger(value)) {
     			return value * 12;
     		} else {
-    			return '표시할 수 없음';
+    			return '';
     		}
     	}
     },
@@ -206,37 +216,30 @@ export default {
 			this.$http.get('/api/general').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
-					this.generalAlert = false;
-					this.generalAlertMessage = '';
 				} else {
-					this.printGeneralErrorMessage();
+					this.showMessage('기준정보', '조회된 데이터가 없습니다. 일부 항목의 값이 표시되지 않습니다.');
 				}
 			}).catch(error => {
-				this.printGeneralErrorMessage(error.response.data.message);
+				this.showMessage('기준정보', error.response.data.message);
 			})
 		},
 		getStorageInfo(url) {
 			this.$http.get(url).then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.storageData = response.data;
-					this.alert = false;
-					this.alertMessage = '';
 				} else {
-					this.printErrorMessage();
+					this.showMessage('Storage', '조회된 데이터가 없습니다.');
 				}
 			}).catch(error => {
-				this.printErrorMessage(error.response.data.message);
+				this.showMessage('VM', error.response.data.message);
 			})
 		},
-		printErrorMessage(message) {
-			this.storageData = {fileStorages: []};
-			this.alert = true;
-			this.alertMessage = message == undefined ? '조회된 IKS Storage 비용 데이터가 없습니다.':message;
-		},
-		printGeneralErrorMessage(message) {
-			this.iksGeneral = {};
-			this.generalAlert = true;
-			this.generalAlertMessage = message == undefined ? '조회된 기준정보 데이터가 없습니다. 일부 항목의 값이 표시되지 않습니다.':message;
+		showMessage(title, text) {
+			let message = {};
+			message.title = title;
+			message.text = text;
+			this.messages.push(message);
+			this.messageShow = true;
 		},
 		editItem (item) {
 			this.editedIndex = this.storageData.fileStorages.indexOf(item);

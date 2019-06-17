@@ -8,6 +8,7 @@
 	      default
 	      :links="tabLinks"
 	      :transition-duration="0.5"
+	      @activeTab="getActiveTabIndex"
 	      transition-style="linear">
 	      <template :slot="'요약'">
 	        <mdb-container fluid>
@@ -44,15 +45,15 @@
 		      </mdb-row>
 		    </mdb-container>
 	      </template>
-	      <template v-for="(environment, index) in environments">
-		      <template :slot="environment.name">
+	      <template v-for="(environment, index) in estimate.environments">
+		      <template :slot="environment.environmentName">
 		        <mdb-container fluid>
 			      <mdb-row>
 			        <mdb-col>
 						<estimate-service 
 							v-bind:title="'Cloud Z Service'"
 							v-bind:estimateType="cloudZServiceEstimateType"
-							v-bind:estimate="findEstimateTypeEnvironment(environment, 1)"
+							v-bind:estimate="environment.cloudZService"
 				 			v-bind:iksGeneral="iksGeneral"
 				 			v-bind:vmVersion="vmVersion"
 				 			v-bind:storageVersion="storageVersion"
@@ -71,7 +72,7 @@
 						<estimate-service 
 							v-bind:title="'Application Storage Service'"
 							v-bind:estimateType="storageServiceEstimateType"
-							v-bind:estimate="findEstimateTypeEnvironment(environment, 2)"
+							v-bind:estimate="environment.storageService"
 				 			v-bind:iksGeneral="iksGeneral"
 				 			v-bind:vmVersion="vmVersion"
 				 			v-bind:storageVersion="storageVersion"
@@ -92,16 +93,17 @@
       </mdb-col>
     </mdb-row>
     <mdb-row class="mt-3">
-        <mdb-col class="text-left">
+        <mdb-col sm="9" class="text-left">
           <mdb-btn size="sm" outline="info" @click="historyDialog = true">History 조회</mdb-btn>
           <mdb-btn size="sm" color="info" @click="generalDialog = true">기준정보 조회</mdb-btn>
           <mdb-btn size="sm" color="info" @click="iksVmDialog = true">VM 비용 조회</mdb-btn>
           <mdb-btn size="sm" color="info" @click="iksStorageDialog = true">Storage 비용 조회</mdb-btn>
           <mdb-btn size="sm" color="info" @click="mspCostDialog = true">MSP 비용 조회</mdb-btn>
+          <mdb-btn size="sm" color="danger" @click="updateEstimate" v-if="editable && showEstimateUpdate" :disabled="!savable">견적서 Update</mdb-btn>
         </mdb-col>
-        <mdb-col class="text-right">
+        <mdb-col sm="3" class="text-right">
 	      <mdb-btn size="md" outline="primary" @click="cancel">취소</mdb-btn>
-	      <mdb-btn size="md" color="primary" v-if="editable" @click="save">저장</mdb-btn>
+	      <mdb-btn size="md" color="primary" v-if="editable" @click="save" :disabled="!savable">저장</mdb-btn>
 	      <mdb-btn size="md" color="primary" v-if="!editable" @click="remove">삭제</mdb-btn>
         </mdb-col>
     </mdb-row>
@@ -157,7 +159,7 @@
       <mdb-modal-body>
         <mdb-row class="mt-1 mb-2">
           <mdb-col>
-            <p v-for="(reference) in referenceMessage" class="text-sm-left"><strong>{{ reference.title }}</strong> {{ reference.message }}</p>
+            <p v-for="(reference) in referenceMessage" class="text-sm-left"><strong>[{{ reference.title }}]</strong> {{ reference.message }}</p>
           </mdb-col>
         </mdb-row>
       </mdb-modal-body>
@@ -204,8 +206,7 @@ export default {
 	      	{ text: '요약' }
 	    ],
       	estimate: {
-      		cloudZService: {environments: []}, 
-      		storageService: {environments: []},
+      		environments: [],
       		summary: {environments: []}
       	},
       	historyDialog: false,
@@ -223,10 +224,12 @@ export default {
       	
       	productReferences : [],
       	projectVolumes: {},
+      	showEstimateUpdate: false,
       	referenceUpdateStatus: false,
       	
       	projectId: 0,
       	editable: false,
+      	savable: true,
       	historyUpdateStatus: false,
       	estimateDetail: {estimateId: 0}
 	}),
@@ -248,18 +251,25 @@ export default {
 				this.editable = this.$route.params.editable;
 			}
 			
+			if(!this.editable) {
+				return;
+			}
+			
 			this.$http.get('/api/project/' + this.projectId + '/estimate').then(response => {
 				if(response && response.data) {
 					this.estimate = response.data;
 				}
 				
+				this.createTabLinks();
+				this.getEnvironmentInfo();
+
 				this.getGeneralInfo();
 				this.getVmInfo();
 				this.getStorageInfo();
 				this.getMspInfo();
 				this.getProductInfo();
 				this.getVolumeInfo();
-				this.getEnvironmentInfo();
+				
 			}).catch(error => {
 				alert(error.response.data.message);
 			})
@@ -275,47 +285,82 @@ export default {
 					this.iksStorageVersionId = this.estimate.iksStorageVersionId;
 					this.mspCostVersionId = this.estimate.mspCostVersionId;
 				}
+				
+				this.createTabLinks();
+				
 			}).catch(error => {
 				alert(error.response.data.message);
 			})
+		},
+		createTabLinks() {
+			this.tabLinks = this.tabLinks.slice(0,1);	
+			for(let env of this.estimate.environments) {
+				let tabItem = {};
+				tabItem.text = env.environmentName;
+				tabItem.environmentId = env.environmentId;
+				tabItem.environmentName = env.environmentName;
+				this.tabLinks.push(tabItem);
+			}
 		},
 		getEnvironmentInfo() {
 			this.$http.get('/api/project/' + this.projectId + '/environment').then(response => {
 				if(response && response.data) {
 					this.environments = response.data;
 					
-					this.tabLinks = this.tabLinks.slice(0,1);
-					for(var env of this.environments) {
-						var tabItem = {};
-						tabItem.text = env.name;
-						this.tabLinks.push(tabItem);
+					for(let tabItem of this.tabLinks.slice(1)) {
+						let envData = response.data.find(environment => environment.id === tabItem.environmentId);
+						if(!envData) {
+							
+							tabItem.text += " (Removed)";
+							tabItem.environmentDisabled = true;
+							
+							//delete estimate items
+							let target = this.estimate.environments.find(environment => environment.environmentId === tabItem.environmentId);
+							target.environmentName += " (Removed)";
+							target.cloudZService.disabled = true;
+							target.cloudZService.products.length = 0;
+							target.storageService.disabled = true;
+							target.storageService.products.length = 0;
+						}
+					}
+					
+					for(let item of response.data) {
+						let envData = this.estimate.environments.find(env => env.environmentId === item.id);
+						if(!envData) {
+				 			envData = {};
+				 			envData.environmentId = item.id;
+				 			envData.environmentName = item.name;
+				 			envData.cloudZService = {};
+				 			envData.cloudZService.products = new Array();
+				 			envData.storageService = {};
+				 			envData.storageService.products = new Array();
+				 			this.estimate.environments.push(envData);
+
+							let tabItem = {};
+							tabItem.text = item.name;
+							tabItem.environmentId = item.id;
+							tabItem.environmentName = item.name;
+							this.tabLinks.push(tabItem);
+						}	 		
 					}
 				}
 			}).catch(error => {
 				
 			})
 		},
-	 	findEstimateTypeEnvironment(environment, type) {
-	 		var estimateType = type == 1 ? this.estimate.cloudZService : this.estimate.storageService;
-	 		var envData = estimateType.environments.find(env => env.environmentId === environment.id);
-	 		
-	 		if(!envData) {
-	 			envData = {};
-	 			envData.environmentId = environment.id;
-	 			envData.environmentName = environment.name;
-	 			envData.products = new Array();
-	 			estimateType.environments.push(envData);
-	 		}
-	 		
-	 		return envData;
-	 	},
+		getActiveTabIndex(index) {
+			if(this.editable && this.tabLinks[index].environmentDisabled) {
+				alert('삭제된 Environment입니다.');
+				this.active = 0;
+			}
+		},
 		getVolumeInfo() {
 			this.$http.get('/api/project/' + this.projectId + '/volume').then(response => {
 				this.projectVolumes = response.data;
 			})
 		},
 		showReferenceMessage(title, message) {
-			var reference = {};
+			let reference = {};
 			reference.title = title;
 			reference.message = message;
 			this.referenceMessage.push(reference);
@@ -328,12 +373,15 @@ export default {
 					this.generalVersionId = this.iksGeneral.id;
 					
 					if(this.estimate.id > 0 && this.estimate.generalId != this.iksGeneral.id) {
-						this.showReferenceMessage('기준정보', '최신 버전이 아닙니다.');
+						this.showReferenceMessage('기준정보', '최신 버전이 아닙니다. ');
+						this.showEstimateUpdate = true;
 					}
 				} else {
+					this.savable = false;
 					this.showReferenceMessage('기준정보', '조회된 데이터가 없습니다.');
 				}
 			}).catch(error => {
+				this.savable = false;
 				this.showReferenceMessage('기준정보', error.response.data.message);
 			})
 		},
@@ -345,11 +393,14 @@ export default {
 					
 					if(this.estimate.id > 0 && this.estimate.iksVmVersionId != this.vmVersion.id) {
 						this.showReferenceMessage('VM 비용', '최신 버전이 아닙니다');
+						this.showEstimateUpdate = true;
 					}
 				} else {
+					this.savable = false;
 					this.showReferenceMessage('VM 비용', '조회된 데이터가 없습니다.');
 				}
 			}).catch(error => {
+				this.savable = false;
 				this.showReferenceMessage('VM 비용', error.response.data.message);
 			})
 		},
@@ -361,11 +412,14 @@ export default {
 					
 					if(this.estimate.id > 0 && this.estimate.iksStorageVersionId != this.storageVersion.id) {
 						this.showReferenceMessage('Storage 비용', '최신 버전이 아닙니다');
+						this.showEstimateUpdate = true;
 					}
 				} else {
+					this.savable = false;
 					this.showReferenceMessage('Storage 비용', '조회된 데이터가 없습니다.');
 				}
 			}).catch(error => {
+				this.savable = false;
 				this.showReferenceMessage('Storage 비용', error.response.data.message);
 			})
 		},
@@ -377,21 +431,24 @@ export default {
 					
 					if(this.estimate.id > 0 && this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
 						this.showReferenceMessage('MSP 비용', '최신 버전이 아닙니다');
+						this.showEstimateUpdate = true;
 					}
 				} else {
+					this.savable = false;
 					this.showReferenceMessage('MSP 비용', '조회된 데이터가 없습니다.');
 				}
 			}).catch(error => {
+				this.savable = false;
 				this.showReferenceMessage('MSP 비용', error.response.data.message);
 			})
 		},
 		getProductInfo() {
 			this.$http.get('/api/platform/product').then(response => {
-				var products = response.data;
-				for(var i = 0;i < products.length; i++) {
-					var product = {};
-					product.productId = products[i].id;
-					product.productName = products[i].name;
+				let products = response.data;
+				for(let productInfo of products) {
+					let product = {};
+					product.productId = productInfo.id;
+					product.productName = productInfo.name;
 					this.productReferences.push(product);
 					this.getTemplate(product);
 				}
@@ -405,27 +462,41 @@ export default {
 				product.services = response.data;
 			});
 		},
-		
-		apply() {
-			if(confirm('최신 버전의 비용으로 다시 계산하시겠습니까?')) {
+		updateEstimate() {
+			if(confirm('최신 버전으로 다시 계산하시겠습니까?')) {
 				this.referenceUpdateStatus = true;
 			}
 		},
 		finishReferenceUpdate() {
 			this.referenceUpdateStatus = false;
 			this.changeEstimate();
-			alert("견적서 업데이트가 완료되었습니다.");
+			this.showEstimateUpdate = false;
+			this.estimate.generalId = this.iksGeneral.id;
+			this.estimate.iksVmVersionId = this.vmVersion.id;
+			this.estimate.iksStorageVersionId = this.storageVersion.id;
+			this.estimate.mspCostVersionId = this.productMspCostVersion.id;
+
+			alert("견적서 Update가 완료되었습니다.");
 		},
 		cancel() {
 			history.go(-1);
 		},
 		save() {
+			if(this.estimate.id > 0) {
+				if(this.estimate.generalId != this.iksGeneral.id || this.estimate.iksVmVersionId != this.vmVersion.id
+					|| this.estimate.iksStorageVersionId != this.storageVersion.id || this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
+					
+					alert("견적서 Update 수행 후 저장할 수 있습니다.");
+					return;
+				}
+			}
+			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				this.estimate.generalId = this.iksGeneral.id;
 				this.estimate.iksVmVersionId = this.vmVersion.id;
 				this.estimate.iksStorageVersionId = this.storageVersion.id;
 				this.estimate.mspCostVersionId = this.productMspCostVersion.id;
-				
+
 				this.$http.put('/api/project/' + this.projectId + '/estimate', this.estimate).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
@@ -442,72 +513,62 @@ export default {
 			}
 		},
 		changeEstimate() {
-			this.summaryEstimateType(this.estimate.cloudZService);
-			this.summaryEstimateType(this.estimate.storageService);
+			let sumMonthly = 0;
+			let sumYearly = 0;
 			
-			this.estimate.sumMonthly = this.estimate.cloudZService.sumMonthly + this.estimate.storageService.sumMonthly;
-			this.estimate.sumYearly = this.estimate.cloudZService.sumYearly + this.estimate.storageService.sumYearly;
+			for(let environment of this.estimate.environments) {
+				this.summaryEnvironments(environment);
+				
+				sumMonthly += environment.sumMonthly;
+				sumYearly += environment.sumYearly;
+			}
+			this.estimate.sumMonthly = sumMonthly;
+			this.estimate.sumYearly = sumYearly;
 		},
-		summaryEstimateType(target) {
-			for(var i = 0; i < target.environments.length; i++ ){
-				for(var j = 0; j < target.environments[i].products.length; j++ ){
-					for(var k = 0; k < target.environments[i].products[j].services.length; k++ ){
-						var service = target.environments[i].products[j].services[k];
-						this.summaryClassifications(service);
-						//this.$set(target.environments[i].products[j].services, k, service);
-					}
-					
-					var product = target.environments[i].products[j];
-					this.summaryServices(target.environments[i].products[j]);
-					//this.$set(target.environments[i].products, j, product);
+		summaryEnvironments(environment) {
+			this.summaryEstimateType(environment.cloudZService);
+			this.summaryEstimateType(environment.storageService);
+			
+			environment.sumMonthly = environment.cloudZService.sumMonthly + environment.storageService.sumMonthly;
+			environment.sumYearly = environment.cloudZService.sumYearly + environment.storageService.sumYearly;
+		},
+		summaryEstimateType(estimateType) {
+			let sumMonthly = 0;
+			let sumYearly = 0;
+			
+			for(let product of estimateType.products) {
+				for(let service of product.services) {
+					this.summaryService(service);
 				}
 				
-				var environment = target.environments[i];
-				this.summaryProducts(environment);
-				//this.$set(target.environments, i, environment);
-			}
-			
-			this.summaryEnvironments(target);
-		},
-		summaryEnvironments(estimateType) {
-			var sumMonthly = 0;
-			var sumYearly = 0;
-			for(var i = 0; i < estimateType.environments.length; i++ ){
-				sumMonthly += estimateType.environments[i].sumMonthly;
-				sumYearly += estimateType.environments[i].sumYearly;
+				this.summaryProduct(product);
+				
+				sumMonthly += product.sumMonthly;
+				sumYearly += product.sumYearly;
 			}
 			
 			estimateType.sumMonthly = sumMonthly;
 			estimateType.sumYearly = sumYearly;
 		},
-		summaryProducts(environment) {
-			var sumMonthly = 0;
-			var sumYearly = 0;
-			for(var i = 0; i < environment.products.length; i++ ){
-				sumMonthly += environment.products[i].sumMonthly;
-				sumYearly += environment.products[i].sumYearly;
-			}
+		summaryProduct(product) {
+			let sumMonthly = 0;
+			let sumYearly = 0;
 			
-			environment.sumMonthly = sumMonthly;
-			environment.sumYearly = sumYearly;
-		},
-		summaryServices(product) {
-			var sumMonthly = 0;
-			var sumYearly = 0;
-			for(var i = 0; i < product.services.length; i++ ){
-				sumMonthly += product.services[i].sumMonthly;
-				sumYearly += product.services[i].sumYearly;
+			for(let service of product.services) {
+				sumMonthly += service.sumMonthly;
+				sumYearly += service.sumYearly;
 			}
 			
 			product.sumMonthly = sumMonthly;
 			product.sumYearly = sumYearly;
 		},
-		summaryClassifications(service) {
-			var sumMonthly = 0;
-			var sumYearly = 0;
-			for(var i = 0; i < service.classifications.length; i++ ){
-				sumMonthly += (service.classifications[i].pricePerMonthly == undefined ? 0 : service.classifications[i].pricePerMonthly);
-				sumYearly += (service.classifications[i].pricePerYearly == undefined ? 0 : service.classifications[i].pricePerYearly);
+		summaryService(service) {
+			let sumMonthly = 0;
+			let sumYearly = 0;
+			
+			for(let classification of service.classifications) {
+				sumMonthly += (classification.pricePerMonthly == undefined ? 0 : classification.pricePerMonthly);
+				sumYearly += (classification.pricePerYearly == undefined ? 0 : classification.pricePerYearly);
 			}
 			
 			service.sumMonthly = sumMonthly;
@@ -517,13 +578,3 @@ export default {
 }
 </script>
 
-<style>
-  .container {
-    position: relative;
-    min-height: 340px;
-  }
-  .placement {
-    position: absolute;
-    right: 0;
-  }
-</style>

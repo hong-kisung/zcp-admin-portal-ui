@@ -244,7 +244,7 @@ export default {
 			}, 300);
 		},
 		saveClusterDialog() {
-			for(var i = 0; i < this.volumes.environments.length; i++) {
+			for(let i = 0; i < this.volumes.environments.length; i++) {
 				if(i != this.editedIndex && this.volumes.environments[i].name == this.editedItem.name) {
 					alert('존재하는 Environment입니다. 다시 입력하세요.');
 					return;
@@ -261,7 +261,7 @@ export default {
 		},
 		deleteCluster() {
 			if(confirm('Environment를 삭제하면 원가견적서를 다시 작성해야 합니다. \n삭제하시겠습니까?')) {
-				for(var i = 0; i < this.selected.length; i++) {
+				for(let i = 0; i < this.selected.length; i++) {
 					const index = this.volumes.environments.indexOf(this.selected[i]);
 					this.volumes.environments.splice(index, 1);
 				}
@@ -314,22 +314,22 @@ export default {
 		summary() {
 			this.volumes.sumMemory = 0;
 			this.volumes.sumCpu = 0;
-			for(var i = 0; i < this.volumes.environments.length; i++) {
-				this.volumes.environments[i].sumMemory = 0;
-				this.volumes.environments[i].sumCpu = 0;
+			for(let environment of this.volumes.environments) {
+				environment.sumMemory = 0;
+				environment.sumCpu = 0;
 			
-				var sumMemory = 0;
-				var sumCpu = 0;
-				for(var j = 0; j < this.volumes.environments[i].applications.length; j++) {
-					if(this.volumes.environments[i].applications[j].podMemoryLimitSum) sumMemory += this.volumes.environments[i].applications[j].podMemoryLimitSum;
-					if(this.volumes.environments[i].applications[j].podCpuLimitSum) sumCpu += this.volumes.environments[i].applications[j].podCpuLimitSum;
+				let sumMemory = 0;
+				let sumCpu = 0;
+				for(let application of environment.applications) {
+					if(application.podMemoryLimitSum) sumMemory += application.podMemoryLimitSum;
+					if(application.podCpuLimitSum) sumCpu += application.podCpuLimitSum;
 				}
 				
-				this.volumes.environments[i].sumMemory = Math.ceil(sumMemory/1024);
-				this.volumes.environments[i].sumCpu = sumCpu/1000;
+				environment.sumMemory = Math.ceil(sumMemory/1024);
+				environment.sumCpu = sumCpu/1000;
 				
-				this.volumes.sumMemory += this.volumes.environments[i].sumMemory;
-				this.volumes.sumCpu += this.volumes.environments[i].sumCpu;
+				this.volumes.sumMemory += environment.sumMemory;
+				this.volumes.sumCpu += environment.sumCpu;
 			}
 		},
 		calcAppSum(application) {

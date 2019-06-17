@@ -215,7 +215,7 @@ export default {
 				this.targetServices = this.selectedProduct.templates.storageService;
 			}
 			
-			var productMspCost = this.productMspCostVersion.products.find(product => product.id === this.editedItem.productId);
+			let productMspCost = this.productMspCostVersion.products.find(product => product.id === this.editedItem.productId);
 			this.targetMspCosts = productMspCost.mspCosts;
 		},
 		changeService() {
@@ -232,22 +232,20 @@ export default {
 			this.editedItem.classificationType = this.selectedClassification.classificationType;
 			
 			if(this.editedItem.classificationType == 'File_Storage') {
-				for(var i = 0; i < this.selectedProduct.services.length; i++) {
-					for(var index = 0; index < this.selectedProduct.services[i].applications.length; index++) {
-						var app = this.selectedProduct.services[i].applications[index];
-						if(app.storageType == 'File' || app.storageType == 'Object') {
-							this.addonApplicationItems.push(app);
+				for(let service of this.selectedProduct.services) {
+					for(let application of service.applications) {
+						if(application.storageType == 'File' || application.storageType == 'Object') {
+							this.addonApplicationItems.push(application);
 						} 
 					}
 				}
 				this.showAddonApplication = true;
 				
 			} else if(this.editedItem.classificationType == 'Block_Storage') {
-				for(var i = 0; i < this.selectedProduct.services.length; i++) {
-					for(var index = 0; index < this.selectedProduct.services[i].applications.length; index++) {
-						var app = this.selectedProduct.services[i].applications[index];
-						if(app.storageType == 'Block') {
-							this.addonApplicationItems.push(app);
+				for(let service of this.selectedProduct.services) {
+					for(let application of service.applications) {
+						if(application.storageType == 'Block') {
+							this.addonApplicationItems.push(application);
 						} 
 					}
 				}

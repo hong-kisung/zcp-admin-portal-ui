@@ -46,7 +46,7 @@ export default {
 		projectVolumes: function() {
 			if(this.projectVolumes && this.projectVolumes.environments) {
 				this.environmentItems = [];
-				for(var i = 0; i < this.projectVolumes.environments.length; i++) {
+				for(let i = 0; i < this.projectVolumes.environments.length; i++) {
 					this.environmentItems[i] = this.projectVolumes.environments[i].name;
 				}
 			}

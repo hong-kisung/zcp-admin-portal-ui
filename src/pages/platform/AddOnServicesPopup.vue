@@ -63,26 +63,26 @@
 				  </td>
 		        </tr>
 			    <tr>
-			      <td class="grey lighten-2 text-left">소계</td>
-			      <td class="grey lighten-2 text-right">{{ item.sumCpu | formatNumber }}</td>
-			      <td class="grey lighten-2 text-right">{{ item.sumMemory | formatNumber }}</td>
-			      <td class="grey lighten-2 text-right">{{ item.sumDisk | formatNumber }}</td>
-			      <td class="grey lighten-2 text-center"></td>
-			      <td class="grey lighten-2 text-center"></td>
-			      <td class="grey lighten-2 text-left"></td>
-			      <td class="grey lighten-2 text-left"></td>
+			      <td class="font-weight-bold text-left">소계</td>
+			      <td class="font-weight-bold text-right">{{ item.sumCpu | formatNumber }}</td>
+			      <td class="font-weight-bold text-right">{{ item.sumMemory | formatNumber }}</td>
+			      <td class="font-weight-bold text-right">{{ item.sumDisk | formatNumber }}</td>
+			      <td class="font-weight-bold text-center"></td>
+			      <td class="font-weight-bold text-center"></td>
+			      <td class="font-weight-bold text-left"></td>
+			      <td class="font-weight-bold text-left"></td>
 		        </tr>
 	          </template>
 	        </template>
-		    <tr>
-		      <td class="grey lighten-2 text-left" colspan="2">합계</td>
-		      <td class="grey lighten-2 text-right">{{ addonService.totalCpu | formatNumber }}</td>
-		      <td class="grey lighten-2 text-right">{{ addonService.totalMemory | formatNumber }}</td>
-		      <td class="grey lighten-2 text-right">{{ addonService.totalDisk | formatNumber }}</td>
-		      <td class="grey lighten-2 text-center"></td>
-		      <td class="grey lighten-2 text-center"></td>
-		      <td class="grey lighten-2 text-left"></td>
-		      <td class="grey lighten-2 text-left"></td>
+		    <tr class="blue-grey">
+		      <td class="font-weight-bold text-left" colspan="2">합계</td>
+		      <td class="font-weight-bold text-right">{{ addonService.totalCpu | formatNumber }}</td>
+		      <td class="font-weight-bold text-right">{{ addonService.totalMemory | formatNumber }}</td>
+		      <td class="font-weight-bold text-right">{{ addonService.totalDisk | formatNumber }}</td>
+		      <td class="font-weight-bold text-center"></td>
+		      <td class="font-weight-bold text-center"></td>
+		      <td class="font-weight-bold text-left"></td>
+		      <td class="font-weight-bold text-left"></td>
 	        </tr>
 	      </mdb-tbl-body>
 	    </mdb-tbl>
@@ -118,19 +118,23 @@
       <mdb-input type="number" label="CPU (Millicore)" v-model="editedAppsItem.cpu"/>
       <mdb-input type="number" label="Memory (MB)" v-model="editedAppsItem.memory"/>
       <mdb-input type="number" label="Disk (GB)" v-model="editedAppsItem.disk"/>
-      <div>
-        <label for="storageType">Storage Type</label>
-	    <select class="form-control" id="storageType" v-model="editedAppsItem.storageType">
-	      <option value=""></option>
-	      <option v-for="(item, index) in storageTypeItems" :value="item">{{ item }}</option>
-	    </select>
+      <div class="form-group row">
+        <label for="storageType" class="col-sm-5 col-form-label">Storage Type</label>
+        <div class="col-sm-7">
+	      <select class="custom-select custom-select-sm" id="storageType" v-model="editedAppsItem.storageType">
+	        <option value=""></option>
+	        <option v-for="(item, index) in storageTypeItems" :value="item">{{ item }}</option>
+	      </select>
+        </div>
       </div>
-      <div class="mt-3">
-        <label for="backupYn">Backup(Y/N)</label>
-	    <select class="form-control" id="backupYn" v-model="editedAppsItem.backupYn">
-	      <option value=""></option>
-	      <option v-for="(item, index) in backupYnItems" :value="item">{{ item }}</option>
-	    </select>
+      <div class="form-group row">
+        <label for="backupYn" class="col-sm-5 col-form-label">Backup(Y/N)</label>
+        <div class="col-sm-7">
+	      <select class="custom-select custom-select-sm" id="backupYn" v-model="editedAppsItem.backupYn">
+	        <option value=""></option>
+	        <option v-for="(item, index) in backupYnItems" :value="item">{{ item }}</option>
+	      </select>
+        </div>
       </div>
       <mdb-input label="Etc" v-model="editedAppsItem.description"/>
       <div class="mt-5 text-center">
@@ -250,8 +254,8 @@ export default {
 				return;
 			}
 			
-			for(var i = 0; i < this.addonService.services.length; i++) {
-				if(this.addonService.services[i].serviceName == this.editedServItem.serviceName) {
+			for(let service of this.addonService.services) {
+				if(service.serviceName == this.editedServItem.serviceName) {
 					alert('존재하는 Add-on Service입니다. 다시 입력하세요.');
 					return;
 				}
@@ -262,8 +266,8 @@ export default {
 		},
 		deleteService() {
 			if(confirm('삭제하시겠습니까?')) {
-				for(var i = 0; i < this.selected.length; i++) {
-					const index = this.addonService.services.indexOf(this.selected[i]);
+				for(let item of this.selected) {
+					const index = this.addonService.services.indexOf(item);
 					this.addonService.services.splice(index, 1);
 				}
 				
@@ -320,20 +324,20 @@ export default {
 			this.addonService.totalMemory = 0;
 			this.addonService.totalDisk = 0;
 			
-			for(var i = 0; i < this.addonService.services.length; i++) {
-				this.addonService.services[i].sumCpu = 0;
-				this.addonService.services[i].sumMemory = 0;
-				this.addonService.services[i].sumDisk = 0;
+			for(let service of this.addonService.services) {
+				service.sumCpu = 0;
+				service.sumMemory = 0;
+				service.sumDisk = 0;
 				
-				for(var j = 0; j < this.addonService.services[i].applications.length; j++) {
-					if(this.addonService.services[i].applications[j].cpu != undefined) this.addonService.services[i].sumCpu += this.addonService.services[i].applications[j].cpu;
-					if(this.addonService.services[i].applications[j].memory != undefined) this.addonService.services[i].sumMemory += this.addonService.services[i].applications[j].memory;
-					if(this.addonService.services[i].applications[j].disk != undefined) this.addonService.services[i].sumDisk += this.addonService.services[i].applications[j].disk;
+				for(let application of service.applications) {
+					if(application.cpu != undefined) service.sumCpu += application.cpu;
+					if(application.memory != undefined) service.sumMemory += application.memory;
+					if(application.disk != undefined) service.sumDisk += application.disk;
 				}
 				
-				this.addonService.totalCpu += this.addonService.services[i].sumCpu;
-				this.addonService.totalMemory += this.addonService.services[i].sumMemory;
-				this.addonService.totalDisk += this.addonService.services[i].sumDisk;
+				this.addonService.totalCpu += service.sumCpu;
+				this.addonService.totalMemory += service.sumMemory;
+				this.addonService.totalDisk += service.sumDisk;
 			}
 		}
 	}

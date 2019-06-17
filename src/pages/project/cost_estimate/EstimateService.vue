@@ -5,9 +5,9 @@
       <h6 class="font-weight-bold mt-3">{{ title }}</h6>
     </mdb-col>
     <mdb-col sm="6" class="text-right">
-      <mdb-btn size="sm" outline="secondary" v-if="editable" @click="openEnvironmentDialog">Product 추가</mdb-btn>
-      <mdb-btn size="sm" outline="secondary" v-if="editable" @click="deleteProduct" v-bind:disabled="selected.length == 0">Product 삭제</mdb-btn>
-      <mdb-btn size="sm" outline="secondary" v-if="editable" @click="openAppsDialog">Classification 추가</mdb-btn>
+      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="openEnvironmentDialog">Product 추가</mdb-btn>
+      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="deleteProduct" v-bind:disabled="selected.length == 0">Product 삭제</mdb-btn>
+      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="openAppsDialog">Classification 추가</mdb-btn>
     </mdb-col>
   </mdb-row>
   <mdb-row>
@@ -58,7 +58,7 @@
 				        </div>
 					  </td>
 					  <td class="font-weight-bold text-center" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
-					  <td class="font-weight-bold text-left" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
+					  <td class="font-weight-bold text-left" :class="classification.updated ? 'red-text':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
 					  <td class="text-center">{{ classification.storageType }}</td>
@@ -67,14 +67,14 @@
 					  <td class="text-center">{{ classification.number | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
-					  <td class="text-right" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.pricePerMonthly | formatNumber }}</td>
-					  <td class="text-right" :class="classification.updated ? 'red--text text--darken-4':''">{{ classification.pricePerYearly | formatNumber }}</td>
+					  <td class="text-right" :class="classification.updated ? 'red-text':''">{{ classification.pricePerMonthly | formatNumber }}</td>
+					  <td class="text-right" :class="classification.updated ? 'red-text':''">{{ classification.pricePerYearly | formatNumber }}</td>
 					  <td class="text-center" v-if="editable">
-					    <a class="rotate-btn" @click="editAppsItem(estimate.environmentName, productIndex, serviceIndex, index, classification)">
+					    <a class="rotate-btn" @click="editAppsItem(productIndex, serviceIndex, index, classification)">
 					      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
 		                </a>
 		                &nbsp;
-					    <a class="rotate-btn" @click="deleteAppsItem(estimate.environmentName, productIndex, serviceIndex, index, classification)">
+					    <a class="rotate-btn" @click="deleteAppsItem(productIndex, serviceIndex, index, classification)">
 					      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
 		                </a>
 					  </td>
@@ -206,19 +206,17 @@ export default {
 		initialize() {
 		},
 		getRowspan(colIndex, items, item) {
-			var rowCount = 0;
+			let rowCount = 0;
 			if(colIndex == 0) {
-				var products = items;
-				for(var i = 0; i < products.length; i++) {
-					for(var j = 0; j < products[i].services.length; j++) {
-						rowCount += products[i].services[j].classifications.length;
+				for(let product of items) {
+					for(let service of product.services) {
+						rowCount += service.classifications.length;
 					}
 				}
 				rowCount += products.length + 1;
 			} else if(colIndex == 1) {
-				var services = items;
-				for(var j = 0; j < services.length; j++) {
-					rowCount += services[j].classifications.length;
+				for(let service of items) {
+					rowCount += service.classifications.length;
 				}
 				rowCount += 1;
 			}
@@ -226,7 +224,7 @@ export default {
 		},
 		deleteProduct() {
 			if(confirm('삭제하시겠습니까?')) {
-				for(var i = 0; i < this.selected.length; i++) {
+				for(let i = 0; i < this.selected.length; i++) {
 					const index = this.estimate.products.indexOf(this.selected[i]);
 					this.estimate.products.splice(index, 1);
 				}
@@ -247,62 +245,59 @@ export default {
 			}, 300);
 		},
 		saveEnvironmentDialog() {
-			for(var i = 0; i < this.editedItem.products.length; i++) {
-				var product = {};
-				product.productId = this.editedItem.products[i].id;
-				product.productName = this.editedItem.products[i].name;
+			for(let productInfo of this.editedItem.products) {
+				let product = {};
+				product.productId = productInfo.id;
+				product.productName = productInfo.name;
 				product.services = new Array();
 				this.estimate.products.push(product);
 				
-				this.createFromProductTemplate(this.estimate, this.estimate.products.length -1, product);
+				this.createFromProductTemplate(this.estimate.products.length -1, product);
 			}
-			//this.estimate.environments.push(environment);
 			this.closeEnvironmentDialog();
 		},
-		createFromProductTemplate(environment, productIndex, product) {
-			var productTemplate;
-			for(var i = 0; i < this.productReferences.length; i++) {
+		createFromProductTemplate(productIndex, product) {
+			let productTemplate;
+			for(let reference of this.productReferences) {
 				productTemplate = undefined;
-				if(product.productId == this.productReferences[i].productId) {
-					productTemplate = this.productReferences[i];
+				if(product.productId == reference.productId) {
+					productTemplate = reference;
 					break;
 				}
 			}
 			
 			if(productTemplate) {
-				this.createProduct(productTemplate, environment, productIndex, product);
+				this.createProduct(productTemplate, productIndex, product);
 				this.$emit('fire-estimate-changed');
 			} else {
 				console.log('product template not found');
 			}
 		},
-		createProduct(productTemplate, environment, productIndex, product) {
-			var templates;
+		createProduct(productTemplate, productIndex, product) {
+			let templates;
 			if(this.estimateType == 'cloudZService') {
 				templates = productTemplate.templates.cloudZService;
 			} else if(this.estimateType == 'storageService') {
 				templates = productTemplate.templates.storageService;
 			}
 			
-			for(var i = 0; i < templates.length; i++) {
-				var service = {};
-				service.serviceName = templates[i].serviceName;
+			for(let template of templates) {
+				let service = {};
+				service.serviceName = template.serviceName;
 				service.classifications = new Array();
-				service.classifications = this.createClassification(environment, product, service.serviceName, templates[i].classifications);
-				environment.products[productIndex].services.push(service);
+				service.classifications = this.createClassification(product, service.serviceName, template.classifications);
+				this.estimate.products[productIndex].services.push(service);
 			}
 		},
-		createClassification(environment, product, serviceName, classifications) {
-			var estimateItems = new Array();
-			for(var i = 0; i < classifications.length; i++) {
-				var estimateItem = {};
-				estimateItem.environmentId = environment.environmentId;
-				estimateItem.environmentName = environment.environmentName;
+		createClassification(product, serviceName, classifications) {
+			let estimateItems = new Array();
+			for(let classification of classifications) {
+				let estimateItem = {};
 				estimateItem.productId = product.productId;
 				estimateItem.productName = product.productName;
 				estimateItem.serviceName = serviceName;
-				estimateItem.classificationName = classifications[i].classificationName;
-				estimateItem.classificationType = classifications[i].classificationType;
+				estimateItem.classificationName = classification.classificationName;
+				estimateItem.classificationType = classification.classificationType;
 				estimateItem.addonApplicationName = "";
 				
 				if(estimateItem.classificationType == 'IP_Allocation') {
@@ -327,7 +322,7 @@ export default {
 			this.appsDialog = true;
 			this.isNewAppsItem = true;
 		},
-		editAppsItem(environmentName, productIndex, serviceIndex, appIndex, appItem) {
+		editAppsItem(productIndex, serviceIndex, appIndex, appItem) {
 			this.editedApps.productIndex = productIndex;
 			this.editedApps.serviceIndex = serviceIndex;
 			this.editedApps.index = appIndex;
@@ -336,7 +331,7 @@ export default {
 			this.appsDialog = true;
 			this.isNewAppsItem = false;
 		},
-		deleteAppsItem(environmentName, productIndex, serviceIndex, appIndex, appItem) {
+		deleteAppsItem(productIndex, serviceIndex, appIndex, appItem) {
 			if(confirm('삭제하시겠습니까?')) {
 				this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1);
 				
@@ -368,9 +363,9 @@ export default {
 			
 			} else {
 				// new
-				var productIndex = this.findProductIndex(this.estimate.products, this.editedAppsItem.productName);
+				let productIndex = this.findProductIndex(this.estimate.products, this.editedAppsItem.productName);
 				if(productIndex == -1) {
-					var product = {};
+					let product = {};
 					product.productId = this.editedAppsItem.productId;
 					product.productName = this.editedAppsItem.productName;
 					product.services = new Array();
@@ -378,9 +373,9 @@ export default {
 					productIndex = this.estimate.products.length -1;
 				}
 				
-				var serviceIndex = this.findServiceIndex(this.estimate.products[productIndex].services, this.editedAppsItem.serviceName);
+				let serviceIndex = this.findServiceIndex(this.estimate.products[productIndex].services, this.editedAppsItem.serviceName);
 				if(serviceIndex == -1) {
-					var service = {};
+					let service = {};
 					service.serviceName = this.editedAppsItem.serviceName;
 					service.classifications = new Array();
 					this.estimate.products[productIndex].services.push(service);
@@ -394,7 +389,7 @@ export default {
 			this.$emit('fire-estimate-changed');
 		},
 		findProductIndex(products, productName) {
-			for(var i = 0; i < products.length; i++) {
+			for(let i = 0; i < products.length; i++) {
 				if(products[i].productName == productName) {
 					return i;
 				}
@@ -402,7 +397,7 @@ export default {
 			return -1;
 		},
 		findServiceIndex(services, serviceName) {
-			for(var i = 0; i < services.length; i++) {
+			for(let i = 0; i < services.length; i++) {
 				if(services[i].serviceName == serviceName) {
 					return i;
 				}
@@ -415,54 +410,41 @@ export default {
 					return;
 				}
 				
-				var vmData;
-				for(const vm of this.vmVersion.vms) {
-					if(vm.name == estimateItem.iksVmName) {
-						vmData = vm;
-						break;
-					}
+				const vmData = this.vmVersion.vms.find(vm => vm.name === estimateItem.iksVmName);
+				if(vmData && vmData.id == estimateItem.iksVmId) {
+					return;
 				}
 				
 				estimateItem.iksVmId = vmData ? vmData.id : 0;
 				estimateItem.iksVmName = vmData? vmData.name : '';
 				estimateItem.updated = true;
 				
-				if(!vmData) {
-					console.log('matched vm is not found');
-				}
-				
 			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
 				if(estimateItem.iksFileStorageId <= 0) {
 					return;
 				}
 				
-				var storageData;
-				for(const fileStorage of this.storageVersion.fileStorages) {
-					if(fileStorage.disk == estimateItem.iksFileStorageDisk) {
-						storageData = fileStorage;
-						break;
-					}
+				const storageData = this.storageVersion.fileStorages.find(storage => storage.disk === estimateItem.iksFileStorageDisk);
+				if(storageData && storageData.id == estimateItem.iksFileStorageId) {
+					return;
 				}
 				
 				estimateItem.iksFileStorageId = storageData ? storageData.id : 0;
 				estimateItem.iksFileStorageDisk = storageData ? storageData.disk : 0;
 				estimateItem.updated = true;
 
-				if(!storageData) {
-					console.log('matched file storage is not found');
+			} else if(estimateItem.classificationType == 'IP_Allocation') {
+				console.log(estimateItem.pricePerMonthly);
+				if(estimateItem.pricePerMonthly == this.iksGeneral.ipAllocation) {
+					return;
 				}
+				
+				estimateItem.updated = true;
 			}
 		},
 		calculate(estimateItem) {
 			if(estimateItem.classificationType == 'VM') {
-				var vmData;
-				for(const vm of this.vmVersion.vms) {
-					if(vm.id == estimateItem.iksVmId) {
-						vmData = vm;
-						break;
-					}
-				}
-				
+				const vmData = this.vmVersion.vms.find(vm => vm.id === estimateItem.iksVmId);
 				if(vmData) {
 					if(estimateItem.number && estimateItem.number > 0) {
 						estimateItem.cores = vmData.core * estimateItem.number;
@@ -473,7 +455,7 @@ export default {
 					}
 					
 					if(estimateItem.hardwareType && estimateItem.hardwareType != "") {
-						var pricePerHour = 0;
+						let pricePerHour = 0;
 						if(estimateItem.hardwareType == 'shared') {
 							pricePerHour = vmData.sharedPricePerHour;
 						} else if(estimateItem.hardwareType == 'dedicated') {
@@ -489,16 +471,9 @@ export default {
 				}
 				
 			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
-				var storageData;
-				for(const fileStorage of this.storageVersion.fileStorages) {
-					if(fileStorage.id == estimateItem.iksFileStorageId) {
-						storageData = fileStorage;
-						break;
-					}
-				}
-				
+				const storageData = this.storageVersion.fileStorages.find(storage => storage.id === estimateItem.iksFileStorageId);
 				if(storageData && estimateItem.enduranceIops && estimateItem.enduranceIops != "" && estimateItem.number && estimateItem.number > 0) {
-					var pricePerHour = 0;
+					let pricePerHour = 0;
 					if(estimateItem.enduranceIops == 0.25) {
 						pricePerHour = storageData.iops1PricePerHour;
 					} else if(estimateItem.enduranceIops == 2) {
@@ -514,7 +489,7 @@ export default {
 					estimateItem.pricePerMonthly = 0;
 				}
 
-			} else if(this.editedItem.classificationType == 'IP_Allocation') {
+			} else if(estimateItem.classificationType == 'IP_Allocation') {
 				estimateItem.pricePerMonthly = this.iksGeneral.ipAllocation;
 				
 			} else if(estimateItem.classificationType == 'Labor_Cost') {
@@ -522,9 +497,6 @@ export default {
 			}
 			
 			if(estimateItem.pricePerMonthly || estimateItem.pricePerMonthly == 0) {
-				if(estimateItem.pricePerMonthly * 12 != estimateItem.pricePerYearly) {
-					estimateItem.updated = true;
-				}
 				estimateItem.pricePerYearly = estimateItem.pricePerMonthly * 12;
 			}
 		}
