@@ -15,6 +15,17 @@ const base = axios.create({
 })
 
 Vue.prototype.$http = base;
+base.interceptors.response.use((response) => {
+	return response
+	
+}, (error) => {
+	if(error.response && error.response.status === 401) {
+	      const url = new URL(location.href)
+	      document.cookie = 'SESSION='
+	      window.location.href = url.href;
+	}
+});
+
 
 import { setupComponents } from './config/setup-components';
 setupComponents(Vue);
