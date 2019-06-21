@@ -207,13 +207,13 @@ export default {
 			this.getGeneralInfo();
 			
 			if(this.versionId) {
-				this.getStorageInfo('/api/iks_costs/storage/history/' + this.versionId);
+				this.getStorageInfo('/api/estimate/iks_costs/storage/history/' + this.versionId);
 			} else {
-				this.getStorageInfo('/api/iks_costs/storage');
+				this.getStorageInfo('/api/estimate/iks_costs/storage');
 			}
 		},
 		getGeneralInfo() {
-			this.$http.get('/api/general').then(response => {
+			this.$http.get('/api/estimate/general').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
 				} else {
@@ -292,9 +292,9 @@ export default {
 		},
 		save () {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/iks_costs/storage', this.storageData).then(response => {
+				this.$http.put('/api/estimate/iks_costs/storage', this.storageData).then(response => {
 					alert("저장되었습니다.");
-					this.getStorageInfo('/api/iks_costs/storage');
+					this.getStorageInfo('/api/estimate/iks_costs/storage');
 					this.$emit('fire-saved');
 				})
 			}

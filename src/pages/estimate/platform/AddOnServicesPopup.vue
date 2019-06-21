@@ -208,10 +208,10 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/code/storage_type').then(response => {
+			this.$http.get('/api/estimate/code/storage_type').then(response => {
 				this.storageTypeItems = response.data;
 			})
-			this.$http.get('/api/code/backup_yn').then(response => {
+			this.$http.get('/api/estimate/code/backup_yn').then(response => {
 				this.backupYnItems = response.data;
 			})
 			if(this.productId > 0) {
@@ -219,14 +219,14 @@ export default {
 			}
 		},
 		getAddonService() {
-			this.$http.get('/api/platform/product/'+ this.productId + '/service').then(response => {
+			this.$http.get('/api/estimate/platform/product/'+ this.productId + '/service').then(response => {
 				this.addonService.services = response.data;
 				this.summary();
 			})
 		},
 		saveService() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/platform/product/'+ this.productId +'/service', this.addonService.services).then(response => {
+				this.$http.put('/api/estimate/platform/product/'+ this.productId +'/service', this.addonService.services).then(response => {
 					alert("저장되었습니다.");
 					this.selected = [];
 				})

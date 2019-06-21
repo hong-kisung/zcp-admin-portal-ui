@@ -59,7 +59,7 @@ export default {
     },
     methods: {
 		initialize () {
-			this.$http.get('/api/iks_costs/storage/history').then(response => {
+			this.$http.get('/api/estimate/iks_costs/storage/history').then(response => {
 				this.historyList = response.data;
 			})
 		},

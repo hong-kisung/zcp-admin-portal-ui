@@ -184,7 +184,7 @@ export default {
 				return;
 			}
 			
-			this.getVmInfo('/api/iks_costs/vm/history/' + this.versionId);
+			this.getVmInfo('/api/estimate/iks_costs/vm/history/' + this.versionId);
 		},
 		dialog (val) {
 			val || this.closeDialog();
@@ -198,13 +198,13 @@ export default {
 			this.getGeneralInfo();
 			
 			if(this.versionId) {
-				this.getVmInfo('/api/iks_costs/vm/history/' + this.versionId);
+				this.getVmInfo('/api/estimate/iks_costs/vm/history/' + this.versionId);
 			} else {
-				this.getVmInfo('/api/iks_costs/vm');
+				this.getVmInfo('/api/estimate/iks_costs/vm');
 			}
 		},
 		getGeneralInfo() {
-			this.$http.get('/api/general').then(response => {
+			this.$http.get('/api/estimate/general').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
 				} else {
@@ -290,9 +290,9 @@ export default {
 		},
 		save () {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/iks_costs/vm', this.vmData).then(response => {
+				this.$http.put('/api/estimate/iks_costs/vm', this.vmData).then(response => {
 					alert("저장되었습니다.");
-					this.getVmInfo('/api/iks_costs/vm');
+					this.getVmInfo('/api/estimate/iks_costs/vm');
 					this.$emit('fire-saved');
 				});
 			}

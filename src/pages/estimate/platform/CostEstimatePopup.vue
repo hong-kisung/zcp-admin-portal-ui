@@ -79,7 +79,7 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/code/classification_type').then(response => {
+			this.$http.get('/api/estimate/code/classification_type').then(response => {
 				this.classificationTypeItems = response.data;
 			})
 			if(this.productId > 0) {
@@ -87,13 +87,13 @@ export default {
 			}
 		},
 		getCostEstimate() {
-			this.$http.get('/api/platform/product/'+ this.productId + '/template').then(response => {
+			this.$http.get('/api/estimate/platform/product/'+ this.productId + '/template').then(response => {
 				this.estimateTemplate = response.data;
 			})
 		},
 		saveService() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/platform/product/'+ this.productId +'/template', this.estimateTemplate).then(response => {
+				this.$http.put('/api/estimate/platform/product/'+ this.productId +'/template', this.estimateTemplate).then(response => {
 					alert("저장되었습니다.");
 					this.$emit('fire-dialog-saved');
 				})

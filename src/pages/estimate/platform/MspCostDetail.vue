@@ -158,14 +158,14 @@ export default {
 	methods: {
 		initialize () {
 			if(this.versionId && this.versionId > 0) {
-				this.$http.get('/api/platform/msp/history/' + this.versionId).then(response => {
+				this.$http.get('/api/estimate/platform/msp/history/' + this.versionId).then(response => {
 					this.productMspCostVersion = Object.assign({}, response.data);
 				})
 				
 				return;
 			}
 			
-			this.$http.get('/api/platform/msp').then(response => {
+			this.$http.get('/api/estimate/platform/msp').then(response => {
 				if(response && response.data) {
 					this.productMspCostVersion = response.data;
 				}
@@ -179,7 +179,7 @@ export default {
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/platform/msp', this.productMspCostVersion).then(response => {
+				this.$http.put('/api/estimate/platform/msp', this.productMspCostVersion).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.selected = [];

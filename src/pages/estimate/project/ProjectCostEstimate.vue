@@ -178,10 +178,10 @@ import { mdbTabs } from 'mdbvue'
 import estimateService from './cost_estimate/EstimateService'
 import estimateSummary from './cost_estimate/EstimateSummary'
 import costEstimateHistory from './cost_estimate/CostEstimateHistory'
-import generalDetail from '@/pages/iks_cost/GeneralDetail'
-import iksVmDetail from '@/pages/iks_cost/IKSVmDetail'
-import iksStorageDetail from '@/pages/iks_cost/IKSStorageDetail'
-import productMspCostDetail from '@/pages/platform/MspCostDetail'
+import generalDetail from './../iks_cost/GeneralDetail'
+import iksVmDetail from './../iks_cost/IKSVmDetail'
+import iksStorageDetail from './../iks_cost/IKSStorageDetail'
+import productMspCostDetail from './../platform/MspCostDetail'
 
 export default {
   	components: {
@@ -255,7 +255,7 @@ export default {
 				return;
 			}
 			
-			this.$http.get('/api/project/' + this.projectId + '/estimate').then(response => {
+			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate').then(response => {
 				if(response && response.data) {
 					this.estimate = response.data;
 				}
@@ -277,7 +277,7 @@ export default {
 		viewHistoryDetail() {
 			this.editable = false;
 			
-			this.$http.get('/api/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
+			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
 				if(response && response.data) {
 					this.estimate = response.data;
 					this.generalVersionId = this.estimate.generalId;
@@ -303,7 +303,7 @@ export default {
 			}
 		},
 		getEnvironmentInfo() {
-			this.$http.get('/api/project/' + this.projectId + '/environment').then(response => {
+			this.$http.get('/api/estimate/project/' + this.projectId + '/environment').then(response => {
 				if(response && response.data) {
 					this.environments = response.data;
 					
@@ -355,7 +355,7 @@ export default {
 			}
 		},
 		getVolumeInfo() {
-			this.$http.get('/api/project/' + this.projectId + '/volume').then(response => {
+			this.$http.get('/api/estimate/project/' + this.projectId + '/volume').then(response => {
 				this.projectVolumes = response.data;
 			})
 		},
@@ -367,7 +367,7 @@ export default {
 			this.showReferencewarning = true;
 		},
 		getGeneralInfo() {
-			this.$http.get('/api/general').then(response => {
+			this.$http.get('/api/estimate/general').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.iksGeneral = response.data;
 					this.generalVersionId = this.iksGeneral.id;
@@ -386,7 +386,7 @@ export default {
 			})
 		},
 		getVmInfo() {
-			this.$http.get('/api/iks_costs/vm').then(response => {
+			this.$http.get('/api/estimate/iks_costs/vm').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.vmVersion = response.data;
 					this.iksVmVersionId = this.vmVersion.id;
@@ -405,7 +405,7 @@ export default {
 			})
 		},
 		getStorageInfo() {
-			this.$http.get('/api/iks_costs/storage').then(response => {
+			this.$http.get('/api/estimate/iks_costs/storage').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.storageVersion = response.data;
 					this.iksStorageVersionId = this.storageVersion.id;
@@ -424,7 +424,7 @@ export default {
 			})
 		},
 		getMspInfo() {
-			this.$http.get('/api/platform/msp').then(response => {
+			this.$http.get('/api/estimate/platform/msp').then(response => {
 				if(response && response.data && response.data.id > 0) {
 					this.productMspCostVersion = response.data;
 					this.mspCostVersionId = this.productMspCostVersion.id;
@@ -443,7 +443,7 @@ export default {
 			})
 		},
 		getProductInfo() {
-			this.$http.get('/api/platform/product').then(response => {
+			this.$http.get('/api/estimate/platform/product').then(response => {
 				let products = response.data;
 				for(let productInfo of products) {
 					let product = {};
@@ -455,10 +455,10 @@ export default {
 			})
 		},
 		getTemplate(product) {
-			this.$http.get('/api/platform/product/' + product.productId + '/template').then(response => {
+			this.$http.get('/api/estimate/platform/product/' + product.productId + '/template').then(response => {
 				product.templates = response.data;
 			});
-			this.$http.get('/api/platform/product/' + product.productId + '/service').then(response => {
+			this.$http.get('/api/estimate/platform/product/' + product.productId + '/service').then(response => {
 				product.services = response.data;
 			});
 		},
@@ -497,7 +497,7 @@ export default {
 				this.estimate.iksStorageVersionId = this.storageVersion.id;
 				this.estimate.mspCostVersionId = this.productMspCostVersion.id;
 
-				this.$http.put('/api/project/' + this.projectId + '/estimate', this.estimate).then(response => {
+				this.$http.put('/api/estimate/project/' + this.projectId + '/estimate', this.estimate).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.historyUpdateStatus = true;
@@ -506,7 +506,7 @@ export default {
 		},
 		remove() {
 			if(confirm('삭제하시겠습니까?')) {
-				this.$http.delete('/api/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
+				this.$http.delete('/api/estimate/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
 					alert("삭제되었습니다.");
 					history.go(-1);
 				})

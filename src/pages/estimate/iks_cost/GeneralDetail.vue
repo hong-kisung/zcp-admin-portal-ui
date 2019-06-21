@@ -80,9 +80,9 @@ export default {
 	methods: {
 		initialize() {
 			if(this.versionId) {
-				this.getGeneralInfo('/api/general/history/' + this.versionId);
+				this.getGeneralInfo('/api/estimate/general/history/' + this.versionId);
 			} else {
-				this.getGeneralInfo('/api/general');
+				this.getGeneralInfo('/api/estimate/general');
 			}
 		},
 		getGeneralInfo(url) {
@@ -121,7 +121,7 @@ export default {
 			}
 			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/general', this.generalInfo).then(response => {
+				this.$http.put('/api/estimate/general', this.generalInfo).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.$emit('fire-saved');

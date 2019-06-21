@@ -83,7 +83,7 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/project').then(response => {
+			this.$http.get('/api/estimate/project').then(response => {
 				this.projects = response.data
 			})
 		},

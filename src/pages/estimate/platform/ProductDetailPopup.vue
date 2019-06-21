@@ -50,7 +50,7 @@ export default {
 		},
 		saveProduct() {
 			if(confirm("변경된 내용을 저장하시겠습니까?")) {
-				this.$http.put('/api/platform/product/'+this.product.id, this.product).then(response => {
+				this.$http.put('/api/estimate/platform/product/'+this.product.id, this.product).then(response => {
 					alert("저장되었습니다.");
 					this.$emit('fire-dialog-saved');
 				})
@@ -60,7 +60,7 @@ export default {
 			this.$emit('fire-dialog-closed');
 		},
 		getProduct() {
-			this.$http.get('/api/platform/product/'+this.productId).then(response => {
+			this.$http.get('/api/estimate/platform/product/'+this.productId).then(response => {
 				this.product = response.data;
 			})
 		}

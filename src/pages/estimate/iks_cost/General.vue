@@ -76,7 +76,7 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/general/history').then(response => {
+			this.$http.get('/api/estimate/general/history').then(response => {
 				this.history = response.data;
 			})
 		}

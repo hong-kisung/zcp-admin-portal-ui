@@ -1,121 +1,153 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      fixed
-      app
-	  dark
-    >
-      <v-list dense>
-        <v-list-tile @click="changeRoute('general', 1)">
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title :class="[{'active': selectedIndex === 1}, 'item-title' ]">기준정보</v-list-tile-title>
-        </v-list-tile>
-        
-        <v-list-group
-          no-action
-          value="true">
-          <template v-slot:activator>
-            <v-list-tile>
-	          <v-list-tile-action>
-	            <v-icon>settings</v-icon>
-	          </v-list-tile-action>
-              <v-list-tile-title class="item-title">IKS Cost</v-list-tile-title>
-            </v-list-tile>
-          </template>
-
-          <v-list-tile @click="changeRoute('iks_vm', 2)">
-            <v-list-tile-title :class="[{'active': selectedIndex === 2}, 'item-title' ]">VM</v-list-tile-title>
-            <v-list-tile-action>
-              <v-icon>sd_storage</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-          <v-list-tile @click="changeRoute('iks_storage', 3)">
-            <v-list-tile-title :class="[{'active': selectedIndex === 3}, 'item-title' ]">Storage</v-list-tile-title>
-            <v-list-tile-action>
-              <v-icon>storage</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list-group>
-        
-        <v-list-group
-          no-action
-          value="true">
-          <template v-slot:activator>
-            <v-list-tile>
-	          <v-list-tile-action>
-	            <v-icon>settings</v-icon>
-	          </v-list-tile-action>
-              <v-list-tile-title class="item-title">Platform</v-list-tile-title>
-            </v-list-tile>
-          </template>
-
-          <v-list-tile @click="changeRoute('product', 4)">
-            <v-list-tile-title :class="[{'active': selectedIndex === 4}, 'item-title' ]">Product</v-list-tile-title>
-            <v-list-tile-action>
-              <v-icon>apps</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-          <v-list-tile @click="changeRoute('product_msp', 4)">
-            <v-list-tile-title :class="[{'active': selectedIndex === 4}, 'item-title' ]">MSP Cost</v-list-tile-title>
-            <v-list-tile-action>
-              <v-icon>settings_applications</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list-group>
-
-        <v-list-tile @click="changeRoute('project', 1)">
-          <v-list-tile-action>
-            <v-icon>report</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title :class="[{'active': selectedIndex === 5}, 'item-title' ]">Project</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-      
-    </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left dark>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>ZCP 견적서</v-toolbar-title>
-    </v-toolbar>
-    <v-content>
-      <router-view/>
-    </v-content>
-    <v-footer app fixed dark>
-      <span>&copy; </span>
-    </v-footer>
-  </v-app>
+  <div class="flexible-content">
+    <mdb-navbar position="top" expand="large" class="navbar-light-blue font-weight-bold" scrolling>
+      <mdb-navbar-toggler>
+        <mdb-navbar-nav>
+          <mdb-nav-item href="#" anchorClass="white-text" waves-fixed>ZCP</mdb-nav-item>
+        </mdb-navbar-nav>
+        <mdb-navbar-nav right>
+          <mdb-nav-item href="#!" anchorClass="white-text" waves-fixed ><mdb-icon fa class="text-white" icon="user"/>Account</mdb-nav-item>
+        </mdb-navbar-nav>
+      </mdb-navbar-toggler>
+    </mdb-navbar>
+    <div class="sidebar-fixed position-fixed">
+      <mdb-list-group class="list-group-flush">
+        <router-link to="/estimate/general" @click.native="activeItem = 1">
+          <mdb-list-group-item :action="true" :class="activeItem === 1 && 'active'"><mdb-icon icon="chart-pie" class="mr-3"/>기준정보</mdb-list-group-item>
+        </router-link>
+        <router-link to="/estimate/iks_vm" @click.native="activeItem = 2">
+          <mdb-list-group-item :action="true" :class="activeItem === 2 && 'active'"><mdb-icon icon="user" class="mr-3"/>VM</mdb-list-group-item>
+        </router-link>
+        <router-link to="/estimate/iks_storage"  @click.native="activeItem = 3">
+          <mdb-list-group-item :action="true" :class="activeItem === 3 && 'active'"><mdb-icon icon="table" class="mr-3"/>Storage</mdb-list-group-item>
+        </router-link>
+        <router-link to="/estimate/product" @click.native="activeItem = 4">
+          <mdb-list-group-item :action="true" :class="activeItem === 4 && 'active'"><mdb-icon icon="map" class="mr-3"/>Product</mdb-list-group-item>
+        </router-link>
+        <router-link to="/estimate/product_msp" @click.native="activeItem = 5">
+          <mdb-list-group-item :action="true" :class="activeItem === 5 && 'active'"><mdb-icon icon="exclamation" class="mr-3"/>MSP Cost</mdb-list-group-item>
+        </router-link>
+        <router-link to="/estimate/project" @click.native="activeItem = 6">
+          <mdb-list-group-item :action="true" :class="activeItem === 6 && 'active'"><mdb-icon icon="exclamation" class="mr-3"/>Project</mdb-list-group-item>
+        </router-link>
+      </mdb-list-group>
+    </div>
+    <main style="margin-top: 70px;">
+      <div class="mt-3 p-3">
+        <router-view></router-view>
+      </div>
+    </main>
+    <mdb-footer class="font-small mt-4 navbar-light-blue">
+    </mdb-footer>
+  </div>
 </template>
 
 <script>
+import { mdbContainer, mdbNavbar, mdbNavbarBrand, mdbNavItem, mdbNavbarNav, mdbNavbarToggler, mdbBtn, mdbIcon, mdbListGroup, mdbListGroupItem, mdbCardBody, mdbFooter, waves } from 'mdbvue'
+
 export default {
-  	data: () => ({
-	  	drawer: true,
-      	selectedIndex: 1
-  	}),
-  	methods: {
-    	changeRoute (routeName, selectedIndex) {
-      		const vm = this;
-      		vm.selectedIndex = selectedIndex;
-      		return vm.$router.push({name: routeName});
+	name: 'App',
+  	components: {
+    	mdbContainer,
+   	 	mdbNavbar,
+    	mdbNavbarBrand,
+    	mdbNavItem,
+    	mdbNavbarNav,
+    	mdbNavbarToggler,
+    	mdbBtn,
+    	mdbListGroup,
+    	mdbListGroupItem,
+    	mdbIcon,
+    	mdbCardBody,
+    	mdbFooter
+  	},
+  	data () {
+    	return {
+      		activeItem: 1
     	}
   	},
-    created () {
-      	this.changeRoute('general', 1);
-    }
+  	mixins: [waves],
+  	methods: {
+  		handleBtnAClick() {
+  		
+  		}
+  	}
 }
 </script>
 
-<style>
-  .active {
-    font-weight: bold;
-  }
+<style scoped>
+main {
+  	
+}
 
-  .item-title {
-    font-size: 15px;
-    font-weight: 500;
-  }
+.flexible-content {
+  transition: padding-left 0.3s;
+  padding-left: 250px;
+}
 
+.sidebar-fixed {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  margin-top: 4px;
+  height: 100%;
+  width: 15rem;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  z-index: 1050;
+  padding: 0;
+  padding-top: 10px;
+  
+  background-color: #6a9ed3;
+  font-size: 0.8rem;
+}
+
+.sidebar-fixed .logo-wrapper img{
+  width: 100%;
+  padding: 2.5rem;
+}
+
+.sidebar-fixed .list-group-item {
+  display: block !important;
+  transition: background-color 0.3s;
+  background-color: inherit;
+  color: #fff;
+}
+
+.sidebar-fixed .list-group .active {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+}
+
+@media (max-width: 1199.98px) {
+  .sidebar-fixed {
+    display: none;
+  }
+  .flexible-content {
+    padding-left: 0;
+  }
+  .flexible-navbar {
+    padding-left: 10px;
+  }
+}
 </style>
+<style>
+.navbar-light .navbar-brand {
+  margin-left: 15px;
+  color: #2196f3 !important;
+  font-weight: 700!important;
+}
+</style>
+
+
+<style>
+.navbar-light-blue {
+	/** background-color: #4b515d !important **/
+	background-color: #3f5c80;
+}
+
+footer.page-footer {
+	bottom: 0;
+	color: #fff;
+}
+</style>
+

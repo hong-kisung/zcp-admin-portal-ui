@@ -208,13 +208,13 @@ export default {
 				this.projectId = this.$route.params.projectId;
 			}
 			
-			this.$http.get('/api/project/' + this.projectId + '/volume').then(response => {
+			this.$http.get('/api/estimate/project/' + this.projectId + '/volume').then(response => {
 				this.volumes = response.data;
 			})
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/project/' + this.projectId + '/volume', this.volumes).then(response => {
+				this.$http.put('/api/estimate/project/' + this.projectId + '/volume', this.volumes).then(response => {
 					alert("저장되었습니다.");
 					this.initialize();
 					this.selected = [];

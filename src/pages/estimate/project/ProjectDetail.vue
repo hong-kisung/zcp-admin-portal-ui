@@ -55,11 +55,11 @@ export default {
 		saveProject() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				if(this.newPage) {
-					this.$http.post('/api/project', this.project).then(response => {
+					this.$http.post('/api/estimate/project', this.project).then(response => {
 						this.$emit('fire-dialog-saved');
 					})
 				} else {
-					this.$http.put('/api/project/'+this.project.id, this.project).then(response => {
+					this.$http.put('/api/estimate/project/'+this.project.id, this.project).then(response => {
 						this.$emit('fire-dialog-saved');
 					})
 				}
@@ -69,7 +69,7 @@ export default {
 			this.$emit('fire-dialog-closed');
 		},
 		getProject() {
-			this.$http.get('/api/project/'+this.projectId).then(response => {
+			this.$http.get('/api/estimate/project/'+this.projectId).then(response => {
 				if(response && response.data) {
 					this.project = response.data;
 				}

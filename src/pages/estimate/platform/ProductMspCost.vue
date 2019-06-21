@@ -2,7 +2,7 @@
   <section>
     <mdb-row>
       <mdb-col>
-		<iks-vm-detail 
+		<product-msp-cost-detail
 			v-bind:editable="true"
 			v-on:fire-saved="initialize"
 		/>
@@ -16,9 +16,9 @@
         />
       </mdb-col>
     </mdb-row>
-    <mdb-modal size="xl" :show="detailDialog" scrollable>
+    <mdb-modal size="lg" :show="detailDialog" scrollable>
       <mdb-modal-body>
-		<iks-vm-detail 
+		<product-msp-cost-detail
 			v-bind:editable="false"
 		   	v-bind:versionId="versionId"
 		   	v-on:fire-dialog-closed="closeDetailDialog"
@@ -31,33 +31,33 @@
 <script>
 import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
 import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import iksVmDetail from './IKSVmDetail'
-import historyList from './HistoryList'
+import productMspCostDetail from './MspCostDetail'
+import historyList from './../iks_cost/HistoryList'
 
 export default {
   	components: {
     	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
     	mdbIcon, mdbBtn,
     	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	iksVmDetail,
+    	productMspCostDetail, 
     	historyList
   	},
 	data: () => ({
 		historyList: [],
 		detailDialog: false,
 		versionId: 0
-    }),
-	watch: {
+	}),
+    watch: {
 		detailDialog (val) {
 			val || this.closeDetailDialog();
 		}
     },
-	created () {
+    created () {
 		this.initialize();
     },
 	methods: {
-		initialize () {
-			this.$http.get('/api/iks_costs/vm/history').then(response => {
+		initialize() {
+			this.$http.get('/api/estimate/platform/msp/history').then(response => {
 				this.historyList = response.data;
 			})
 		},
@@ -68,7 +68,9 @@ export default {
 		closeDetailDialog() {
 			this.detailDialog = false;
 		}
-    }
+	}
 }
 </script>
 
+<style>
+</style>
