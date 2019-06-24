@@ -134,8 +134,6 @@ export default {
 		editedItem: {},
 		defaultItem: {},
 		
-		iksGeneral: {},
-		vmData: {vms: []},
       	messageShow: false,
       	messages: []
 	}),
@@ -144,6 +142,16 @@ export default {
 		'editable'
 	],
 	computed: {
+		iksGeneral: function() {
+			return this.$store.state.estimate.general;
+		},
+		vmData: function() {
+			if(this.versionId) {
+				return this.$store.state.estimate.vmHistoryDetail;
+			} else {
+				return this.$store.state.estimate.vm;
+			}
+		},
 		formTitle() {
 			return this.editable ? 'IKS VM 비용의 최신 버전을 조회 및 수정합니다.' : 'IKS VM History Detail';
 		},
@@ -178,14 +186,6 @@ export default {
     	}
     },
 	watch: {
-		versionId: function() {
-			if(this.versionId <= 0) {
-				this.vmData = {vms: []};
-				return;
-			}
-			
-			this.getVmInfo('/api/estimate/iks_costs/vm/history/' + this.versionId);
-		},
 		dialog (val) {
 			val || this.closeDialog();
 		}
@@ -195,12 +195,12 @@ export default {
     },
 	methods: {
 		initialize () {
-			this.getGeneralInfo();
+			this.$store.dispatch('estimate/getGeneral')
 			
 			if(this.versionId) {
-				this.getVmInfo('/api/estimate/iks_costs/vm/history/' + this.versionId);
+				this.$store.dispatch('estimate/getVmHistoryDetail', {versionId: this.versionId})
 			} else {
-				this.getVmInfo('/api/estimate/iks_costs/vm');
+				this.$store.dispatch('estimate/getVm')
 			}
 		},
 		getGeneralInfo() {
@@ -290,11 +290,7 @@ export default {
 		},
 		save () {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/iks_costs/vm', this.vmData).then(response => {
-					alert("저장되었습니다.");
-					this.getVmInfo('/api/estimate/iks_costs/vm');
-					this.$emit('fire-saved');
-				});
+				this.$store.dispatch('estimate/saveVm', {vmInfo: this.vmData})
 			}
 		},
 		closeDetailDialog() {

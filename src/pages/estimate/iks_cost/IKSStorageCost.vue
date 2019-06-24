@@ -4,7 +4,6 @@
       <mdb-col>
 		<iks-storage-detail 
 			v-bind:editable="true"
-			v-on:fire-saved="initialize"
 		/>
       </mdb-col>
     </mdb-row>
@@ -45,10 +44,14 @@ export default {
     	historyList
   	},
     data: () => ({
-		historyList: [],
 		detailDialog: false,
 		versionId: 0
     }),
+    computed: {
+		historyList: function() {
+			return this.$store.state.estimate.storageHistory;
+		}
+    },
     watch: {
 		detailDialog (val) {
 			val || this.closeDetailDialog();
@@ -59,9 +62,7 @@ export default {
     },
     methods: {
 		initialize () {
-			this.$http.get('/api/estimate/iks_costs/storage/history').then(response => {
-				this.historyList = response.data;
-			})
+			this.$store.dispatch('estimate/getStorageHistory')
 		},
 		showHistoryDetail(item) {
 			this.versionId = item.id;

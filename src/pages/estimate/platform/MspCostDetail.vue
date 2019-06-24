@@ -132,14 +132,20 @@ export default {
 		editedProductIndex: -1,
 		editedItem: {},
 		defaultItem: {},
-		mspCostDialog: false,
-		productMspCostVersion: {},
+		mspCostDialog: false
 	}),
 	props: [
 		'versionId',
 		'editable'
 	],
 	computed: {
+		productMspCostVersion: function() {
+			if(this.versionId) {
+				return this.$store.state.estimate.productMspCostHistoryDetail;
+			} else {
+				return this.$store.state.estimate.productMspCost;
+			}
+		},
 		formTitle() {
 			return this.editable ? 'MSP 비용의 최신 버전을 조회 및 수정합니다.' : 'Platform MSP Costs Detail';
 		},
@@ -157,34 +163,16 @@ export default {
     },
 	methods: {
 		initialize () {
-			if(this.versionId && this.versionId > 0) {
-				this.$http.get('/api/estimate/platform/msp/history/' + this.versionId).then(response => {
-					this.productMspCostVersion = Object.assign({}, response.data);
-				})
-				
-				return;
+			if(this.versionId) {
+				this.$store.dispatch('estimate/getProductMspCostHistoryDetail', {versionId: this.versionId})
+			} else {
+				this.$store.dispatch('estimate/getProductMspCost')
 			}
-			
-			this.$http.get('/api/estimate/platform/msp').then(response => {
-				if(response && response.data) {
-					this.productMspCostVersion = response.data;
-				}
-			}).catch(error => {
-				if(error.response && error.response.data && error.response.data.status == 404) {
-					alert('조회된 데이터가 없습니다.');
-				} else {
-					alert(error.response.data.message);
-				}
-			})
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/platform/msp', this.productMspCostVersion).then(response => {
-					alert("저장되었습니다.");
-					this.initialize();
-					this.selected = [];
-					this.$emit('fire-saved');
-				})
+				this.$store.dispatch('estimate/saveProductMspCost', {productMspCostInfo: this.productMspCostVersion})
+				this.selected = [];
 			}
 		},
 		closeDetailDialog() {

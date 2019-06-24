@@ -63,26 +63,28 @@ export default {
     	mdbInput
   	},
 	data: () => ({
-		generalInfo: {}
 	}),
 	props: [
 		'versionId',
 		'editable'
 	],
 	computed: {
-		formTitle() {
+		generalInfo: function() {
+			return this.$store.state.estimate.general;
+		},
+		formTitle: function() {
 			return this.editable ? '기준정보의 최신 버전을 조회 및 수정합니다.' : '기준정보';
 		}
-    },
+	},
 	created () {
 		this.initialize()
 	},
 	methods: {
 		initialize() {
 			if(this.versionId) {
-				this.getGeneralInfo('/api/estimate/general/history/' + this.versionId);
+				this.$store.dispatch('estimate/getGeneralHistoryDetail', {versionId: this.versionId})
 			} else {
-				this.getGeneralInfo('/api/estimate/general');
+				this.$store.dispatch('estimate/getGeneral')
 			}
 		},
 		getGeneralInfo(url) {
@@ -121,11 +123,7 @@ export default {
 			}
 			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/general', this.generalInfo).then(response => {
-					alert("저장되었습니다.");
-					this.initialize();
-					this.$emit('fire-saved');
-				})
+				this.$store.dispatch('estimate/saveGeneral', {generalInfo: this.generalInfo});
 			}
 		},
 		closeDetailDialog() {

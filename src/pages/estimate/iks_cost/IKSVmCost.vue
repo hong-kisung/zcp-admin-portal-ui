@@ -4,7 +4,6 @@
       <mdb-col>
 		<iks-vm-detail 
 			v-bind:editable="true"
-			v-on:fire-saved="initialize"
 		/>
       </mdb-col>
     </mdb-row>
@@ -43,7 +42,6 @@ export default {
     	historyList
   	},
 	data: () => ({
-		historyList: [],
 		detailDialog: false,
 		versionId: 0
     }),
@@ -52,14 +50,17 @@ export default {
 			val || this.closeDetailDialog();
 		}
     },
+    computed: {
+		historyList: function() {
+			return this.$store.state.estimate.vmHistory;
+		}
+    },
 	created () {
 		this.initialize();
     },
 	methods: {
 		initialize () {
-			this.$http.get('/api/estimate/iks_costs/vm/history').then(response => {
-				this.historyList = response.data;
-			})
+			this.$store.dispatch('estimate/getVmHistory')
 		},
 		showHistoryDetail(item) {
 			this.versionId = item.id;

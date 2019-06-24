@@ -3,7 +3,6 @@
     <mdb-row>
       <mdb-col>
 		<general-detail v-bind:editable="true" 
-						v-on:fire-saved="initialize"
 		/>
       </mdb-col>
     </mdb-row>
@@ -69,20 +68,14 @@ export default {
     	generalDetail
   	},
 	data: () => ({
-		history: [],
 	}),
-	created () {
-		this.initialize()
+	computed: {
+		history: function() {
+			return this.$store.state.estimate.generalHistory;
+		},
 	},
-	methods: {
-		initialize() {
-			this.$http.get('/api/estimate/general/history').then(response => {
-				this.history = response.data;
-			})
-		}
+	created () {
+		this.$store.dispatch('estimate/getGeneralHistory')
 	}
 }
 </script>
-
-<style scoped>
-</style>

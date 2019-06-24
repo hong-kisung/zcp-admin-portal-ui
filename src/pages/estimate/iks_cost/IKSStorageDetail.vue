@@ -161,8 +161,6 @@ export default {
 		editedItem: {},
 		defaultItem: {},
 		
-		storageData:{ fileStorages: [] },
-		iksGeneral: {},
       	messageShow: false,
       	messages: []
 	}),
@@ -171,6 +169,16 @@ export default {
 		'editable'
 	],
     computed: {
+		iksGeneral: function() {
+			return this.$store.state.estimate.general;
+		},
+		storageData: function() {
+			if(this.versionId) {
+				return this.$store.state.estimate.storageHistoryDetail;
+			} else {
+				return this.$store.state.estimate.storage;
+			}
+		},
 		formTitle() {
 			return this.editable ? 'IKS Storage 비용의 최신 버전을 조회 및 수정합니다.' : 'IKS Storage History Detail';
 		},
@@ -204,12 +212,12 @@ export default {
     },
 	methods: {
 		initialize () {
-			this.getGeneralInfo();
+			this.$store.dispatch('estimate/getGeneral')
 			
 			if(this.versionId) {
-				this.getStorageInfo('/api/estimate/iks_costs/storage/history/' + this.versionId);
+				this.$store.dispatch('estimate/getStorageHistoryDetail', {versionId: this.versionId})
 			} else {
-				this.getStorageInfo('/api/estimate/iks_costs/storage');
+				this.$store.dispatch('estimate/getStorage')
 			}
 		},
 		getGeneralInfo() {
@@ -292,11 +300,7 @@ export default {
 		},
 		save () {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/iks_costs/storage', this.storageData).then(response => {
-					alert("저장되었습니다.");
-					this.getStorageInfo('/api/estimate/iks_costs/storage');
-					this.$emit('fire-saved');
-				})
+				this.$store.dispatch('estimate/saveStorage', {storageInfo: this.storageData})
 			}
 		},
 		closeDetailDialog() {
