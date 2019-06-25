@@ -1,12 +1,12 @@
 <template>
-  <div class="flexible-content">
-    <mdb-navbar position="top" expand="large" class="navbar-light-blue font-weight-bold" scrolling>
+  <div class="flexible-content gray-bg">
+    <mdb-navbar position="top" expand="large" class="navbar-light-blue font-weight-bold">
       <mdb-navbar-toggler>
         <mdb-navbar-nav>
-          <mdb-nav-item href="#" anchorClass="white-text" waves-fixed>ZCP</mdb-nav-item>
+          <mdb-nav-item href="#" anchorClass="dark-text" waves-fixed>ZCP</mdb-nav-item>
         </mdb-navbar-nav>
         <mdb-navbar-nav right>
-          <mdb-nav-item href="#!" anchorClass="white-text" waves-fixed ><mdb-icon fa class="text-white" icon="user"/>Account</mdb-nav-item>
+          <mdb-nav-item href="#!" anchorClass="dark-text" waves-fixed ><mdb-icon fa icon="user"/>Account</mdb-nav-item>
         </mdb-navbar-nav>
       </mdb-navbar-toggler>
     </mdb-navbar>
@@ -32,13 +32,11 @@
         </router-link>
       </mdb-list-group>
     </div>
-    <main style="margin-top: 70px;">
+    <main class="" style="margin-top: 60px;">
       <div class="mt-3 p-3">
         <router-view></router-view>
       </div>
     </main>
-    <mdb-footer class="font-small mt-4 navbar-light-blue">
-    </mdb-footer>
   </div>
 </template>
 
@@ -88,8 +86,8 @@ main {
 .sidebar-fixed {
   position: fixed;
   left: 0;
-  top: 60px;
-  margin-top: 4px;
+  top: 58px;
+  margin-top: 0px;
   height: 100%;
   width: 15rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -97,7 +95,7 @@ main {
   padding: 0;
   padding-top: 10px;
   
-  background-color: #6a9ed3;
+  background-color: #3f4d67;
   font-size: 0.8rem;
 }
 
@@ -140,9 +138,22 @@ main {
 
 
 <style>
+.navbar {
+	transition: 1s;
+    border-top: 2px solid #3f5c80;
+}
+
 .navbar-light-blue {
-	/** background-color: #4b515d !important **/
-	background-color: #3f5c80;
+    background-color: #fff;
+    color: #111;
+}
+
+.dark-text {
+	color: #111;
+}
+
+.gray-bg {
+    background-color: #f3f3f4;
 }
 
 footer.page-footer {

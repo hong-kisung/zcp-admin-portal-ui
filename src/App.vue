@@ -17,7 +17,11 @@ body {
 }
 
 thead {
-	background-color: #b0bec5 !important;
+	background-color: #F5F5F6;
+}
+
+.table thead th {
+	vertical-align: middle;
 }
 </style>
 
