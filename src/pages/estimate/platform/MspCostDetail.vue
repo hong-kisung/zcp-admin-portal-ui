@@ -1,28 +1,25 @@
 <template>
 <div>
-  <mdb-card>
-    <mdb-card-body>
-      <mdb-card-text>{{ formTitle }}</mdb-card-text>
-      <mdb-row>
-        <mdb-col md="6">
-	  	  <mdb-input label="버전" v-model="productMspCostVersion.version" disabled/>
-        </mdb-col>
-        <mdb-col md="6">
-	   	  <mdb-input label="생성일시" v-model="productMspCostVersion.createdDt" disabled/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="12">
-	   	  <mdb-input label="설명" v-model="productMspCostVersion.description"/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="12">
-		    <mdb-tbl sm bordered hover responsive>
+  <b-card :header="title">
+    <b-form>
+      <b-form-group label="버전" label-for="version" :label-cols="3" >
+        <b-form-input id="version" type="text" v-model="productMspCostVersion.version" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
+        <b-form-input id="createdDt" type="text" v-model="productMspCostVersion.createdDt" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="설명" label-for="description" :label-cols="3" >
+        <b-form-input id="description" type="text" v-model="productMspCostVersion.description"></b-form-input>
+      </b-form-group>
+    </b-form>
+	<b-row>
+	  <b-col>
+	    <div class="table-responsive-sm">
+	      <table class="table b-table table-bordered table-sm">
 			  <colgroup>
 			    <col width="200">
 			  </colgroup>
-		      <mdb-tbl-head>
+		      <thead>
 		        <tr>
 		          <th class="text-center">Product</th>
 		          <th class="text-center">Alias</th>
@@ -30,8 +27,8 @@
 		          <th class="text-center">MSP Cost</th>
 		          <th class="text-center" v-if="editable">Actions</th>
 		        </tr>
-		      </mdb-tbl-head>
-		      <mdb-tbl-body>
+		      </thead>
+		      <tbody>
 			    <template v-for="(item) in productMspCostVersion.products">
 			      <template v-if="item.mspCosts.length == 0">
 			        <tr>
@@ -63,14 +60,14 @@
 			          </th>
 				      <td class="text-left">{{ mspCosts.alias }}</td>
 				      <td class="text-center">{{ mspCosts.memory }}</td>
-				      <td class="text-right">{{ mspCosts.cost | formatNumber }}</td>
+				      <td class="text-right">{{ mspCosts.cost | formatNumber }} 원</td>
 					  <td class="text-center" v-if="editable">
 					    <a class="rotate-btn" @click="editItem(item, mspCosts)">
-					      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
+					      <i class="fa fa-pencil fa-sm"></i>
 		                </a>
 		                &nbsp;
 					    <a class="rotate-btn" @click="deleteItem(item, mspCosts)">
-					      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
+					      <i class="fa fa-times fa-sm"></i>
 		                </a>
 					  </td>
 			        </tr>
@@ -78,55 +75,42 @@
 			      </template>
 			    </template>
 
-		      </mdb-tbl-body>
-		    </mdb-tbl>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-          <mdb-col sm="6" class="text-left">
-	        <mdb-btn size="sm" color="secondary" v-if="editable" v-bind:disabled="selected.length != 1" @click="openDialog">Mem Spec 추가</mdb-btn>
-          </mdb-col>
-          <mdb-col md="6" class="text-right">
-	        <mdb-btn size="md" outline="primary" v-if="!editable" @click="closeDetailDialog">닫기</mdb-btn>
-	        <mdb-btn size="md" color="primary" v-if="editable" @click="save">저장</mdb-btn>                   
-          </mdb-col>
-      </mdb-row>
-    </mdb-card-body>
-  </mdb-card>
+		      </tbody>
+		    </table>
+	    </div>
+	  </b-col>
+	</b-row>
+    <b-row v-if="editable">
+      <b-col cols="9">
+	    <b-button size="sm" variant="secondary" class="m-1" v-if="editable" v-bind:disabled="selected.length != 1" @click="openDialog">Mem Spec 추가</b-button>
+      </b-col>
+      <b-col cols="3" class="text-right">
+	    <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
+      </b-col>
+    </b-row>
+  </b-card>
+		    
+  <b-modal centered no-close-on-backdrop title="MSP Cost" v-model="mspCostDialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
+    <b-form>
+      <b-form-group label="Alias" label-for="alias" :label-cols="4" >
+        <b-form-input id="alias" type="text" v-model="editedItem.alias"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Mem Spec(GB) 초과" label-for="memory" :label-cols="4" >
+        <b-form-input id="memory" type="number" v-model="editedItem.memory"></b-form-input>
+      </b-form-group>
+      <b-form-group label="MSP Cost(원)" label-for="cost" :label-cols="4" >
+        <b-form-input id="cost" type="number" v-model="editedItem.cost"></b-form-input>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 
-  <mdb-modal :show="mspCostDialog" @close="closeDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formDialogTitle }}</h5>
-      <mdb-input type="text" label="Alias" v-model="editedItem.alias"/>
-      <mdb-input type="number" label="Mem Spec(GB) 초과" v-model="editedItem.memory"/>
-      <mdb-input type="number" label="MSP Cost" v-model="editedItem.cost"/>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
-        
 </div>
 </template>
 
 <script>
-import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTbl, mdbTblHead, mdbTblBody
-  	},
 	data: () => ({
-		headers: [],
-		headerClass: "grey lighten-1 body-2 text-weight-bold",
+		title: '',
 		selected: [],
 		editedIndex: -1,
 		editedProductIndex: -1,
@@ -146,9 +130,6 @@ export default {
 				return this.$store.state.estimate.productMspCost;
 			}
 		},
-		formTitle() {
-			return this.editable ? 'MSP 비용의 최신 버전을 조회 및 수정합니다.' : 'Platform MSP Costs Detail';
-		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'Mem Spec 추가' : 'Mem Spec 수정';
 		}
@@ -163,6 +144,8 @@ export default {
     },
 	methods: {
 		initialize () {
+			this.title = this.editable ? 'MSP 비용의 최신 버전을 조회 및 수정합니다.' : ''
+			
 			if(this.versionId) {
 				this.$store.dispatch('estimate/getProductMspCostHistoryDetail', {versionId: this.versionId})
 			} else {
@@ -193,17 +176,20 @@ export default {
 				this.editedIndex = -1;
 			}, 300);
 		},
-		saveDialog () {
+		saveDialog (e) {
       		if(!this.editedItem.alias) {
       			alert('Alias 값을 입력하세요');
+      			e.preventDefault()
       			return;
       		}
       		if(!this.editedItem.memory) {
       			alert('Mem Spec(GB) 초과 값을 입력하세요');
+      			e.preventDefault()
       			return;
       		}
       		if(!this.editedItem.cost) {
       			alert('MSP Cost 값을 입력하세요');
+      			e.preventDefault()
       			return;
       		}
       		

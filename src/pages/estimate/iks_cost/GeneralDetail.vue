@@ -1,68 +1,43 @@
 <template>
-  <mdb-card>
-    <mdb-card-body>
-      <mdb-card-text>{{ formTitle }}</mdb-card-text>
-      <mdb-row>
-        <mdb-col sm="6">
-	  	  <mdb-input size="sm" label="버전" v-model="generalInfo.version" disabled/>
-        </mdb-col>
-        <mdb-col sm="6">
-	   	  <mdb-input size="sm" label="생성일시" v-model="generalInfo.createdDt" disabled/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col sm="6">
-	  	  <mdb-input size="sm" type="number" label="Platform Resolved CPU" v-model="generalInfo.platformCpuPerWorker"/>
-        </mdb-col>
-        <mdb-col sm="6">
-	   	  <mdb-input size="sm" type="number" label="Platform Resolved Memory" v-model="generalInfo.platformMemoryPerWorker"/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col sm="4">
-	   	  <mdb-input size="sm" type="number" label="IBM 할인율" v-model="generalInfo.ibmDcRate">
-	        <span class="input-group-text md-addon" slot="append">%</span>
-	  	  </mdb-input>
-        </mdb-col>
-        <mdb-col sm="4">
-	   	  <mdb-input size="sm" type="number" label="매매기준환율" v-model="generalInfo.exchangeRate">
-	   	    <span class="input-group-text md-addon" slot="append">원</span>
-	   	  </mdb-input>
-        </mdb-col>
-        <mdb-col sm="4">
-	   	  <mdb-input size="sm" type="number" label="IP Allocation Cost" v-model="generalInfo.ipAllocation">
-	   	    <span class="input-group-text md-addon" slot="append">원</span>
-	   	  </mdb-input>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col sm="12">
-	   	  <mdb-input size="sm" label="설명" v-model="generalInfo.description"/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-	    <mdb-col class="text-right">
-	      <mdb-btn size="md" outline="primary" v-if="!editable" flat @click="closeDetailDialog">닫기</mdb-btn>
-	      <mdb-btn size="md" color="primary" v-if="editable" v-on:click="save">저장</mdb-btn>                   
-	    </mdb-col>
-      </mdb-row>
-    </mdb-card-body>
-  </mdb-card>
+  <b-card :header="title">
+    <b-form>
+      <b-form-group label="버전" label-for="version" :label-cols="3" >
+        <b-form-input id="version" type="text" v-model="generalInfo.version" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
+        <b-form-input id="createdDt" type="text" v-model="generalInfo.createdDt" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="Platform Resolved CPU" label-for="platformCpuPerWorker" :label-cols="3" >
+        <b-form-input id="platformCpuPerWorker" type="number" v-model="generalInfo.platformCpuPerWorker"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Platform Resolved Memory" label-for="platformMemoryPerWorker" :label-cols="3" >
+        <b-form-input id="platformMemoryPerWorker" type="number" v-model="generalInfo.platformMemoryPerWorker"></b-form-input>
+      </b-form-group>
+      <b-form-group label="IBM 할인율(%)" label-for="ibmDcRate" :label-cols="3" >
+        <b-form-input id="ibmDcRate" type="number" v-model="generalInfo.ibmDcRate"></b-form-input>
+      </b-form-group>
+      <b-form-group label="매매기준환율(원)" label-for="exchangeRate" :label-cols="3" >
+        <b-form-input id="exchangeRate" type="number" v-model="generalInfo.exchangeRate"></b-form-input>
+      </b-form-group>
+      <b-form-group label="IP Allocation Cost(원)" label-for="ipAllocation" :label-cols="3" >
+        <b-form-input id="ipAllocation" type="number" v-model="generalInfo.ipAllocation"></b-form-input>
+      </b-form-group>
+      <b-form-group label="설명" label-for="description" :label-cols="3" >
+        <b-form-input id="description" type="text" v-model="generalInfo.description"></b-form-input>
+      </b-form-group>
+    </b-form>
+    <b-row v-if="editable">
+	  <b-col class="text-right">
+	    <b-button size="sm" variant="primary" class="m-1" v-if="editable" v-on:click="save">저장</b-button>
+	  </b-col>
+    </b-row>
+  </b-card>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbTbl, mdbTblHead, mdbTblBody,
-    	mdbInput
-  	},
 	data: () => ({
+		title: ''
 	}),
 	props: [
 		'versionId',
@@ -71,9 +46,6 @@ export default {
 	computed: {
 		generalInfo: function() {
 			return this.$store.state.estimate.general;
-		},
-		formTitle: function() {
-			return this.editable ? '기준정보의 최신 버전을 조회 및 수정합니다.' : '기준정보';
 		}
 	},
 	created () {
@@ -81,6 +53,8 @@ export default {
 	},
 	methods: {
 		initialize() {
+			this.title = this.editable ? '기준정보의 최신 버전을 조회 및 수정합니다.' : '';
+			
 			if(this.versionId) {
 				this.$store.dispatch('estimate/getGeneralHistoryDetail', {versionId: this.versionId})
 			} else {
@@ -125,9 +99,6 @@ export default {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				this.$store.dispatch('estimate/saveGeneral', {generalInfo: this.generalInfo});
 			}
-		},
-		closeDetailDialog() {
-			this.$emit('fire-dialog-closed');
 		}
 	}
 }

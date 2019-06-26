@@ -1,182 +1,121 @@
 <template>
-  <div>
-    <mdb-row>
-      <mdb-col>
-	    <mdb-tabs
-	      :active="0"
-	      card
-	      default
-	      :links="tabLinks"
-	      :transition-duration="0.5"
-	      @activeTab="getActiveTabIndex"
-	      transition-style="linear">
-	      <template :slot="'요약'">
-	        <mdb-container fluid>
-		      <div class="form-group row mt-3">
-		        <label for="version" class="col-sm-2 col-form-label">버전</label>
-		        <div class="col-sm-2">
-			      <input type="text" class="form-control form-control-sm" id="version" v-model.number="estimate.version" readonly>
-			    </div>
-		      </div>
-		      <div class="form-group row">
-		        <label for="createdDt" class="col-sm-2 col-form-label">생성일시</label>
-		        <div class="col-sm-4">
-			      <input type="text" class="form-control form-control-sm" id="createdDt" v-model.number="estimate.createdDt" readonly>
-			    </div>
-		      </div>
-		      <div class="form-group row">
-		        <label for="label" class="col-sm-2 col-form-label">라벨</label>
-		        <div class="col-sm-4">
-			      <input type="text" class="form-control form-control-sm" id="label" v-model.number="estimate.label">
-			    </div>
-		      </div>
-		      <div class="form-group row">
-		        <label for="description" class="col-sm-2 col-form-label">설명</label>
-		        <div class="col-sm-10">
-			      <input type="text" class="form-control form-control-sm" id="description" v-model.number="estimate.description">
-			    </div>
-		      </div>
-		      <mdb-row>
-		        <mdb-col>
-				  <estimate-summary 
+  <div class="animated fadeIn">
+    <b-card>
+		<b-tabs>
+		  <b-tab title="요약" active>
+		    <b-form>
+		      <b-form-group label="버전" label-for="version" :label-cols="3" >
+		        <b-form-input id="version" type="text" v-model="estimate.version" readonly></b-form-input>
+		      </b-form-group>
+		      <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
+		        <b-form-input id="createdDt" type="text" v-model="estimate.createdDt" readonly></b-form-input>
+		      </b-form-group>
+		      <b-form-group label="라벨" label-for="label" :label-cols="3" >
+		        <b-form-input id="label" type="text" v-model="estimate.label"></b-form-input>
+		      </b-form-group>
+		      <b-form-group label="설명" label-for="description" :label-cols="3" >
+		        <b-form-input id="description" type="text" v-model="estimate.description"></b-form-input>
+		      </b-form-group>
+		    </b-form>
+	        <b-row>
+	          <b-col>
+		        <estimate-summary 
 				  	v-bind:estimate="estimate.summary"
 				  />
-		        </mdb-col>
-		      </mdb-row>
-		    </mdb-container>
-	      </template>
-	      <template v-for="(environment, index) in estimate.environments">
-		      <template :slot="environment.environmentName">
-		        <mdb-container fluid>
-			      <mdb-row>
-			        <mdb-col>
-						<estimate-service 
-							v-bind:title="'Cloud Z Service'"
-							v-bind:estimateType="cloudZServiceEstimateType"
-							v-bind:estimate="environment.cloudZService"
-				 			v-bind:iksGeneral="iksGeneral"
-				 			v-bind:vmVersion="vmVersion"
-				 			v-bind:storageVersion="storageVersion"
-				 			v-bind:productMspCostVersion="productMspCostVersion"
-				 			v-bind:productReferences="productReferences"
-				 			v-bind:projectVolumes="projectVolumes"
-				 			v-bind:editable="editable"
-				 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
-				 			v-on:fire-estimate-changed="changeEstimate"
-				 			v-on:fire-update-reference-finished='finishReferenceUpdate'
-						/>
-			        </mdb-col>
-			      </mdb-row>
-			      <mdb-row class="mt-3">
-			        <mdb-col>
-						<estimate-service 
-							v-bind:title="'Application Storage Service'"
-							v-bind:estimateType="storageServiceEstimateType"
-							v-bind:estimate="environment.storageService"
-				 			v-bind:iksGeneral="iksGeneral"
-				 			v-bind:vmVersion="vmVersion"
-				 			v-bind:storageVersion="storageVersion"
-				 			v-bind:productMspCostVersion="productMspCostVersion"
-				 			v-bind:productReferences="productReferences"
-				 			v-bind:projectVolumes="projectVolumes"
-				 			v-bind:editable="editable"
-				 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
-				 			v-on:fire-estimate-changed="changeEstimate"
-				 			v-on:fire-update-reference-finished='finishReferenceUpdate'
-						/>
-			        </mdb-col>
-			      </mdb-row>
-			    </mdb-container>
-		      </template>
-	      </template>
-        </mdb-tabs>
-      </mdb-col>
-    </mdb-row>
-    <mdb-row class="mt-3">
-        <mdb-col sm="9" class="text-left">
-          <mdb-btn size="sm" outline="info" @click="historyDialog = true">History 조회</mdb-btn>
-          <mdb-btn size="sm" color="info" @click="generalDialog = true">기준정보 조회</mdb-btn>
-          <mdb-btn size="sm" color="info" @click="iksVmDialog = true">VM 비용 조회</mdb-btn>
-          <mdb-btn size="sm" color="info" @click="iksStorageDialog = true">Storage 비용 조회</mdb-btn>
-          <mdb-btn size="sm" color="info" @click="mspCostDialog = true">MSP 비용 조회</mdb-btn>
-          <mdb-btn size="sm" color="danger" @click="updateEstimate" v-if="editable && showEstimateUpdate" :disabled="!savable">견적서 Update</mdb-btn>
-        </mdb-col>
-        <mdb-col sm="3" class="text-right">
-	      <mdb-btn size="md" outline="primary" @click="cancel">취소</mdb-btn>
-	      <mdb-btn size="md" color="primary" v-if="editable" @click="save" :disabled="!savable">저장</mdb-btn>
-	      <mdb-btn size="md" color="primary" v-if="!editable" @click="remove">삭제</mdb-btn>
-        </mdb-col>
-    </mdb-row>
-    <cost-estimate-history
-    	v-bind:projectId="projectId"
-    	v-bind:estimateDetail="estimateDetail"
-    	v-bind:historyDialog="historyDialog"
-    	v-bind:refreshStatus="historyUpdateStatus"
-    	v-on:fire-refresh-finished="historyUpdateStatus = false"
-    	v-on:fire-history-closed="historyDialog = false"
-    	v-on:fire-detail-clicked="viewHistoryDetail"
-    />
-	<mdb-modal size="lg" centered :show="generalDialog" @close="generalDialog = false" scrollable>
-	  <mdb-modal-body>
+	          </b-col>
+	        </b-row>
+		  </b-tab>
+		  <b-tab v-for="(environment, index) in estimate.environments" :key="environment.environmentId" :title="environment.environmentName">
+		    <b-row>
+		      <b-col>
+				<estimate-service 
+					v-bind:title="'Cloud Z Service'"
+					v-bind:estimateEnvironment="environment.environmentName"
+					v-bind:estimateType="cloudZServiceEstimateType"
+					v-bind:estimate="environment.cloudZService"
+		 			v-bind:iksGeneral="iksGeneral"
+		 			v-bind:vmVersion="vmVersion"
+		 			v-bind:storageVersion="storageVersion"
+		 			v-bind:productMspCostVersion="productMspCostVersion"
+		 			v-bind:productReferences="productReferences"
+		 			v-bind:projectVolumes="projectVolumes"
+		 			v-bind:editable="editable"
+		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
+		 			v-on:fire-estimate-changed="changeEstimate"
+		 			v-on:fire-update-reference-finished='finishReferenceUpdate'
+				/>
+		      </b-col>
+		    </b-row>
+		    <b-row clas="mt-3">
+		      <b-col>
+				<estimate-service 
+					v-bind:title="'Application Storage Service'"
+					v-bind:estimateEnvironment="environment.environmentName"
+					v-bind:estimateType="storageServiceEstimateType"
+					v-bind:estimate="environment.storageService"
+		 			v-bind:iksGeneral="iksGeneral"
+		 			v-bind:vmVersion="vmVersion"
+		 			v-bind:storageVersion="storageVersion"
+		 			v-bind:productMspCostVersion="productMspCostVersion"
+		 			v-bind:productReferences="productReferences"
+		 			v-bind:projectVolumes="projectVolumes"
+		 			v-bind:editable="editable"
+		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
+		 			v-on:fire-estimate-changed="changeEstimate"
+		 			v-on:fire-update-reference-finished='finishReferenceUpdate'
+				/>
+		      </b-col>
+		    </b-row>
+		  </b-tab>
+		</b-tabs>
+        <b-row class="mt-2">
+          <b-col cols="9">
+	        <b-button size="sm" variant="info" class="m-1" @click="historyDialog = true">History 조회</b-button>
+	        <b-button size="sm" variant="info" class="m-1" @click="generalDialog = true">기준정보 조회</b-button>
+	        <b-button size="sm" variant="info" class="m-1" @click="iksVmDialog = true">VM 비용 조회</b-button>
+	        <b-button size="sm" variant="info" class="m-1" @click="iksStorageDialog = true">Storage 비용 조회</b-button>
+	        <b-button size="sm" variant="info" class="m-1" @click="mspCostDialog = true">MSP 비용 조회</b-button>
+	        <b-button size="sm" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate" :disabled="!savable">견적서 Update</b-button>
+          </b-col>
+          <b-col cols="3" class="text-right">
+            <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
+	        <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save" :disabled="!savable">저장</b-button>
+	        <b-button size="sm" variant="primary" class="m-1" v-if="!editable" @click="remove">삭제</b-button>
+          </b-col>
+        </b-row>
+    </b-card>
+    
+    <b-modal size="lg" ok-only ok-title="Close" ok-variant="danger" title="기준정보" v-model="generalDialog" scrollable>
 	    <general-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="generalVersionId" 
-	    	v-on:fire-dialog-closed="generalDialog = false"
 	    />
-	  </mdb-modal-body>
-	</mdb-modal>
-	<mdb-modal size="xl" centered :show="iksVmDialog" @close="iksVmDialog = false" scrollable>
-	  <mdb-modal-body>
+	</b-modal>
+    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS VM" v-model="iksVmDialog" scrollable>
 	    <iks-vm-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="iksVmVersionId" 
-	    	v-on:fire-dialog-closed="iksVmDialog = false"
 	    />
-	  </mdb-modal-body>
-	</mdb-modal>
-	<mdb-modal size="xl" centered :show="iksStorageDialog" @close="iksStorageDialog = false" scrollable>
-	  <mdb-modal-body>
+	</b-modal>
+    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS Storage" v-model="iksStorageDialog" scrollable>
 	    <iks-storage-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="iksStorageVersionId" 
-	    	v-on:fire-dialog-closed="iksStorageDialog = false"
 	    />
-	  </mdb-modal-body>
-	</mdb-modal>
-	<mdb-modal size="lg" centered :show="mspCostDialog" @close="mspCostDialog = false" scrollable>
-	  <mdb-modal-body>
+	</b-modal>
+    <b-modal size="lg" ok-only ok-title="Close" ok-variant="danger" title="MSP 비용" v-model="mspCostDialog" scrollable>
 	    <product-msp-cost-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="mspCostVersionId" 
-	    	v-on:fire-dialog-closed="mspCostDialog = false"
 	    />
-	  </mdb-modal-body>
-	</mdb-modal>
-    <mdb-modal side position="bottom-right" info removeBackdrop :show="showReferencewarning" @close="showReferencewarning = false">
-      <mdb-modal-header>
-        <p class="heading">참조 정보 버전 오류</p>
-      </mdb-modal-header>
-      <mdb-modal-body>
-        <mdb-row class="mt-1 mb-2">
-          <mdb-col>
-            <p v-for="(reference) in referenceMessage" class="text-sm-left"><strong>[{{ reference.title }}]</strong> {{ reference.message }}</p>
-          </mdb-col>
-        </mdb-row>
-      </mdb-modal-body>
-      <mdb-modal-footer center>
-        <mdb-btn outline="primary" size="md" @click="showReferencewarning = false">확인</mdb-btn>
-      </mdb-modal-footer>
-    </mdb-modal>
+	</b-modal>
   </div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-import { mdbTabs } from 'mdbvue'
-import estimateService from './cost_estimate/EstimateService'
+import { Aside as AppAside, AsideToggler } from '@coreui/vue'
 import estimateSummary from './cost_estimate/EstimateSummary'
+import estimateService from './cost_estimate/EstimateService'
 import costEstimateHistory from './cost_estimate/CostEstimateHistory'
 import generalDetail from './../iks_cost/GeneralDetail'
 import iksVmDetail from './../iks_cost/IKSVmDetail'
@@ -185,12 +124,8 @@ import productMspCostDetail from './../platform/MspCostDetail'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTabs,
-    	estimateService, estimateSummary, costEstimateHistory, generalDetail, iksVmDetail, iksStorageDetail, productMspCostDetail
+  		AppAside, AsideToggler,
+  		estimateSummary, estimateService, costEstimateHistory, generalDetail, iksVmDetail, iksStorageDetail, productMspCostDetail
   	},
 	data: () => ({
 		cloudZServiceEstimateType: 'cloudZService',
@@ -210,8 +145,6 @@ export default {
       		summary: {environments: []}
       	},
       	historyDialog: false,
-      	showReferencewarning: false,
-      	referenceMessage: [],
       	
       	generalDialog: false,
       	generalVersionId: 0,
@@ -251,9 +184,9 @@ export default {
 				this.editable = this.$route.params.editable;
 			}
 			
-			if(!this.editable) {
-				return;
-			}
+			//if(!this.editable) {
+			//	return;
+			//}
 			
 			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate').then(response => {
 				if(response && response.data) {
@@ -359,12 +292,13 @@ export default {
 				this.projectVolumes = response.data;
 			})
 		},
-		showReferenceMessage(title, message) {
-			let reference = {};
-			reference.title = title;
-			reference.message = message;
-			this.referenceMessage.push(reference);
-			this.showReferencewarning = true;
+		showReferenceMessage(mtitle, message) {
+			this.$bvToast.toast(message, {
+				title: mtitle,
+				variant: 'danger',
+				autoHideDelay: 5000,
+				appendToast: true
+			})
 		},
 		getGeneralInfo() {
 			this.$http.get('/api/estimate/general').then(response => {

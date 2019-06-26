@@ -1,35 +1,28 @@
 <template>
 <div>
-  <mdb-card>
-    <mdb-card-body>
-      <mdb-card-text>{{ formTitle }}</mdb-card-text>
-      <mdb-row>
-        <mdb-col md="6">
-	  	  <mdb-input label="버전" v-model="storageData.version" disabled/>
-        </mdb-col>
-        <mdb-col md="6">
-	   	  <mdb-input label="생성일시" v-model="storageData.createdDt" disabled/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="12">
-	   	  <mdb-input label="설명" v-model="storageData.description"/>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="12">
-	   	  <mdb-input type="number" label="Object Storage 비용(Daily)" v-model="storageData.objectStoragePricePerDay">
-	   	    <span class="input-group-text md-addon" slot="append">$</span>
-	   	  </mdb-input>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-        <mdb-col md="12">
-		    <mdb-tbl sm bordered hover responsive>
+  <b-card :header="title">
+    <b-form>
+      <b-form-group label="버전" label-for="version" :label-cols="3" >
+        <b-form-input id="version" type="text" v-model="storageData.version" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
+        <b-form-input id="createdDt" type="text" v-model="storageData.createdDt" readonly></b-form-input>
+      </b-form-group>
+      <b-form-group label="설명" label-for="description" :label-cols="3" >
+        <b-form-input id="description" type="text" v-model="storageData.description"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Object Storage 비용(Daily) (원)" label-for="objectStoragePricePerDay" :label-cols="3" >
+        <b-form-input id="objectStoragePricePerDay" type="number" v-model="storageData.objectStoragePricePerDay"></b-form-input>
+      </b-form-group>
+    </b-form>
+	<b-row>
+	  <b-col>
+	    <div class="table-responsive-sm">
+	      <table class="table b-table table-striped table-hover table-bordered table-sm">
 			  <colgroup>
 			    <col width="80">
 			  </colgroup>
-		      <mdb-tbl-head>
+		      <thead>
 		        <tr>
 		          <th class="text-center" rowspan="2">Disk<br>Size(GB)</th>
 		          <th class="text-center" colspan="4">0.25 IOPS</th>
@@ -56,8 +49,8 @@
 				  <th class="text-center">Monthly</th>
 				  <th class="text-center">Yearly</th>
 		        </tr>
-		      </mdb-tbl-head>
-		      <mdb-tbl-body>
+		      </thead>
+		      <tbody>
 				<tr v-for="(item) in storageData.fileStorages">
 				  <td class="text-left">{{ item.disk }}</td>
 				  <td class="text-right">{{ item.disk * 0.25 }}</td>
@@ -78,84 +71,56 @@
 				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
 				  <td class="text-center" v-if="editable">
 				    <a class="rotate-btn" @click="editItem(item)">
-				      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
+				      <i class="fa fa-pencil fa-sm"></i>
 	                </a>
 	                &nbsp;
 				    <a class="rotate-btn" @click="deleteItem(item)">
-				      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
+				      <i class="fa fa-times fa-sm"></i>
 	                </a>
 				  </td>
 				</tr>
-		      </mdb-tbl-body>
-		    </mdb-tbl>
-        </mdb-col>
-      </mdb-row>
-      <mdb-row>
-          <mdb-col sm="6" class="text-left">
-	        <mdb-btn size="sm" color="secondary" v-if="editable" @click="openDialog">Storage 추가</mdb-btn>
-          </mdb-col>
-          <mdb-col md="6" class="text-right">
-	        <mdb-btn size="md" outline="primary" v-if="!editable" @click="closeDetailDialog">닫기</mdb-btn>
-	        <mdb-btn size="md" color="primary" v-if="editable" @click="save">저장</mdb-btn>                   
-          </mdb-col>
-      </mdb-row>
-    </mdb-card-body>
-  </mdb-card>
+	        </tbody>
+	      </table>
+	    </div>
+	  </b-col>
+	</b-row>
+    <b-row v-if="editable">
+      <b-col cols="9">
+	    <b-button size="sm" variant="secondary" class="m-1" v-if="editable" @click="openDialog">Storage 추가</b-button>
+      </b-col>
+      <b-col cols="3" class="text-right">
+	    <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
+      </b-col>
+    </b-row>
+  </b-card>
 
-  <mdb-modal :show="dialog" @close="closeDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formDialogTitle }}</h5>
-      <mdb-input type="number" label="Disk Size(GB)" v-model="editedItem.disk"/>
-      <mdb-input type="number" label="0.25 IOPS Hourly" v-model="editedItem.iops1PricePerHour">
-        <span class="input-group-text md-addon" slot="append">$</span>
-      </mdb-input>
-      <mdb-input type="number" label="2 IOPS Hourly" v-model="editedItem.iops2PricePerHour">
-        <span class="input-group-text md-addon" slot="append">$</span>
-      </mdb-input>
-      <mdb-input type="number" label="4 IOPS Hourly" v-model="editedItem.iops3PricePerHour">
-        <span class="input-group-text md-addon" slot="append">$</span>
-      </mdb-input>
-      <mdb-input type="number" label="10 IOPS Hourly" v-model="editedItem.iops4PricePerHour">
-        <span class="input-group-text md-addon" slot="append">$</span>
-      </mdb-input>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
-  <mdb-modal side position="bottom-right" info removeBackdrop :show="messageShow" @close="messageShow = false">
-    <mdb-modal-body>
-      <mdb-row class="mt-1 mb-2">
-        <mdb-col>
-          <p v-for="(message) in messages" class="text-sm-left"><strong>[{{ message.title }}]</strong> {{ message.text }}</p>
-        </mdb-col>
-      </mdb-row>
-    </mdb-modal-body>
-    <mdb-modal-footer center>
-      <mdb-btn color="primary" size="sm" @click="messageShow = false">확인</mdb-btn>
-    </mdb-modal-footer>
-  </mdb-modal>
-        
+  <b-modal centered no-close-on-backdrop title="Storage" v-model="dialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
+    <b-form>
+      <b-form-group label="Disk Size(GB)" label-for="disk" :label-cols="4" >
+        <b-form-input id="disk" type="number" v-model="editedItem.disk"></b-form-input>
+      </b-form-group>
+      <b-form-group label="0.25 IOPS Hourly($)" label-for="iops1PricePerHour" :label-cols="4" >
+        <b-form-input id="iops1PricePerHour" type="number" v-model="editedItem.iops1PricePerHour"></b-form-input>
+      </b-form-group>
+      <b-form-group label="2 IOPS Hourly($)" label-for="iops2PricePerHour" :label-cols="4" >
+        <b-form-input id="iops2PricePerHour" type="number" v-model="editedItem.iops2PricePerHour"></b-form-input>
+      </b-form-group>
+      <b-form-group label="4 IOPS Hourly($)" label-for="iops3PricePerHour" :label-cols="4" >
+        <b-form-input id="iops3PricePerHour" type="number" v-model="editedItem.iops3PricePerHour"></b-form-input>
+      </b-form-group>
+      <b-form-group label="10 IOPS Hourly($)" label-for="iops4PricePerHour" :label-cols="4" >
+        <b-form-input id="iops4PricePerHour" type="number" v-model="editedItem.iops4PricePerHour"></b-form-input>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 </div>
         
 </template>
 
 <script>
-import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTbl, mdbTblHead, mdbTblBody
-  	},
 	 data: () => ({
+	 	title: '',
 		dialog: false,
 		editedIndex: -1,
 		editedItem: {},
@@ -178,9 +143,6 @@ export default {
 			} else {
 				return this.$store.state.estimate.storage;
 			}
-		},
-		formTitle() {
-			return this.editable ? 'IKS Storage 비용의 최신 버전을 조회 및 수정합니다.' : 'IKS Storage History Detail';
 		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'Storage 추가' : 'Storage 수정';
@@ -212,6 +174,8 @@ export default {
     },
 	methods: {
 		initialize () {
+			this.title = this.editable ? 'IKS Storage 비용의 최신 버전을 조회 및 수정합니다.' : ''
+			
 			this.$store.dispatch('estimate/getGeneral')
 			
 			if(this.versionId) {
@@ -270,25 +234,30 @@ export default {
 				this.editedIndex = -1;
 			}, 300);
 		},
-		saveDialog () {
+		saveDialog (e) {
 			if(!this.editedItem.disk) {
 				alert('Disk Size(GB) 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if(!this.editedItem.iops1PricePerHour) {
 				alert('0.25 IOPS Hourly 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if(!this.editedItem.iops2PricePerHour) {
 				alert('2 IOPS Hourly 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if(!this.editedItem.iops3PricePerHour) {
 				alert('4 IOPS Hourly 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if(!this.editedItem.iops4PricePerHour) {
 				alert('10 IOPS Hourly 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if (this.editedIndex > -1) {
@@ -302,9 +271,6 @@ export default {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				this.$store.dispatch('estimate/saveStorage', {storageInfo: this.storageData})
 			}
-		},
-		closeDetailDialog() {
-			this.$emit('fire-dialog-closed');
 		}
 	}
 }

@@ -1,5 +1,9 @@
 import Vue from 'vue'
 
-import Layout from './Layout.vue'
+import DefaultContainer from './DefaultContainer.vue'
+import DefaultAside from './DefaultAside.vue'
+import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt.vue'
 
-Vue.component('layout', Layout)
+Vue.component('DefaultContainer', DefaultContainer)
+Vue.component('DefaultAside', DefaultAside)
+Vue.component('DefaultHeaderDropdownAccnt', DefaultHeaderDropdownAccnt)

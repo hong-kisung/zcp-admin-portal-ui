@@ -1,126 +1,114 @@
 <template>
-<mdb-modal centered :show="appsDialog" @close="closeAppsDialog">
-  <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formDialogTitle }}</h5>
-
+<b-modal centered no-close-on-backdrop title="Classification" v-model="showDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
+  <b-form>
       <div class="form-group row mt-3">
-        <label for="productName" class="col-sm-5 col-form-label">Product</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="productName" v-model="editedItem.productId" :disabled="disabledEnv" @change="changeProduct">
+        <label for="productName" class="col-md-5 col-form-label">Product</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="productName" v-model="editedItem.productId" :disabled="disabledEnv" @change="changeProduct">
 	        <option v-for="(item, index) in productReferences" :value="item.productId">{{ item.productName }}</option>
 	      </select>
         </div>
       </div>
       <div class="form-group row">
-        <label for="serviceName" class="col-sm-5 col-form-label">Service</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="serviceName" v-model="editedItem.serviceName" :disabled="disabledEnv" @change="changeService">
+        <label for="serviceName" class="col-md-5 col-form-label">Service</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="serviceName" v-model="editedItem.serviceName" :disabled="disabledEnv" @change="changeService">
 	        <option v-for="(item, index) in targetServices" :value="item.serviceName">{{ item.serviceName }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row">
-        <label for="classificationName" class="col-sm-5 col-form-label">Classification</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="classificationName" v-model="editedItem.classificationName" :disabled="disabledEnv" @change="changeClassification">
+        <label for="classificationName" class="col-md-5 col-form-label">Classification</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="classificationName" v-model="editedItem.classificationName" :disabled="disabledEnv" @change="changeClassification">
 	        <option v-for="(item, index) in selectedService.classifications" :value="item.classificationName">{{ item.classificationName }}</option>
 	      </select>
         </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="addonId" class="col-sm-5 col-form-label">Addon Application</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="addonId" v-model="editedItem.addonId" @change="changeApplication">
+        <label for="addonId" class="col-md-5 col-form-label">Addon Application</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="addonId" v-model="editedItem.addonId" @change="changeApplication">
 	        <option value=""></option>
 	        <option v-for="(item, index) in addonApplicationItems" :value="item.id">{{ item.applicationName }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="editedItem.classificationType == 'VM'">
-        <label for="iksVmId" class="col-sm-5 col-form-label">Machine Type</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="iksVmId" v-model="editedItem.iksVmId" @change="changeMachineType">
+        <label for="iksVmId" class="col-md-5 col-form-label">Machine Type</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="iksVmId" v-model="editedItem.iksVmId" @change="changeMachineType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in vmVersion.vms" :value="item.id">{{ item.name }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="editedItem.classificationType == 'VM'">
-        <label for="hardwareType" class="col-sm-5 col-form-label">Hardware Type</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="hardwareType" v-model="editedItem.hardwareType" @change="changeHardwareType">
+        <label for="hardwareType" class="col-md-5 col-form-label">Hardware Type</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="hardwareType" v-model="editedItem.hardwareType" @change="changeHardwareType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in hardwareTypeItems" :value="item">{{ item }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="storageType" class="col-sm-5 col-form-label">Storage Type</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="storageType" v-model="editedItem.storageType">
+        <label for="storageType" class="col-md-5 col-form-label">Storage Type</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="storageType" v-model="editedItem.storageType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in fileStorageTypeItems" :value="item">{{ item }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="enduranceIops" class="col-sm-5 col-form-label">Storage Performance</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="enduranceIops" v-model="editedItem.enduranceIops">
+        <label for="enduranceIops" class="col-md-5 col-form-label">Storage Performance</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="enduranceIops" v-model="editedItem.enduranceIops">
 	        <option value=""></option>
 	        <option v-for="(item, index) in enduranceIopsItems" :value="item">{{ item }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="iksFileStorageId" class="col-sm-5 col-form-label">Storage Size</label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="iksFileStorageId" v-model.number="editedItem.iksFileStorageId" @change="changeStorageSize">
+        <label for="iksFileStorageId" class="col-md-5 col-form-label">Storage Size</label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="iksFileStorageId" v-model.number="editedItem.iksFileStorageId" @change="changeStorageSize">
 	        <option value=""></option>
 	        <option v-for="(item, index) in storageVersion.fileStorages" :value="item.id">{{ item.disk }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="!showLaborCostInput">
-        <label for="number" class="col-sm-5 col-form-label">Number</label>
-        <div class="col-sm-7">
-	      <input type="number" class="form-control form-control-sm" id="number" v-model.number="editedItem.number">
+        <label for="number" class="col-md-5 col-form-label">Number</label>
+        <div class="col-md-7">
+	      <input type="number" class="form-control form-control-md" id="number" v-model.number="editedItem.number">
 	    </div>
       </div>
       <div class="form-group row" v-show="showLaborCostInput">
-        <label for="mspCost" class="col-sm-5 col-form-label">{{ editedItem.classificationName + ' 선택' }} </label>
-        <div class="col-sm-7">
-	      <select class="custom-select custom-select-sm" id="mspCost" v-model="editedItem.mspCost" @change="changeMspCost">
+        <label for="mspCost" class="col-md-5 col-form-label">{{ editedItem.classificationName + ' 선택' }} </label>
+        <div class="col-md-7">
+	      <select class="custom-select custom-select-md" id="mspCost" v-model="editedItem.mspCost" @change="changeMspCost">
 	        <option value=""></option>
 	        <option v-for="(item, index) in targetMspCosts" :value="item.cost">{{ item.cost + "원 (" + item.alias + " - " + item.memory + " 초과)" }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="showLaborCostInput">
-        <label for="pricePerMonthly" class="col-sm-5 col-form-label">{{ this.editedItem.classificationName + ' 직접 입력' }}</label>
-        <div class="col-sm-7">
-	      <input type="number" class="form-control form-control-sm" id="pricePerMonthly" v-model.number="editedItem.pricePerMonthly">
+        <label for="pricePerMonthly" class="col-md-5 col-form-label">{{ this.editedItem.classificationName + ' 직접 입력' }}</label>
+        <div class="col-md-7">
+	      <input type="number" class="form-control form-control-md" id="pricePerMonthly" v-model.number="editedItem.pricePerMonthly">
 	    </div>
       </div>
 
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeAppsDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveAppsDialog">저장</mdb-btn>                   
-      </div>
-  </mdb-modal-body>
-</mdb-modal>
+  </b-form>
+</b-modal>
 </template>
 
 <script>
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbBtn, mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbBtn, mdbInput
-  	},
 	data: () => ({
+		showDialog: false,
 		hardwareTypeItems: [],
 		fileStorageTypeItems: [],
 		enduranceIopsItems: [],
@@ -159,6 +147,7 @@ export default {
 	watch: {
 		appsDialog: function (){
 			if(this.appsDialog) {
+				this.showDialog = true;
 				this.clearData();
 
 				if(!this.isNewAppsItem) {
@@ -192,7 +181,25 @@ export default {
 			this.clearData();
 			this.$emit('fire-dialog-closed');
 		},
-		saveAppsDialog() {
+		saveAppsDialog(e) {
+			if(!this.editedItem.productId || !this.editedItem.productName) {
+				alert('Product를 선택하세요.')
+				e.preventDefault()
+				return
+			}
+			if(!this.editedItem.serviceName) {
+				alert('Service를 선택하세요.')
+				e.preventDefault()
+				return
+			}
+			if(!this.editedItem.classificationName || !this.editedItem.classificationType) {
+				alert('Classification을 선택하세요.')
+				e.preventDefault()
+				return
+			}
+			
+			this.changeApplication()
+			
 			this.clearData();
 			this.$emit('fire-dialog-saved');
 		},
@@ -256,7 +263,6 @@ export default {
 			}
 		},
 		changeApplication() {
-			console.log(this.editedItem.addonId);
 			if(this.editedItem.addonId) {
 				this.editedItem.addonApplicationName = this.addonApplicationItems.find(app => app.id === this.editedItem.addonId).applicationName;
 			} else {

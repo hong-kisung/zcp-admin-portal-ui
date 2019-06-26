@@ -1,7 +1,12 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 // Packages
+import 'core-js/es6/promise'
+import 'core-js/es6/string'
+import 'core-js/es7/array'
+
 import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
 import App from './App'
 import component from './components'
 import filter from './filter'
@@ -9,11 +14,10 @@ import router from './router'
 import store from './store'
 import axios from './util/axios'
 
-import 'bootstrap-css-only/css/bootstrap.min.css'
-import 'mdbvue/build/css/mdb.css';
-
 
 Vue.config.productionTip = false
+
+Vue.use(BootstrapVue)
 
 /* eslint-disable no-new */
 new Vue({
