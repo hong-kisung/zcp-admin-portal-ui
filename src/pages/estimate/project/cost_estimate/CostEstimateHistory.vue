@@ -1,12 +1,10 @@
 <template>
-  <div>
-    <mdb-modal size="lg" side fullHeight position="right" direction="right" info removeBackdrop :show="historyDialog" @close="close">
-      <mdb-modal-header center :close="false">
-        <p class="heading lead">원가견적 History</p>
-      </mdb-modal-header>
-      <mdb-modal-body>
-	    <mdb-tbl sm bordered hover responsive>
-	      <mdb-tbl-head>
+<b-card>
+  <b-row>
+    <b-col>
+      <div class="table-responsive-sm">
+        <table class="table b-table table-striped table-hover table-bordered table-sm">
+          <thead>
 	        <tr>
 	          <th class="text-center" rowspan="2">버전</th>
 	          <th class="text-center" rowspan="2">라벨</th>
@@ -20,8 +18,8 @@
 	          <th class="text-center">Monthly</th>
 	          <th class="text-center">Yearly</th>
 	        </tr>
-	      </mdb-tbl-head>
-	      <mdb-tbl-body>
+          </thead>
+          <tbody>
 	        <template v-for="(item, index) in history">
 	          <tr @click="viewEstimate(item)">
 	            <td class="text-center">{{ item.version }}</td>
@@ -33,26 +31,18 @@
 	            <td class="text-center">{{ item.createdDt }}</td>
 	          </tr>
 	        </template>
-	      </mdb-tbl-body>
-	    </mdb-tbl>
-      </mdb-modal-body>
-      <mdb-modal-footer center>
-        <mdb-btn size="md" outline="primary" @click="close">닫기</mdb-btn>
-      </mdb-modal-footer>
-    </mdb-modal>
-  </div>
+          </tbody>
+        </table>
+      </div>
+    </b-col>
+  </b-row>
+</b-card>
+
 </template>
 
 <script>
-import { mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-
 export default {
   	components: {
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbTbl, mdbTblHead, mdbTblBody
   	},
 	data: () => ({
       	history: []

@@ -1,28 +1,16 @@
 <template>
-<mdb-modal centered :show="dialog" @close="closeEnvironmentDialog">
-  <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">Product 추가</h5>
+<b-modal centered no-close-on-backdrop title="Product 추가" v-model="dialog" @close="closeEnvironmentDialog" @cancel="closeEnvironmentDialog" @ok="saveEnvironmentDialog">
+    <b-form>
       <div class="custom-control custom-checkbox custom-control-inline mt-3" v-for="product in products">
         <input type="checkbox" class="custom-control-input" :id="product.id" :value="product" v-model="editedItem.products" unchecked>
         <label class="custom-control-label" :for="product.id">{{ product.name }}</label>
       </div>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeEnvironmentDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveEnvironmentDialog">저장</mdb-btn>                   
-      </div>
-  </mdb-modal-body>
-</mdb-modal>
+    </b-form>
+</b-modal>
 </template>
 
 <script>
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbBtn, mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbBtn, mdbInput
-  	},
 	data: () => ({
 		environmentItems: [],
 		products: [],
@@ -65,9 +53,10 @@ export default {
 			this.$emit('fire-dialog-closed');
 			this.dialog = false;
 		},
-		saveEnvironmentDialog() {
+		saveEnvironmentDialog(e) {
 			if(this.editedItem.products.length == 0) {
 				alert('Product를 선택하세요.');
+				e.preventDefault()
 				return;
 			}
 			

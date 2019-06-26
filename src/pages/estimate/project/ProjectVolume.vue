@@ -1,9 +1,11 @@
 <template>
-<div>
-  <mdb-card>
-    <mdb-card-body>
-	    <mdb-tbl sm bordered hover responsive>
-	      <mdb-tbl-head>
+<div class="animated fadeIn">
+  <b-card>
+    <b-row>
+      <b-col>
+        <div class="table-responsive-sm">
+          <table class="table b-table table-bordered table-sm">
+          <thead>
 	        <tr>
 	          <th class="text-center" rowspan="3">Environment</th>
 	          <th class="text-center" rowspan="3">Application</th>
@@ -32,8 +34,8 @@
 	          <th class="text-center">Requests</th>
 	          <th class="text-center">Limits</th>
 	        </tr>
-	      </mdb-tbl-head>
-	      <mdb-tbl-body>
+          </thead>
+          <tbody>
 		    <template v-for="(item) in volumes.environments">
 			  <template v-if="item.applications.length == 0">
 			  	<tr>
@@ -80,18 +82,18 @@
 					  <td class="text-right">{{ application.podCpuRequestSum | formatNumber }}</td>
 					  <td class="text-right">{{ application.podCpuLimitSum | formatNumber }}</td>
 					  <td class="text-center">
-					    <a class="rotate-btn" @click="editAppsItem(item, application, index)">
-					      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
+					    <a @click="editAppsItem(item, application, index)">
+					      <i class="fa fa-pencil fa-sm"></i>
 		                </a>
 		                &nbsp;
-					    <a class="rotate-btn" @click="deleteAppsItem(item, application, index)">
-					      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
+					    <a @click="deleteAppsItem(item, application, index)">
+					      <i class="fa fa-times fa-sm"></i>
 		                </a>
 					  </td>
 				    </tr>
 				  </template>
 				  
-				  <tr class="grey text-right">
+				  <tr class="text-right">
 				      <td class="font-weight-bold" colspan="8">소계</td>
 					  <td class="font-weight-bold">Memory (GB)</td>
 					  <td class="font-weight-bold">{{item.sumMemory | formatNumber}}</td>
@@ -102,7 +104,7 @@
 			      </tr>
 				</template>
 		    </template>
-  			<tr class="blue-grey text-right">
+  			<tr class="text-right">
 		      <td class="font-weight-bold" colspan="9">합계</td>
 			  <td class="font-weight-bold">Memory (GB)</td>
 			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}}</td>
@@ -111,68 +113,68 @@
 			  <td class="font-weight-bold">
 			  </td>
   			</tr>
-	      </mdb-tbl-body>
-	    </mdb-tbl>
-        <mdb-row>
-          <mdb-col md="9" class="text-left">
-	        <mdb-btn size="sm" color="secondary" @click="openClusterDialog">Environment 추가</mdb-btn>
-	        <mdb-btn size="sm" color="secondary" @click="editCluster" v-bind:disabled="selected.length != 1">Environment 수정</mdb-btn>
-	        <mdb-btn size="sm" color="secondary" @click="deleteCluster" v-bind:disabled="selected.length == 0">Environment 삭제</mdb-btn>
-	        <mdb-btn size="sm" color="default" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</mdb-btn>
-          </mdb-col>
-          <mdb-col md="3" class="text-right">
-            <mdb-btn size="md" outline="primary" @click="cancel">취소</mdb-btn>
-	        <mdb-btn size="md" color="primary" @click="save">저장</mdb-btn>
-          </mdb-col>
-        </mdb-row>
-    </mdb-card-body>
-  </mdb-card>
-
-  <mdb-modal :show="clusterDialog" @close="closeClusterDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formClusterDialogTitle }}</h5>
-      <mdb-input label="Environment" v-model="editedItem.name"/>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeClusterDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveClusterDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
+          </tbody>
+          </table>
+        </div>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="9">
+	    <b-button size="sm" variant="secondary" class="m-1" @click="openClusterDialog">Environment 추가</b-button>
+	    <b-button size="sm" variant="secondary" class="m-1" @click="editCluster" v-bind:disabled="selected.length != 1">Environment 수정</b-button>
+	    <b-button size="sm" variant="secondary" class="m-1" @click="deleteCluster" v-bind:disabled="selected.length == 0">Environment 삭제</b-button>
+	    <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</b-button>
+      </b-col>
+      <b-col cols="3" class="text-right">
+        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
+	    <b-button size="sm" variant="primary" class="m-1" @click="save">저장</b-button>
+      </b-col>
+    </b-row>
+  </b-card>
+  
+  <b-modal centered no-close-on-backdrop title="Environment" v-model="clusterDialog" @close="closeClusterDialog" @cancel="closeClusterDialog" @ok="saveClusterDialog">
+    <b-form>
+      <b-form-group label="Environment" label-for="name" :label-cols="4" >
+        <b-form-input id="name" type="text" v-model="editedItem.name"></b-form-input>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 		  
-  <mdb-modal :show="appsDialog" @close="closeAppsDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formDialogTitle }}</h5>
-      <mdb-input type="text" label="Application" v-model="editedAppsItem.appName"/>
-      <mdb-input type="number" label="Application Memory Min" v-model="editedAppsItem.appMemoryMin"/>
-      <mdb-input type="number" label="Application Memory Max" v-model="editedAppsItem.appMemoryMax"/>
-      <mdb-input type="number" label="Replication Count" v-model="editedAppsItem.replicaCount"/>
-      <mdb-input type="number" label="POD Memory Requests" v-model="editedAppsItem.podMemoryRequest"/>
-      <mdb-input type="number" label="POD Memory Limits" v-model="editedAppsItem.podMemoryLimit"/>
-      <mdb-input type="number" label="POD CPU Requests" v-model="editedAppsItem.podCpuRequest"/>
-      <mdb-input type="number" label="POD CPU Limits" v-model="editedAppsItem.podCpuLimit"/>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeAppsDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveAppsDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
+  <b-modal centered no-close-on-backdrop title="Application" v-model="appsDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
+    <b-form>
+      <b-form-group label="Application" label-for="appName" :label-cols="5" >
+        <b-form-input id="appName" type="text" v-model="editedAppsItem.appName"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Application Memory Min" label-for="appMemoryMin" :label-cols="5" >
+        <b-form-input id="appMemoryMin" type="number" v-model="editedAppsItem.appMemoryMin"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Application Memory Max" label-for="appMemoryMax" :label-cols="5" >
+        <b-form-input id="appMemoryMax" type="number" v-model="editedAppsItem.appMemoryMax"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Replication Count" label-for="replicaCount" :label-cols="5" >
+        <b-form-input id="replicaCount" type="number" v-model="editedAppsItem.replicaCount"></b-form-input>
+      </b-form-group>
+      <b-form-group label="POD Memory Requests" label-for="podMemoryRequest" :label-cols="5" >
+        <b-form-input id="podMemoryRequest" type="number" v-model="editedAppsItem.podMemoryRequest"></b-form-input>
+      </b-form-group>
+      <b-form-group label="POD Memory Limits" label-for="podMemoryLimit" :label-cols="5" >
+        <b-form-input id="podMemoryLimit" type="number" v-model="editedAppsItem.podMemoryLimit"></b-form-input>
+      </b-form-group>
+      <b-form-group label="POD CPU Requests" label-for="podCpuRequest" :label-cols="5" >
+        <b-form-input id="podCpuRequest" type="number" v-model="editedAppsItem.podCpuRequest"></b-form-input>
+      </b-form-group>
+      <b-form-group label="POD CPU Limits" label-for="podCpuLimit" :label-cols="5" >
+        <b-form-input id="podCpuLimit" type="number" v-model="editedAppsItem.podCpuLimit"></b-form-input>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 
 </div>
 </template>
 
 <script>
-import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-
 export default {
   	components: {
-    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTbl, mdbTblHead, mdbTblBody
   	},
 	data: () => ({
 		projectId: 0,
@@ -192,12 +194,6 @@ export default {
 	props: [
 	],
 	computed: {
-		formClusterDialogTitle () {
-			return this.editedIndex === -1 ? 'Environment 추가' : 'Environment 수정';
-		},
-		formDialogTitle () {
-			return this.editedIndex === -1 ? 'Application 추가' : 'Application 수정';
-		}
 	},
 	created () {
 		this.initialize()
@@ -243,10 +239,17 @@ export default {
 				this.editedItem = Object.assign({}, this.defaultItem);
 			}, 300);
 		},
-		saveClusterDialog() {
+		saveClusterDialog(e) {
+			if(!this.editedItem.name) {
+				alert('Environment를 입력하세요.')
+				e.preventDefault()
+				return
+			}
+			
 			for(let i = 0; i < this.volumes.environments.length; i++) {
 				if(i != this.editedIndex && this.volumes.environments[i].name == this.editedItem.name) {
 					alert('존재하는 Environment입니다. 다시 입력하세요.');
+					e.preventDefault()
 					return;
 				}
 			}
@@ -300,7 +303,12 @@ export default {
 				this.editedAppsIndex = -1;
 			}, 300);
 		},
-		saveAppsDialog () {
+		saveAppsDialog (e) {
+			if(!this.editedAppsItem.appName) {
+				alert('Application명을 입력하세요.')
+				e.preventDefault()
+				return
+			}
 			if (this.editedAppsIndex > -1) {
 				this.$set(this.volumes.environments[this.editedIndex].applications, this.editedAppsIndex, this.editedAppsItem);
 			} else {

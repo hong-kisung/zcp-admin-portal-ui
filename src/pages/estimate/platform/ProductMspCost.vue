@@ -1,43 +1,36 @@
 <template>
-  <section>
-    <mdb-row>
-      <mdb-col>
+<div class="animated fadeIn">
+    <b-row>
+      <b-col>
 		<product-msp-cost-detail
 			v-bind:editable="true"
 		/>
-      </mdb-col>
-    </mdb-row>
-    <mdb-row class="mt-3">
-      <mdb-col>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
         <history-list 
         	v-bind:historyList="historyList" 
         	v-on:fire-detail-clicked="showHistoryDetail"
         />
-      </mdb-col>
-    </mdb-row>
-    <mdb-modal size="lg" :show="detailDialog" scrollable>
-      <mdb-modal-body>
+      </b-col>
+    </b-row>
+    
+    <b-modal size="lg" ok-only ok-title="Close" ok-variant="danger" title="MSP 비용" v-model="detailDialog" scrollable>
 		<product-msp-cost-detail
 			v-bind:editable="false"
 		   	v-bind:versionId="versionId"
-		   	v-on:fire-dialog-closed="closeDetailDialog"
 		/>
-	  </mdb-modal-body>
-	</mdb-modal>
-  </section>
+	</b-modal>
+</div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
 import productMspCostDetail from './MspCostDetail'
 import historyList from './../iks_cost/HistoryList'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
     	productMspCostDetail, 
     	historyList
   	},
@@ -45,11 +38,6 @@ export default {
 		detailDialog: false,
 		versionId: 0
 	}),
-    watch: {
-		detailDialog (val) {
-			val || this.closeDetailDialog();
-		}
-    },
     computed: {
 		historyList: function() {
 			return this.$store.state.estimate.productMspCostHistory;
@@ -65,9 +53,6 @@ export default {
 		showHistoryDetail(item) {
 			this.versionId = item.id;
 			this.detailDialog = true;
-		},
-		closeDetailDialog() {
-			this.detailDialog = false;
 		}
 	}
 }

@@ -1,17 +1,16 @@
 <template>
-  <section>
-    <mdb-row>
-      <mdb-col>
+<div class="animated fadeIn">
+    <b-row>
+      <b-col>
 		<general-detail v-bind:editable="true" 
 		/>
-      </mdb-col>
-    </mdb-row>
-    <mdb-row class="mt-3">
-      <mdb-col>
-        <mdb-card>
-          <mdb-card-body>
-            <mdb-card-title>History</mdb-card-title>
-		    <mdb-tbl sm bordered hover responsive>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-card header="History">
+          <div class="table-responsive-sm">
+            <table class="table b-table table-striped table-hover table-bordered table-sm">
 			    <colgroup>
 			      <col width="80">
 			      <col width="100">
@@ -22,7 +21,7 @@
 			      <col>
 			      <col width="180">
 			    </colgroup>
-		      <mdb-tbl-head>
+              <thead>
 		        <tr>
 		          <th class="text-center">버전</th>
 		          <th class="text-center">IBM 할인율</th>
@@ -33,8 +32,8 @@
 		          <th class="text-center">설명</th>
 		          <th class="text-center">생성일시</th>
 		        </tr>
-		      </mdb-tbl-head>
-		      <mdb-tbl-body>
+              </thead>
+              <tbody>
 				<tr v-for="(item) in history">
 				  <td class="text-center">{{ item.version }}</td>
 				  <td class="text-center">{{ item.ibmDcRate }}%</td>
@@ -45,26 +44,21 @@
 				  <td class="text-left">{{ item.description }}</td>
 				  <td class="text-center">{{ item.createdDt }}</td>
 				</tr>
-		      </mdb-tbl-body>
-		    </mdb-tbl>
-          </mdb-card-body>
-        </mdb-card>
-      </mdb-col>
-    </mdb-row>
-  </section>
+              </tbody>
+            </table>
+          </div>
+        </b-card>
+      </b-col>
+    </b-row>
+</div>
+
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
 import generalDetail from './GeneralDetail'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbTbl, mdbTblHead, mdbTblBody,
     	generalDetail
   	},
 	data: () => ({

@@ -1,45 +1,36 @@
 <template>
-  <section>
-    <mdb-row>
-      <mdb-col>
+<div class="animated fadeIn">
+    <b-row>
+      <b-col>
 		<iks-storage-detail 
 			v-bind:editable="true"
 		/>
-      </mdb-col>
-    </mdb-row>
-    <mdb-row class="mt-3">
-      <mdb-col>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
         <history-list 
         	v-bind:historyList="historyList" 
         	v-on:fire-detail-clicked="showHistoryDetail"
         />
-      </mdb-col>
-    </mdb-row>
-    <mdb-modal size="xl" :show="detailDialog" scrollable>
-      <mdb-modal-body>
+      </b-col>
+    </b-row>
+    
+    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS Storage" v-model="detailDialog" scrollable>
 		<iks-storage-detail 
 			v-bind:editable="false"
 			v-bind:versionId="versionId"
-			v-on:fire-dialog-closed="closeDetailDialog"
 		/>
-	  </mdb-modal-body>
-	</mdb-modal>
-  </section>
+	</b-modal>
+</div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
 import iksStorageDetail from './IKSStorageDetail'
 import historyList from './HistoryList'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbTbl, mdbTblHead, mdbTblBody,
     	iksStorageDetail,
     	historyList
   	},
@@ -52,11 +43,6 @@ export default {
 			return this.$store.state.estimate.storageHistory;
 		}
     },
-    watch: {
-		detailDialog (val) {
-			val || this.closeDetailDialog();
-		}
-    },
     created () {
 		this.initialize();
     },
@@ -67,9 +53,6 @@ export default {
 		showHistoryDetail(item) {
 			this.versionId = item.id;
 			this.detailDialog = true;
-		},
-		closeDetailDialog() {
-			this.detailDialog = false;
 		}
     }
 }

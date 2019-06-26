@@ -1,114 +1,93 @@
 <template>
 <div>
-  <mdb-card>
-    <mdb-card-body>
-	    <mdb-tbl sm bordered hover responsive>
-	      <mdb-tbl-head>
+  <b-row>
+    <b-col class="text-right">
+      <b-button size="sm" variant="secondary" class="m-1" @click="openServiceDialog">Service 추가</b-button>
+      <b-button size="sm" variant="secondary" class="m-1" @click="deleteService" v-bind:disabled="selected.length == 0">Service 삭제</b-button>
+      <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Classification 추가</b-button>
+    </b-col>
+  </b-row>
+  <div class="table-responsive-sm">
+    <table class="table b-table table-bordered table-sm">
+      <thead>
+        <tr>
+          <th class="text-center">Service</th>
+          <th class="text-center">Classification</th>
+          <th class="text-center">Type</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+	    <template v-for="(item) in services">
+	      <template v-if="item.classifications.length == 0">
 	        <tr>
-	          <th class="text-center">Service</th>
-	          <th class="text-center">Classification</th>
-	          <th class="text-center">Type</th>
-	          <th class="text-center">Actions</th>
+	          <th class="text-left" scope="row">
+	            <div class="custom-control custom-checkbox custom-control-inline">
+	              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
+	              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
+	            </div>
+	          </th>
+		      <td class="text-left"></td>
+		      <td class="text-center"></td>
+		      <td class="text-left"></td>
 	        </tr>
-	      </mdb-tbl-head>
-	      <mdb-tbl-body>
-		    <template v-for="(item) in services">
-		      <template v-if="item.classifications.length == 0">
-		        <tr>
-		          <th class="text-left" scope="row">
-		            <div class="custom-control custom-checkbox custom-control-inline">
-		              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
-		              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
-		            </div>
-		          </th>
-			      <td class="text-left"></td>
-			      <td class="text-center"></td>
-			      <td class="text-left"></td>
-		        </tr>
-		      </template>
-		      <template v-else>
-		        <template v-for="(classification, index) in item.classifications">
-		        <tr>
-		          <th class="text-left" scope="row" v-if="index == 0" :rowspan="item.classifications.length">
-		            <div class="custom-control custom-checkbox custom-control-inline">
-		              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
-		              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
-		            </div>
-		          </th>
-			      <td class="text-left">{{ classification.classificationName }}</td>
-			      <td class="text-center">{{ classification.classificationType }}</td>
-				  <td class="text-center">
-				    <a class="rotate-btn" @click="editAppsItem(item, classification, index)">
-				      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
-	                </a>
-	                &nbsp;
-				    <a class="rotate-btn" @click="deleteAppItem(item, classification, index)">
-				      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
-	                </a>
-				  </td>
-		        </tr>
-		        </template>
-		      </template>
-		    </template>
-  
-	      </mdb-tbl-body>
-	    </mdb-tbl>
-        <mdb-row>
-          <mdb-col class="text-left">
-	        <mdb-btn size="sm" color="secondary" @click="openServiceDialog">Service 추가</mdb-btn>
-	        <mdb-btn size="sm" color="secondary" @click="deleteService" v-bind:disabled="selected.length == 0">Service 삭제</mdb-btn>
-	        <mdb-btn size="sm" color="default" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Classification 추가</mdb-btn>
-          </mdb-col>
-        </mdb-row>
-    </mdb-card-body>
-  </mdb-card>
+	      </template>
+	      <template v-else>
+	        <template v-for="(classification, index) in item.classifications">
+	        <tr>
+	          <th class="text-left" scope="row" v-if="index == 0" :rowspan="item.classifications.length">
+	            <div class="custom-control custom-checkbox custom-control-inline">
+	              <input type="checkbox" class="custom-control-input" :id="item.serviceName" :value="item" v-model="selected" unchecked>
+	              <label class="custom-control-label" :for="item.serviceName">{{ item.serviceName }}</label>
+	            </div>
+	          </th>
+		      <td class="text-left">{{ classification.classificationName }}</td>
+		      <td class="text-center">{{ classification.classificationType }}</td>
+			  <td class="text-center">
+			    <a class="rotate-btn" @click="editAppsItem(item, classification, index)">
+			      <i class="fa fa-pencil fa-sm"></i>
+                </a>
+                &nbsp;
+			    <a class="rotate-btn" @click="deleteAppItem(item, classification, index)">
+			      <i class="fa fa-times fa-sm"></i>
+                </a>
+			  </td>
+	        </tr>
+	        </template>
+	      </template>
+	    </template>
+      </tbody>
+    </table>
+  </div>
 
-  <mdb-modal :show="serviceDialog" @close="closeServiceDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">Service 추가</h5>
-      <mdb-input label="서비스명" v-model="editedServItem.serviceName"/>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeServiceDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveServiceDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
-		  
-  <mdb-modal :show="applicationDialog" @close="closeAppsDialog">
-    <mdb-modal-body class="mx-3 grey-text">
-      <h5 class="mt-1 mb-2 text-center">{{ formTitle }}</h5>
-      <mdb-input label="Classification" v-model="editedAppsItem.classificationName"/>
-      <div>
-        <label for="classificationType">Classification Type</label>
-	    <select class="form-control" id="classificationType" v-model="editedAppsItem.classificationType">
-	      <option value=""></option>
-	      <option v-for="(item, index) in classificationTypeItems" :value="item">{{ item }}</option>
-	    </select>
-      </div>
-      <div class="mt-5 text-center">
-        <mdb-btn outline="primary" size="md" @click="closeAppsDialog">취소</mdb-btn>
-        <mdb-btn color="primary" size="md" @click="saveAppsDialog">저장</mdb-btn>                   
-      </div>
-    </mdb-modal-body>
-  </mdb-modal>
+  <b-modal centered no-close-on-backdrop title="Service" v-model="serviceDialog" @close="closeServiceDialog" @cancel="closeServiceDialog" @ok="saveServiceDialog">
+    <b-form>
+      <b-form-group label="서비스명" label-for="serviceName" :label-cols="4" >
+        <b-form-input id="serviceName" type="text" v-model="editedServItem.serviceName"></b-form-input>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 
+  <b-modal centered no-close-on-backdrop title="Application" v-model="applicationDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
+    <b-form>
+      <b-form-group label="Classification" label-for="classificationName" :label-cols="4" >
+        <b-form-input id="classificationName" type="text" v-model="editedAppsItem.classificationName"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Classification Type" label-for="classificationType" :label-cols="4">
+        <b-form-select id="classificationType"
+          :plain="true"
+          v-model="editedAppsItem.classificationType">
+	        <option value=""></option>
+	        <option v-for="(item, index) in classificationTypeItems" :value="item">{{ item }}</option>
+        </b-form-select>
+      </b-form-group>
+    </b-form>
+  </b-modal>
 </div>
 </template>
 
 <script>
-import { mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
-
 export default {
-  	components: {
-    	mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTbl, mdbTblHead, mdbTblBody
-  	},
 	data: () => ({
 		selected: [],
 
@@ -125,13 +104,9 @@ export default {
 	}),
 	props: [
 		'services',
-		'classificationTypeItems',
-		'title'
+		'classificationTypeItems'
 	],
 	computed: {
-		formTitle () {
-			return this.editedAppsIndex === -1 ? 'Classification 추가' : 'Classification 수정';
-		}
     },
 	created () {
 		this.initialize()
@@ -147,7 +122,6 @@ export default {
 	methods: {
 		initialize() {
 		},
-		
 		openServiceDialog() {
 			this.selected = [];
 			this.editedServIndex = -1;
@@ -160,15 +134,17 @@ export default {
 				this.editedServItem = Object.assign({}, this.defaultServItem);
 			}, 300);
 		},
-		saveServiceDialog() {
+		saveServiceDialog(e) {
 			if(!this.editedServItem.serviceName) {
 				alert('서비스명 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			
 			for(let service of this.services) {
 				if(service.serviceName == this.editedServItem.serviceName) {
 					alert('존재하는 Service입니다. 다시 입력하세요.');
+					e.preventDefault()
 					return;
 				}
 			}
@@ -210,13 +186,15 @@ export default {
 			this.editedAppsItem = Object.assign({}, appItem);
 			this.applicationDialog = true;
 		},
-		saveAppsDialog () {
+		saveAppsDialog (e) {
 			if(!this.editedAppsItem.classificationName) {
 				alert('Classification 값을 입력하세요');
+				e.preventDefault()
 				return;
 			}
 			if(!this.editedAppsItem.classificationType) {
 				alert('Classification Type 값을 선택하세요');
+				e.preventDefault()
 				return;
 			}
 			

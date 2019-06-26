@@ -1,21 +1,17 @@
 <template>
-<mdb-container fluid>
-	  <mdb-row>
-	    <h6 class="font-weight-bold mt-3">요약</h6>
-	  </mdb-row>
-	  <mdb-row>
-	    <mdb-tbl sm bordered hover responsive>
-	      <mdb-tbl-head>
-	        <tr class="text-center">
-	          <th>Environment</th>
-	          <th>Product</th>
-	          <th>Cloud 사용료 (원)</th>
-	          <th>인건비 (원)</th>
-	          <th>월 비용 합계 (원)</th>
-	          <th>GB당 원가 (원)</th>
+      <div class="table-responsive-sm">
+        <table class="table b-table table-bordered table-sm">
+          <thead>
+	        <tr>
+	          <th class="text-center">Environment</th>
+	          <th class="text-center">Product</th>
+	          <th class="text-center">Cloud 사용료 (원)</th>
+	          <th class="text-center">인건비 (원)</th>
+	          <th class="text-center">월 비용 합계 (원)</th>
+	          <th class="text-center">GB당 원가 (원)</th>
 	        </tr>
-	      </mdb-tbl-head>
-	      <mdb-tbl-body>
+          </thead>
+          <tbody>
 	        <template v-for="(item) in estimate.environments">
 			  <template v-for="(product, productIndex) in item.products">
 				  <tr>
@@ -36,26 +32,16 @@
 			  <td class="font-weight-bold text-right"></td>
 			  </td>
 		    </tr>
-	      </mdb-tbl-body>
-	    </mdb-tbl>
-	  </mdb-row>
-</mdb-container>
+          </tbody>
+        </table>
+      </div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbTbl, mdbTblHead, mdbTblBody
   	},
 	data: () => ({
-	  	headers: [],
-		headerClass: "grey lighten-1 body-2 text-weight-bold",
-		no_data_text: 'No data available',
 	}),
 	props: [
 		'estimate'
@@ -71,6 +57,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-</style>

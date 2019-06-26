@@ -1,77 +1,71 @@
 <template>
-  <section>
-    <mdb-row>
-      <mdb-col>
-        <mdb-card>
-          <mdb-card-body>
-		    <mdb-tbl sm bordered hover responsive>
-			    <colgroup>
-			      <col>
-			      <col width="150">
-			      <col width="150">
-			      <col width="150">
-			      <!--col width="150"-->
-			      <col width="180">
-			    </colgroup>
-		      <mdb-tbl-head>
-		        <tr>
-		          <th class="text-center">Project</th>
-		          <th class="text-center">기본정보</th>
-		          <th class="text-center">용량산정</th>
-		          <th class="text-center">원가견적</th>
-		          <!--th class="text-center">실견적</th-->
-		          <th class="text-center">생성일시</th>
-		        </tr>
-		      </mdb-tbl-head>
-		      <mdb-tbl-body>
-				<tr v-for="(item) in projects">
-				  <td class="text-left">{{ item.name }}</td>
-				  <td class="text-center">
-				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="viewProject(item)">기본정보</button>
-				  </td>
-				  <td class="text-center">
-				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="goVolume(item)">용량산정</button>
-				  </td>
-				  <td class="text-center">
-				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="goCostEstimate(item)">원가견적</button>
-				  </td>
-				  <!--td class="text-center">
-				  	<button type="button" class="btn btn-outline-indigo btn-sm m-0" @click="goActualEstimate(item)">실견적</button>
-				  </td-->
-				  <td class="text-center">{{ item.createdDt }}</td>
-				</tr>
-		      </mdb-tbl-body>
-		    </mdb-tbl>
-	        <mdb-row>
-	          <mdb-col class="text-right">
-		        <mdb-btn size="md" color="primary" @click="addProject">Project 추가</mdb-btn>                   
-	          </mdb-col>
-	        </mdb-row>
-          </mdb-card-body>
-        </mdb-card>
-      </mdb-col>
-    </mdb-row>
+<div class="animated fadeIn">
+  <b-card>
+    <b-row>
+      <b-col>
+        <div class="table-responsive-sm">
+          <table class="table b-table table-striped table-hover table-bordered table-sm">
+		    <colgroup>
+		      <col>
+		      <col width="150">
+		      <col width="150">
+		      <col width="150">
+		      <!--col width="150"-->
+		      <col width="180">
+		    </colgroup>
+          <thead>
+	        <tr>
+	          <th class="text-center">Project명</th>
+	          <th class="text-center">기본정보</th>
+	          <th class="text-center">용량산정</th>
+	          <th class="text-center">원가견적</th>
+	          <!--th class="text-center">실견적</th-->
+	          <th class="text-center">생성일시</th>
+	        </tr>
+          </thead>
+          <tbody>
+			<tr v-for="(item) in projects">
+			  <td class="text-left">{{ item.name }}</td>
+			  <td class="text-center">
+			  	<b-button variant="outline-primary" size="sm" @click="viewProject(item)">기본정보</b-button>
+			  </td>
+			  <td class="text-center">
+			  	<b-button variant="outline-primary" size="sm" @click="goVolume(item)">용량산정</b-button>
+			  </td>
+			  <td class="text-center">
+			  	<b-button variant="outline-primary" size="sm" @click="goCostEstimate(item)">원가견적</b-button>
+			  </td>
+			  <!--td class="text-center">
+			  	<b-button variant="outline-primary" size="sm" @click="goActualEstimate(item)">실견적</b-button>
+			  </td-->
+			  <td class="text-center">{{ item.createdDt }}</td>
+			</tr>
+          </tbody>
+          </table>
+        </div>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col class="text-right">
+          <b-button variant="primary" size="sm" @click="addProject">Project 추가</b-button>
+        </b-col>
+      </b-row>
+  </b-card>
     <projectDetail
     	v-bind:projectId="projectId"
     	v-bind:dialogVisible="projectDetailDialog"
     	v-on:fire-dialog-saved="saveProjectDetailDialog"
     	v-on:fire-dialog-closed="closeProjectDetailDialog"
     />
-  </section>
+</div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
 import projectDetail from './ProjectDetail'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbTbl, mdbTblHead, mdbTblBody,
-    	projectDetail
+  		projectDetail
   	},
 	data: () => ({
       	projects: [],
@@ -103,7 +97,7 @@ export default {
 			this.projectDetailDialog = false;
 		},
 		goVolume(project) {
-			this.$router.push({ name: 'project_volume', params: { projectId: project.id }});
+			this.$router.push({ name: 'ProjectVolume', params: { projectId: project.id }});
 		},
 		goCostEstimate(project) {
 			this.$router.push({ name: 'project_cost_estimate', params: { projectId: project.id, editable: true }});

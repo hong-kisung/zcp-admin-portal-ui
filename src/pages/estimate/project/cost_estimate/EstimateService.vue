@@ -1,18 +1,18 @@
 <template>
-<mdb-container fluid>
-  <mdb-row>
-    <mdb-col sm="6" class="text-left">
+<div>
+  <b-row>
+    <b-col sm="6" class="text-left">
       <h6 class="font-weight-bold mt-3">{{ title }}</h6>
-    </mdb-col>
-    <mdb-col sm="6" class="text-right">
-      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="openEnvironmentDialog">Product 추가</mdb-btn>
-      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="deleteProduct" v-bind:disabled="selected.length == 0">Product 삭제</mdb-btn>
-      <mdb-btn size="sm" outline="secondary" v-if="editable && !estimate.disabled" @click="openAppsDialog">Classification 추가</mdb-btn>
-    </mdb-col>
-  </mdb-row>
-  <mdb-row>
-    <mdb-tbl sm bordered hover responsive>
-      <mdb-tbl-head>
+    </b-col>
+    <b-col sm="6" class="text-right">
+      <b-button size="sm" variant="secondary" class="m-1" v-if="editable && !estimate.disabled" @click="openEnvironmentDialog">Product 추가</b-button>
+      <b-button size="sm" variant="secondary" class="m-1" v-if="editable && !estimate.disabled" @click="deleteProduct" v-bind:disabled="selected.length == 0">Product 삭제</b-button>
+      <b-button size="sm" variant="secondary" class="m-1" v-if="editable && !estimate.disabled" @click="openAppsDialog">Classification 추가</b-button>
+    </b-col>
+  </b-row>
+  <div class="table-responsive-sm">
+    <table class="table b-table table-bordered table-sm">
+      <thead>
 		  <tr>
 			<th class="text-center">Product</th>
 			<th class="text-center" v-show="estimateType == 'cloudZService'">Service</th>
@@ -29,21 +29,21 @@
 			<th class="text-center">Yearly (원)</th>
 			<th class="text-center" v-if="editable">Actions</th>
 		  </tr>
-      </mdb-tbl-head>
-      <mdb-tbl-body>
+      </thead>
+      <tbody>
 	  	<template v-for="(product, productIndex) in estimate.products">
 	  	  <template v-if="product.services.length == 0">
 			  <tr>
 				<td class="font-weight-bold text-left">
 			      <div class="custom-control custom-checkbox custom-control-inline">
-			        <input type="checkbox" class="custom-control-input" v-show="editable" :id="product.productName" :value="product" v-model="selected" unchecked>
-			        <label class="custom-control-label" :for="product.productName">{{ product.productName }}</label>
+			        <input type="checkbox" class="custom-control-input" v-show="editable" :id="getCheckboxId(product.productName)" :value="product" v-model="selected" unchecked>
+			        <label class="custom-control-label" :for="getCheckboxId(product.productName)">{{ product.productName }}</label>
 			      </div>
 				</td>
-				<td class="grey font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ? 9:5">{{ product.productName }} Summary</td>
-				<td class="grey font-weight-bold text-right">{{ product.sumMonthly | formatNumber }}</td>
-				<td class="grey font-weight-bold text-right">{{ product.sumYearly | formatNumber }}</td>
-				<td class="grey font-weight-bold" v-if="editable">
+				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ? 9:5">{{ product.productName }} Summary</td>
+				<td class="font-weight-bold text-right">{{ product.sumMonthly | formatNumber }}</td>
+				<td class="font-weight-bold text-right">{{ product.sumYearly | formatNumber }}</td>
+				<td class="font-weight-bold" v-if="editable">
 				</td>
 			  </tr>
 	  	  </template>
@@ -53,11 +53,11 @@
 				  	<tr>
 					  <td class="font-weight-bold text-left" v-if="serviceIndex == 0 && index == 0" v-bind:rowspan="getRowspan(1, product.services)">
 				        <div class="custom-control custom-checkbox custom-control-inline">
-				          <input type="checkbox" class="custom-control-input" v-show="editable" :id="estimate.environmentName + product.productName" :value="product" v-model="selected" unchecked>
-				          <label class="custom-control-label" :for="estimate.environmentName + product.productName">{{ product.productName }}</label>
+				          <input type="checkbox" class="custom-control-input" v-show="editable" :id="getCheckboxId(product.productName)" :value="product" v-model="selected" unchecked>
+				          <label class="custom-control-label" :for="getCheckboxId(product.productName)">{{ product.productName }}</label>
 				        </div>
 					  </td>
-					  <td class="font-weight-bold text-center" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
+					  <td class="font-weight-bold text-left" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
 					  <td class="font-weight-bold text-left" :class="classification.updated ? 'red-text':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
@@ -71,17 +71,17 @@
 					  <td class="text-right" :class="classification.updated ? 'red-text':''">{{ classification.pricePerYearly | formatNumber }}</td>
 					  <td class="text-center" v-if="editable">
 					    <a class="rotate-btn" @click="editAppsItem(productIndex, serviceIndex, index, classification)">
-					      <mdb-icon icon="pencil-alt" class="fa-md grey-text"></mdb-icon>
+					      <i class="fa fa-pencil fa-sm"></i>
 		                </a>
 		                &nbsp;
 					    <a class="rotate-btn" @click="deleteAppsItem(productIndex, serviceIndex, index, classification)">
-					      <mdb-icon icon="times" class="fa-md grey-text"></mdb-icon>
+					      <i class="fa fa-times fa-sm"></i>
 		                </a>
 					  </td>
 				    </tr>
 			    </template>
 			  </template>
-			  <tr class="grey">
+			  <tr>
 				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ? 10:5">{{ product.productName }} Summary</td>
 				<td class="font-weight-bold text-right">{{ product.sumMonthly | formatNumber }}</td>
 				<td class="font-weight-bold text-right">{{ product.sumYearly | formatNumber }}</td>
@@ -91,16 +91,16 @@
 		  </template>
 	  	</template>
 	  	
-	  	<tr class="blue-grey">
+	  	<tr>
 		  <td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ?  11:6">Summary</td>
 		  <td class="font-weight-bold text-right">{{ estimate.sumMonthly | formatNumber }}</td>
 		  <td class="font-weight-bold text-right">{{ estimate.sumYearly | formatNumber }}</td>
 		  <td class="font-weight-bold" v-if="editable">
 		  </td>
 	    </tr>
-      </mdb-tbl-body>
-    </mdb-tbl>
-  </mdb-row>
+      </tbody>
+    </table>
+  </div>
  	<estimate-environment-dialog v-bind:editedItem="editedItem"
  								 v-bind:estimate="estimate"
  								 v-bind:projectVolumes="projectVolumes"
@@ -121,24 +121,15 @@
  								 v-on:fire-dialog-saved="saveAppsDialog"
  								 v-on:fire-dialog-closed="closeAppsDialog"
  	/>
-</mdb-container>
+</div>
 </template>
 
 <script>
-import { mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter, mdbIcon, mdbBtn } from 'mdbvue'
-import { mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue' 
-import { mdbTbl, mdbTblHead, mdbTblBody } from 'mdbvue' 
-import { mdbInput } from 'mdbvue'
 import estimateEnvironmentDialog from './EnvironmentDialog'
 import estimateItemDialog from './EstimateItemDialog'
 
 export default {
   	components: {
-    	mdbContainer, mdbRow, mdbCol, mdbCard, mdbCardTitle, mdbCardBody, mdbCardText, mdbCardFooter,
-    	mdbIcon, mdbBtn,
-    	mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter,
-    	mdbInput,
-    	mdbTbl, mdbTblHead, mdbTblBody,
     	estimateEnvironmentDialog, estimateItemDialog
   	},
 	data: () => ({
@@ -167,6 +158,7 @@ export default {
 	}),
 	props: [
 		'title',
+		'estimateEnvironment',
 		'estimateType',
 		'estimate',
 		'iksGeneral',
@@ -204,6 +196,9 @@ export default {
 	},
 	methods: {
 		initialize() {
+		},
+		getCheckboxId(productName) {
+			return this.estimateEnvironment + '-' + this.estimateType + '-' + productName;
 		},
 		getRowspan(colIndex, items, item) {
 			let rowCount = 0;
