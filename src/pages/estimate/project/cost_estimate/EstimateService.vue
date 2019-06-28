@@ -103,18 +103,12 @@
   </div>
  	<estimate-environment-dialog v-bind:editedItem="editedItem"
  								 v-bind:estimate="estimate"
- 								 v-bind:projectVolumes="projectVolumes"
  								 v-bind:environmentDialog="environmentDialog"
  								 v-on:fire-dialog-saved="saveEnvironmentDialog"
  								 v-on:fire-dialog-closed="closeEnvironmentDialog"
  	/>
  	<estimate-item-dialog 		 v-bind:editedItem="editedAppsItem"
  								 v-bind:estimate="estimate"
- 								 v-bind:iksGeneral="iksGeneral"
- 								 v-bind:vmVersion="vmVersion"
- 								 v-bind:storageVersion="storageVersion"
- 								 v-bind:productMspCostVersion="productMspCostVersion"
- 								 v-bind:productReferences="productReferences"
  								 v-bind:appsDialog="appsDialog"
  								 v-bind:isNewAppsItem="isNewAppsItem"
  								 v-bind:estimateType="estimateType"
@@ -161,16 +155,28 @@ export default {
 		'estimateEnvironment',
 		'estimateType',
 		'estimate',
-		'iksGeneral',
-		'vmVersion',
-		'storageVersion',
-		'productMspCostVersion',
-		'productReferences',
-		'projectVolumes',
 		'editable',
 		'referenceUpdateStatus'
 	],
 	computed: {
+		productReferences: function() {
+			return this.$store.state.estimate.productReferences
+		},
+		projectVolumes: function() {
+			return this.$store.state.estimate.projectVolume
+		},
+		iksGeneral: function() {
+			return this.$store.state.estimate.general
+		},
+		vmVersion: function() {
+			return this.$store.state.estimate.vm
+		},
+		storageVersion: function() {
+			return this.$store.state.estimate.storage
+		},
+		productMspCostVersion: function() {
+			return this.$store.state.estimate.productMspCost
+		}
 	},
 	watch: {
 		referenceUpdateStatus: function() {
@@ -242,8 +248,8 @@ export default {
 		saveEnvironmentDialog() {
 			for(let productInfo of this.editedItem.products) {
 				let product = {};
-				product.productId = productInfo.id;
-				product.productName = productInfo.name;
+				product.productId = productInfo.productId;
+				product.productName = productInfo.productName;
 				product.services = new Array();
 				this.estimate.products.push(product);
 				

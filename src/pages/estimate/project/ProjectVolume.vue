@@ -178,7 +178,6 @@ export default {
   	},
 	data: () => ({
 		projectId: 0,
-  		volumes: {},
 	  	selected: [],
   		clusterDialog: false,
   		appsDialog: false,
@@ -194,6 +193,9 @@ export default {
 	props: [
 	],
 	computed: {
+		volumes: function() {
+			return this.$store.state.estimate.projectVolume
+		}
 	},
 	created () {
 		this.initialize()
@@ -204,17 +206,12 @@ export default {
 				this.projectId = this.$route.params.projectId;
 			}
 			
-			this.$http.get('/api/estimate/project/' + this.projectId + '/volume').then(response => {
-				this.volumes = response.data;
-			})
+			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/project/' + this.projectId + '/volume', this.volumes).then(response => {
-					alert("저장되었습니다.");
-					this.initialize();
-					this.selected = [];
-				})
+				this.$store.dispatch('estimate/saveProjectVolume', {projectId: this.projectId, volumes: this.volumes})
+				this.selected = [];
 			}
 		},
 		cancel() {

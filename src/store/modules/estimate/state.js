@@ -9,7 +9,25 @@ export default {
 	storageHistory: [],
 	storageHistoryDetail: {fileStorages: []},
 	
+	products: [],
 	productMspCost: {},
 	productMspCostHistory: [],
-	productMspCostHistoryDetail: {}
+	productMspCostHistoryDetail: {},
+	
+	hardwareTypes: [],
+	fileStorageTypes: [],
+	enduranceIops: [],
+	classificationTypes: [],
+	
+	projects: [],
+	project: {},
+	projectVolume: {},
+	projectCostEstimate: {	//편집중인 원가견적
+  		environments: [],
+  		summary: {environments: []}
+	},
+	productReferences: [],	//product addon-service & estimate template
+	projectCostEstimateHistory: [],
+	projectCostEstimateHistoryDetailStatus: false,
+	projectCostEstimateHistoryDetail: {}
 }

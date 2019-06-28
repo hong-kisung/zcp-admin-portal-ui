@@ -16,16 +16,30 @@
 		      <b-form-group label="설명" label-for="description" :label-cols="3" >
 		        <b-form-input id="description" type="text" v-model="estimate.description"></b-form-input>
 		      </b-form-group>
+		      <b-form-group label="기준정보 버전" label-for="generalVersion" :label-cols="3" >
+		        <b-button size="sm" variant="info" @click="generalDialog=true; generalVersionId=estimate.generalId">현재버전({{ estimate.generalVersion }}) 조회</b-button>
+		        <b-button size="sm" v-if="editable" :variant="estimate.generalId==iksGeneral.id ? 'info' : 'danger'" @click="generalDialog=true; generalVersionId=iksGeneral.id">최신버전({{ iksGeneral.version }}) 조회</b-button>
+		      </b-form-group>
+		      <b-form-group label="VM 버전" label-for="iksVmVersionVersion" :label-cols="3" >
+		        <b-button size="sm" variant="info" @click="iksVmDialog=true; iksVmVersionId=estimate.iksVmVersionId">현재버전({{ estimate.iksVmVersionVersion }}) 조회</b-button>
+		        <b-button size="sm" v-if="editable" :variant="estimate.iksVmVersionId==vmVersion.id ? 'info' : 'danger'" @click="iksVmDialog=true; iksVmVersionId=vmVersion.id">최신버전({{ vmVersion.version }}) 조회</b-button>
+		      </b-form-group>
+		      <b-form-group label="Storage 버전" label-for="iksStorageVersionVersion" :label-cols="3" >
+		        <b-button size="sm" variant="info" @click="iksStorageDialog=true; iksStorageVersionId=estimate.iksStorageVersionId">현재버전({{ estimate.iksStorageVersionVersion }}) 조회</b-button>
+		        <b-button size="sm" v-if="editable" :variant="estimate.iksStorageVersionId==storageVersion.id ? 'info' : 'danger'" @click="iksStorageDialog=true; iksStorageVersionId=storageVersion.id">최신버전({{ storageVersion.version }}) 조회</b-button>
+		      </b-form-group>
+		      <b-form-group label="MSP 비용 버전" label-for="mspCostVersionVersion" :label-cols="3" >
+		        <b-button size="sm" variant="info" @click="mspCostDialog=true; mspCostVersionId=estimate.mspCostVersionId">현재버전({{ estimate.mspCostVersionVersion }}) 조회</b-button>
+		        <b-button size="sm" v-if="editable" :variant="estimate.mspCostVersionId==productMspCostVersion.id ? 'info' : 'danger'" @click="mspCostDialog=true; mspCostVersionId=productMspCostVersion.id">최신버전({{ productMspCostVersion.version }}) 조회</b-button>
+		      </b-form-group>
 		    </b-form>
 	        <b-row>
 	          <b-col>
-		        <estimate-summary 
-				  	v-bind:estimate="estimate.summary"
-				  />
+		        <estimate-summary/>
 	          </b-col>
 	        </b-row>
 		  </b-tab>
-		  <b-tab v-for="(environment, index) in estimate.environments" :key="environment.environmentId" :title="environment.environmentName">
+		  <b-tab v-for="(environment, index) in estimate.environments" :key="environment.environmentId" :title="environment.environmentName" :disabled="environment.environmentDisabled">
 		    <b-row>
 		      <b-col>
 				<estimate-service 
@@ -33,12 +47,6 @@
 					v-bind:estimateEnvironment="environment.environmentName"
 					v-bind:estimateType="cloudZServiceEstimateType"
 					v-bind:estimate="environment.cloudZService"
-		 			v-bind:iksGeneral="iksGeneral"
-		 			v-bind:vmVersion="vmVersion"
-		 			v-bind:storageVersion="storageVersion"
-		 			v-bind:productMspCostVersion="productMspCostVersion"
-		 			v-bind:productReferences="productReferences"
-		 			v-bind:projectVolumes="projectVolumes"
 		 			v-bind:editable="editable"
 		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
 		 			v-on:fire-estimate-changed="changeEstimate"
@@ -53,12 +61,6 @@
 					v-bind:estimateEnvironment="environment.environmentName"
 					v-bind:estimateType="storageServiceEstimateType"
 					v-bind:estimate="environment.storageService"
-		 			v-bind:iksGeneral="iksGeneral"
-		 			v-bind:vmVersion="vmVersion"
-		 			v-bind:storageVersion="storageVersion"
-		 			v-bind:productMspCostVersion="productMspCostVersion"
-		 			v-bind:productReferences="productReferences"
-		 			v-bind:projectVolumes="projectVolumes"
 		 			v-bind:editable="editable"
 		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
 		 			v-on:fire-estimate-changed="changeEstimate"
@@ -70,16 +72,12 @@
 		</b-tabs>
         <b-row class="mt-2">
           <b-col cols="9">
-	        <b-button size="sm" variant="info" class="m-1" @click="historyDialog = true">History 조회</b-button>
-	        <b-button size="sm" variant="info" class="m-1" @click="generalDialog = true">기준정보 조회</b-button>
-	        <b-button size="sm" variant="info" class="m-1" @click="iksVmDialog = true">VM 비용 조회</b-button>
-	        <b-button size="sm" variant="info" class="m-1" @click="iksStorageDialog = true">Storage 비용 조회</b-button>
-	        <b-button size="sm" variant="info" class="m-1" @click="mspCostDialog = true">MSP 비용 조회</b-button>
-	        <b-button size="sm" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate" :disabled="!savable">견적서 Update</b-button>
+	        <b-button size="sm" variant="info" class="m-1" @click="showHistory">History 조회</b-button>
+	        <b-button size="sm" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate">견적서 Update</b-button>
           </b-col>
           <b-col cols="3" class="text-right">
             <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
-	        <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save" :disabled="!savable">저장</b-button>
+	        <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
 	        <b-button size="sm" variant="primary" class="m-1" v-if="!editable" @click="remove">삭제</b-button>
           </b-col>
         </b-row>
@@ -113,7 +111,6 @@
 </template>
 
 <script>
-import { Aside as AppAside, AsideToggler } from '@coreui/vue'
 import estimateSummary from './cost_estimate/EstimateSummary'
 import estimateService from './cost_estimate/EstimateService'
 import costEstimateHistory from './cost_estimate/CostEstimateHistory'
@@ -124,58 +121,83 @@ import productMspCostDetail from './../platform/MspCostDetail'
 
 export default {
   	components: {
-  		AppAside, AsideToggler,
   		estimateSummary, estimateService, costEstimateHistory, generalDetail, iksVmDetail, iksStorageDetail, productMspCostDetail
   	},
 	data: () => ({
 		cloudZServiceEstimateType: 'cloudZService',
 		storageServiceEstimateType: 'storageService',
 		
- 		iksGeneral: {},
-		vmVersion: {},
-		storageVersion: {},
-		productMspCostVersion: {},
-		
-		environments: [],
-		tabLinks: [
-	      	{ text: '요약' }
-	    ],
-      	estimate: {
-      		environments: [],
-      		summary: {environments: []}
-      	},
       	historyDialog: false,
-      	
       	generalDialog: false,
-      	generalVersionId: 0,
       	iksVmDialog: false,
-      	iksVmVersionId: 0,
       	iksStorageDialog: false,
-      	iksStorageVersionId: 0,
       	mspCostDialog: false,
+      	
+      	generalVersionId: 0,
+      	iksVmVersionId: 0,
+      	iksStorageVersionId: 0,
       	mspCostVersionId: 0,
       	
-      	productReferences : [],
-      	projectVolumes: {},
-      	showEstimateUpdate: false,
       	referenceUpdateStatus: false,
       	
       	projectId: 0,
       	editable: false,
-      	savable: true,
-      	historyUpdateStatus: false,
       	estimateDetail: {estimateId: 0}
 	}),
 	props: [
 	],
 	computed: {
+		estimate: function() {
+			if(this.$store.state.estimate.projectCostEstimateHistoryDetailStatus) {
+				this.editable = false
+			}
+			return this.$store.state.estimate.projectCostEstimate
+		},
+		productReferences: function() {
+			return this.$store.state.estimate.productReferences
+		},
+		projectVolumes: function() {
+			return this.$store.state.estimate.projectVolume
+		},
+		iksGeneral: function() {
+			return this.$store.state.estimate.general
+		},
+		vmVersion: function() {
+			return this.$store.state.estimate.vm
+		},
+		storageVersion: function() {
+			return this.$store.state.estimate.storage
+		},
+		productMspCostVersion: function() {
+			return this.$store.state.estimate.productMspCost
+		},
+		showEstimateUpdate: function() {
+			if(!this.estimate.id || this.estimate.id == 0) return false
+			if(this.estimate.generalId != this.iksGeneral.id || this.estimate.iksVmVersionId != this.vmVersion.id
+				 || this.estimate.iksStorageVersionId != this.storageVersion.id || this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
+				return true
+			} 
+		},
+		projectCostEstimateHistoryDetail: function() {
+			return this.$store.state.estimate.projectCostEstimateHistoryDetail
+		}
 	},
 	watch: {
 	},
 	created () {
 		this.initialize();
 	},
+	beforeDestroy() {
+		this.$store.commit('estimate/setProjectCostEstimateHistoryDetailStatus', false)
+		if(this.historyDialog) {
+			this.showHistory();
+		}
+	},
 	methods: {
+		showHistory() {
+			this.historyDialog = !this.historyDialog;
+			this.$store.commit('setAsideToggleStatus', {status: this.historyDialog});
+		},
 		initialize() {
 			if(this.$route.params.projectId) {
 				this.projectId = this.$route.params.projectId;
@@ -184,113 +206,19 @@ export default {
 				this.editable = this.$route.params.editable;
 			}
 			
-			//if(!this.editable) {
-			//	return;
-			//}
-			
-			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate').then(response => {
-				if(response && response.data) {
-					this.estimate = response.data;
-				}
-				
-				this.createTabLinks();
-				this.getEnvironmentInfo();
-
-				this.getGeneralInfo();
-				this.getVmInfo();
-				this.getStorageInfo();
-				this.getMspInfo();
-				this.getProductInfo();
-				this.getVolumeInfo();
-				
-			}).catch(error => {
-				alert(error.response.data.message);
-			})
-		},
-		viewHistoryDetail() {
-			this.editable = false;
-			
-			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
-				if(response && response.data) {
-					this.estimate = response.data;
-					this.generalVersionId = this.estimate.generalId;
-					this.iksVmVersionId = this.estimate.iksVmVersionId;
-					this.iksStorageVersionId = this.estimate.iksStorageVersionId;
-					this.mspCostVersionId = this.estimate.mspCostVersionId;
-				}
-				
-				this.createTabLinks();
-				
-			}).catch(error => {
-				alert(error.response.data.message);
-			})
-		},
-		createTabLinks() {
-			this.tabLinks = this.tabLinks.slice(0,1);	
-			for(let env of this.estimate.environments) {
-				let tabItem = {};
-				tabItem.text = env.environmentName;
-				tabItem.environmentId = env.environmentId;
-				tabItem.environmentName = env.environmentName;
-				this.tabLinks.push(tabItem);
+			if(!this.editable) {
+				return;
 			}
-		},
-		getEnvironmentInfo() {
-			this.$http.get('/api/estimate/project/' + this.projectId + '/environment').then(response => {
-				if(response && response.data) {
-					this.environments = response.data;
-					
-					for(let tabItem of this.tabLinks.slice(1)) {
-						let envData = response.data.find(environment => environment.id === tabItem.environmentId);
-						if(!envData) {
-							
-							tabItem.text += " (Removed)";
-							tabItem.environmentDisabled = true;
-							
-							//delete estimate items
-							let target = this.estimate.environments.find(environment => environment.environmentId === tabItem.environmentId);
-							target.environmentName += " (Removed)";
-							target.cloudZService.disabled = true;
-							target.cloudZService.products.length = 0;
-							target.storageService.disabled = true;
-							target.storageService.products.length = 0;
-						}
-					}
-					
-					for(let item of response.data) {
-						let envData = this.estimate.environments.find(env => env.environmentId === item.id);
-						if(!envData) {
-				 			envData = {};
-				 			envData.environmentId = item.id;
-				 			envData.environmentName = item.name;
-				 			envData.cloudZService = {};
-				 			envData.cloudZService.products = new Array();
-				 			envData.storageService = {};
-				 			envData.storageService.products = new Array();
-				 			this.estimate.environments.push(envData);
-
-							let tabItem = {};
-							tabItem.text = item.name;
-							tabItem.environmentId = item.id;
-							tabItem.environmentName = item.name;
-							this.tabLinks.push(tabItem);
-						}	 		
-					}
-				}
-			}).catch(error => {
-				
-			})
-		},
-		getActiveTabIndex(index) {
-			if(this.editable && this.tabLinks[index].environmentDisabled) {
-				alert('삭제된 Environment입니다.');
-				this.active = 0;
-			}
-		},
-		getVolumeInfo() {
-			this.$http.get('/api/estimate/project/' + this.projectId + '/volume').then(response => {
-				this.projectVolumes = response.data;
-			})
+			
+			this.$store.dispatch('estimate/getProjectCostEstimate', {projectId: this.projectId})
+			this.$store.dispatch('estimate/getProjectCostEstimateHistory', {projectId: this.projectId})
+			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
+			this.$store.dispatch('estimate/getProductReferences')
+			
+			this.$store.dispatch('estimate/getHardwareTypes')
+			this.$store.dispatch('estimate/getFileStorageTypes')
+			this.$store.dispatch('estimate/getEnduranceIops')
+			this.$store.dispatch('estimate/getClassificationTypes')
 		},
 		showReferenceMessage(mtitle, message) {
 			this.$bvToast.toast(message, {
@@ -300,101 +228,9 @@ export default {
 				appendToast: true
 			})
 		},
-		getGeneralInfo() {
-			this.$http.get('/api/estimate/general').then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.iksGeneral = response.data;
-					this.generalVersionId = this.iksGeneral.id;
-					
-					if(this.estimate.id > 0 && this.estimate.generalId != this.iksGeneral.id) {
-						this.showReferenceMessage('기준정보', '최신 버전이 아닙니다. ');
-						this.showEstimateUpdate = true;
-					}
-				} else {
-					this.savable = false;
-					this.showReferenceMessage('기준정보', '조회된 데이터가 없습니다.');
-				}
-			}).catch(error => {
-				this.savable = false;
-				this.showReferenceMessage('기준정보', error.response.data.message);
-			})
-		},
-		getVmInfo() {
-			this.$http.get('/api/estimate/iks_costs/vm').then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.vmVersion = response.data;
-					this.iksVmVersionId = this.vmVersion.id;
-					
-					if(this.estimate.id > 0 && this.estimate.iksVmVersionId != this.vmVersion.id) {
-						this.showReferenceMessage('VM 비용', '최신 버전이 아닙니다');
-						this.showEstimateUpdate = true;
-					}
-				} else {
-					this.savable = false;
-					this.showReferenceMessage('VM 비용', '조회된 데이터가 없습니다.');
-				}
-			}).catch(error => {
-				this.savable = false;
-				this.showReferenceMessage('VM 비용', error.response.data.message);
-			})
-		},
-		getStorageInfo() {
-			this.$http.get('/api/estimate/iks_costs/storage').then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.storageVersion = response.data;
-					this.iksStorageVersionId = this.storageVersion.id;
-					
-					if(this.estimate.id > 0 && this.estimate.iksStorageVersionId != this.storageVersion.id) {
-						this.showReferenceMessage('Storage 비용', '최신 버전이 아닙니다');
-						this.showEstimateUpdate = true;
-					}
-				} else {
-					this.savable = false;
-					this.showReferenceMessage('Storage 비용', '조회된 데이터가 없습니다.');
-				}
-			}).catch(error => {
-				this.savable = false;
-				this.showReferenceMessage('Storage 비용', error.response.data.message);
-			})
-		},
-		getMspInfo() {
-			this.$http.get('/api/estimate/platform/msp').then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.productMspCostVersion = response.data;
-					this.mspCostVersionId = this.productMspCostVersion.id;
-					
-					if(this.estimate.id > 0 && this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
-						this.showReferenceMessage('MSP 비용', '최신 버전이 아닙니다');
-						this.showEstimateUpdate = true;
-					}
-				} else {
-					this.savable = false;
-					this.showReferenceMessage('MSP 비용', '조회된 데이터가 없습니다.');
-				}
-			}).catch(error => {
-				this.savable = false;
-				this.showReferenceMessage('MSP 비용', error.response.data.message);
-			})
-		},
-		getProductInfo() {
-			this.$http.get('/api/estimate/platform/product').then(response => {
-				let products = response.data;
-				for(let productInfo of products) {
-					let product = {};
-					product.productId = productInfo.id;
-					product.productName = productInfo.name;
-					this.productReferences.push(product);
-					this.getTemplate(product);
-				}
-			})
-		},
-		getTemplate(product) {
-			this.$http.get('/api/estimate/platform/product/' + product.productId + '/template').then(response => {
-				product.templates = response.data;
-			});
-			this.$http.get('/api/estimate/platform/product/' + product.productId + '/service').then(response => {
-				product.services = response.data;
-			});
+		clickGeneralDialog(versionId) {
+			this.generalDialog = true
+			this.generalVersionId = versionId 
 		},
 		updateEstimate() {
 			if(confirm('최신 버전으로 다시 계산하시겠습니까?')) {
@@ -402,13 +238,17 @@ export default {
 			}
 		},
 		finishReferenceUpdate() {
-			this.referenceUpdateStatus = false;
-			this.changeEstimate();
-			this.showEstimateUpdate = false;
-			this.estimate.generalId = this.iksGeneral.id;
-			this.estimate.iksVmVersionId = this.vmVersion.id;
-			this.estimate.iksStorageVersionId = this.storageVersion.id;
-			this.estimate.mspCostVersionId = this.productMspCostVersion.id;
+			this.referenceUpdateStatus = false
+			this.changeEstimate()
+			//this.showEstimateUpdate = false
+			this.estimate.generalId = this.iksGeneral.id
+			this.estimate.generalVersion = this.iksGeneral.version
+			this.estimate.iksVmVersionId = this.vmVersion.id
+			this.estimate.iksVmVersionVersion = this.vmVersion.version
+			this.estimate.iksStorageVersionId = this.storageVersion.id
+			this.estimate.iksStorageVersionVersion = this.storageVersion.version
+			this.estimate.mspCostVersionId = this.productMspCostVersion.id
+			this.estimate.mspCostVersionVersion = this.productMspCostVersion.version
 
 			alert("견적서 Update가 완료되었습니다.");
 		},
@@ -417,6 +257,22 @@ export default {
 		},
 		save() {
 			if(this.estimate.id > 0) {
+				if(!this.iksGeneral.id || this.iksGeneral.id <  1) {
+					alert('조회된 기준정보가 없습니다. 기준정보 생성 후 저장할 수 없습니다.')
+					return
+				}
+				if(!this.vmVersion.id || this.vmVersion.id <  1) {
+					alert('조회된 VM 정보가 없습니다.  VM 정보 생성 후 저장할 수 없습니다.')
+					return
+				}
+				if(!this.storageVersion.id || this.storageVersion.id <  1) {
+					alert('조회된 Storage 정보가 없습니다. Storage 정보 생성 후 저장할 수 없습니다.')
+					return
+				}
+				if(!this.productMspCostVersion.id || this.productMspCostVersion.id <  1) {
+					alert('조회된 MSP 비용 정보가 없습니다. MSP 비용 정보 생성 후 저장할 수 없습니다.')
+					return
+				}
 				if(this.estimate.generalId != this.iksGeneral.id || this.estimate.iksVmVersionId != this.vmVersion.id
 					|| this.estimate.iksStorageVersionId != this.storageVersion.id || this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
 					
@@ -431,19 +287,12 @@ export default {
 				this.estimate.iksStorageVersionId = this.storageVersion.id;
 				this.estimate.mspCostVersionId = this.productMspCostVersion.id;
 
-				this.$http.put('/api/estimate/project/' + this.projectId + '/estimate', this.estimate).then(response => {
-					alert("저장되었습니다.");
-					this.initialize();
-					this.historyUpdateStatus = true;
-				})
+				this.$store.dispatch('estimate/saveProjectCostEstimate', {projectId: this.projectId, estimate: this.estimate})
 			}
 		},
 		remove() {
 			if(confirm('삭제하시겠습니까?')) {
-				this.$http.delete('/api/estimate/project/' + this.projectId + '/estimate/history/' + this.estimateDetail.estimateId).then(response => {
-					alert("삭제되었습니다.");
-					history.go(-1);
-				})
+				this.$store.dispatch('estimate/removeProjectCostEstimateHistoryDetail', {projectId: this.projectId, estimateId: this.estimate.id})
 			}
 		},
 		changeEstimate() {

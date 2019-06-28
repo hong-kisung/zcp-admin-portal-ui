@@ -39,20 +39,11 @@
 
 <script>
 export default {
-  	components: {
-  	},
 	data: () => ({
 	}),
-	props: [
-		'estimate'
-	],
 	computed: {
-	},
-	created () {
-		this.initialize();
-	},
-	methods: {
-		initialize() {
+		estimate: function() {
+			return this.$store.state.estimate.projectCostEstimate.summary
 		}
 	}
 }

@@ -45,7 +45,11 @@ export default {
 	],
 	computed: {
 		generalInfo: function() {
-			return this.$store.state.estimate.general;
+			if(this.versionId) {
+				return this.$store.state.estimate.generalHistoryDetail
+			} else {
+				return this.$store.state.estimate.general
+			}
 		}
 	},
 	created () {

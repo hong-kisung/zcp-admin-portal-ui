@@ -27,6 +27,10 @@ export default {
 		state.storageHistoryDetail = data
 	},
 	
+	//product
+	setProducts: function(state, data) {
+		state.products = data
+	},
 	setProductMspCost: function(state, data) {
 		state.productMspCost = data
 	},
@@ -35,5 +39,45 @@ export default {
 	},
 	setProductMspCostHistoryDetail: function(state, data) {
 		state.productMspCostHistoryDetail = data
+	},
+	
+	//project
+	setProjects: function(state, data) {
+		state.projects = data
+	},
+	setProject: function (state, data) {
+		state.project = data
+	},
+	setProjectVolume: function (state, data) {
+		state.projectVolume = data
+	},
+	setProjectCostEstimate: function (state, data) {
+		state.projectCostEstimate = data
+	},
+	setProductReferences: function (state, data) {
+		state.productReferences = data
+	},
+	setProjectCostEstimateHistory: function (state, data) {
+		state.projectCostEstimateHistory = data
+	},
+	setProjectCostEstimateHistoryDetailStatus: function (state, data) {
+		state.projectCostEstimateHistoryDetailStatus = data
+	},
+	setProjectCostEstimateHistoryDetail: function (state, data) {
+		state.projectCostEstimateHistoryDetail = data
+	},
+	
+	//common code
+	setHardwareTypes: function (state, data) {
+		state.hardwareTypes = data
+	},
+	setFileStorageTypes: function (state, data) {
+		state.fileStorageTypes = data
+	},
+	setEnduranceIops: function (state, data) {
+		state.enduranceIops = data
+	},
+	setClassificationTypes: function (state, data) {
+		state.classificationTypes = data
 	}
 }

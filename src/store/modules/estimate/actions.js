@@ -23,9 +23,9 @@ export default {
 		})
 	},
 	getGeneralHistoryDetail: function(store, payload) {
-		store.commit('setGeneral', {})
+		store.commit('setGeneralHistoryDetail', {})
 		axios.get('api/estimate/general/history/' + payload.versionId).then(response => {
-			store.commit('setGeneral', response.data)
+			store.commit('setGeneralHistoryDetail', response.data)
 		}).catch(error => {
 			console.log('failed get getGeneralHistoryDetail')
 		})
@@ -92,6 +92,13 @@ export default {
 	},
 	
 	//product msp cost
+	getProducts: function (store, payload) {
+		axios.get('/api/estimate/platform/product').then(response => {
+			store.commit('setProducts', response.data)
+		}).catch(error => {
+			console.log('failed get getProducts')
+		})
+	},
 	getProductMspCost: function (store, payload) {
 		axios.get('/api/estimate/platform/msp').then(response => {
 			store.commit('setProductMspCost', response.data)
@@ -119,5 +126,160 @@ export default {
 		}).catch(error => {
 			console.log('failed get getProductMspCostHistoryDetail')
 		})
+	},
+	
+	//project
+	getProjects: function (store, payload) {
+		axios.get('/api/estimate/project').then(response => {
+			store.commit('setProjects', response.data)
+		}).catch(error => {
+			console.log('failed get getProjects')
+		})
+	},
+	getProject: function (store, payload) {
+		axios.get('/api/estimate/project/'+ payload.projectId).then(response => {
+			store.commit('setProject', response.data)
+		}).catch(error => {
+			console.log('failed get getProject')
+		})
+	},
+	addProject: function (store, payload) {
+		axios.post('/api/estimate/project', payload.project).then(response => {
+			store.dispatch('getProjects')
+		})
+	},
+	saveProject: function (store, payload) {
+		axios.put('/api/estimate/project/'+ payload.project.id, payload.project).then(response => {
+			store.dispatch('getProjects')
+		})
+	},
+	getProjectVolume: function (store, payload) {
+		axios.get('/api/estimate/project/' + payload.projectId + '/volume').then(response => {
+			store.commit('setProjectVolume', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectVolume')
+		})
+	},
+	saveProjectVolume: function (store, payload) {
+		axios.put('/api/estimate/project/' + payload.projectId + '/volume', payload.volumes).then(response => {
+			store.dispatch('getProjectVolume', {projectId: payload.projectId})
+		})
+	},
+	getProjectCostEstimate: function (store, payload) {
+		axios.get('/api/estimate/project/' + payload.projectId + '/estimate').then(response => {
+			let estimate = response.data
+			store.commit('setProjectCostEstimate', response.data)
+			
+			store.dispatch('getGeneral')
+			store.dispatch('getVm')
+			store.dispatch('getStorage')
+			store.dispatch('getProductMspCost')
+			
+			//editable이 아닐 경우 처리하지 말것
+			axios.get('/api/estimate/project/' + payload.projectId + '/environment').then(response => {
+				for(let target of estimate.environments) {
+					let envData = response.data.find(environment => environment.id === target.environmentId);
+					if(!envData) {
+						target.environmentName += " (Removed)";
+						target.environmentDisabled = true;
+						target.cloudZService.disabled = true;
+						target.cloudZService.products.length = 0;
+						target.storageService.disabled = true;
+						target.storageService.products.length = 0;
+					}
+				}
+				
+				for(let item of response.data) {
+					let envData = estimate.environments.find(env => env.environmentId === item.id);
+					if(!envData) {
+			 			envData = {};
+			 			envData.environmentId = item.id;
+			 			envData.environmentName = item.name;
+			 			envData.cloudZService = {};
+			 			envData.cloudZService.products = new Array();
+			 			envData.storageService = {};
+			 			envData.storageService.products = new Array();
+			 			estimate.environments.push(envData);
+					}	 		
+				}
+				
+				store.commit('setProjectCostEstimate', estimate)
+			})
+		}).catch(error => {
+			console.log('failed get getProjectCostEstimate')
+		})
+	},
+	getProductReferences: function (store, payload) {
+		axios.get('/api/estimate/platform/product').then(response => {
+			let productReferences = new Array();
+			for(let productInfo of response.data) {
+				let product = {}
+				product.productId = productInfo.id
+				product.productName = productInfo.name
+				productReferences.push(product)
+				
+				axios.get('/api/estimate/platform/product/' + product.productId + '/template').then(response => {
+					product.templates = response.data
+				});
+				axios.get('/api/estimate/platform/product/' + product.productId + '/service').then(response => {
+					product.services = response.data
+				});
+			}
+			
+			store.commit('setProductReferences', productReferences)
+		}).catch(error => {
+			console.log(error)
+			console.log('failed get getProductReferences')
+		})
+	},
+	saveProjectCostEstimate: function (store, payload) {
+		axios.put('/api/estimate/project/' + payload.projectId + '/estimate', payload.estimate).then(response => {
+			store.dispatch('getProjectCostEstimate', {projectId: payload.projectId})
+			store.dispatch('getProjectCostEstimateHistory', {projectId: payload.projectId})
+		})
+	},
+	getProjectCostEstimateHistory: function (store, payload) {
+		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history').then(response => {
+			store.commit('setProjectCostEstimateHistory', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectCostEstimateHistory')
+		})
+	},
+	getProjectCostEstimateHistoryDetail: function (store, payload) {
+		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
+			let estimate = response.data
+			store.commit('setProjectCostEstimate', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectCostEstimateHistoryDetail')
+		})
+	},
+	removeProjectCostEstimateHistoryDetail: function (store, payload) {
+		axios.delete('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
+			alert("삭제되었습니다.");
+			history.go(-1);
+		})
+	},
+	
+	//common code
+	getHardwareTypes: function (store, payload) {
+		axios.get('/api/estimate/code/hardware_type').then(response => {
+			store.commit('setHardwareTypes', response.data)
+		})
+	},
+	getFileStorageTypes: function (store, payload) {
+		axios.get('/api/estimate/code/file_storage_type').then(response => {
+			store.commit('setFileStorageTypes', response.data)
+		})
+	},
+	getEnduranceIops: function (store, payload) {
+		axios.get('/api/estimate/code/endurance_iops').then(response => {
+			store.commit('setEnduranceIops', response.data)
+		})
+	},
+	getClassificationTypes: function (store, payload) {
+		axios.get('/api/estimate/code/classification_type').then(response => {
+			store.commit('setClassificationTypes', response.data)
+		})
 	}
+
 }

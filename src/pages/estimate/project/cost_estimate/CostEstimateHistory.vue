@@ -1,88 +1,33 @@
 <template>
-<b-card>
-  <b-row>
-    <b-col>
-      <div class="table-responsive-sm">
-        <table class="table b-table table-striped table-hover table-bordered table-sm">
-          <thead>
-	        <tr>
-	          <th class="text-center" rowspan="2">버전</th>
-	          <th class="text-center" rowspan="2">라벨</th>
-	          <th class="text-center" colspan="2">Cloud Z Service 비용</th>
-	          <th class="text-center" colspan="2">Application Storage Service 비용</th>
-	          <th class="text-center" rowspan="2">생성일시</th>
-	        </tr>
-	        <tr>
-	          <th class="text-center">Monthly</th>
-	          <th class="text-center">Yearly</th>
-	          <th class="text-center">Monthly</th>
-	          <th class="text-center">Yearly</th>
-	        </tr>
-          </thead>
-          <tbody>
-	        <template v-for="(item, index) in history">
-	          <tr @click="viewEstimate(item)">
-	            <td class="text-center">{{ item.version }}</td>
-	            <td class="text-center">{{ item.label }}</td>
-	            <td class="text-right">{{ item.cloudZServiceMonthlyPrice | formatNumber }}</td>
-	            <td class="text-right">{{ item.cloudZServiceYearlyPrice | formatNumber }}</td>
-	            <td class="text-right">{{ item.storageServiceMonthlyPrice | formatNumber }}</td>
-	            <td class="text-right">{{ item.storageServiceYearlyPrice | formatNumber }}</td>
-	            <td class="text-center">{{ item.createdDt }}</td>
-	          </tr>
-	        </template>
-          </tbody>
-        </table>
-      </div>
-    </b-col>
-  </b-row>
-</b-card>
-
+<b-list-group class="list-group-accent">
+	<b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
+		원가 견적 History
+	</b-list-group-item>
+	<b-list-group-item @click="viewEstimate(item)" class="list-group-item-divider" v-for="(item, index) in history" :key="item.id">
+		<div>버전: {{ item.version }}
+			<small class="text-muted float-right mt-1"">{{ item.createdDt }}</small>
+		</div>
+		<small class="text-muted mr-3">{{ item.label }}</small>
+	</b-list-group-item>
+</b-list-group>
 </template>
 
 <script>
 export default {
-  	components: {
-  	},
 	data: () => ({
-      	history: []
 	}),
-	props: [
-		'projectId',
-		'estimateDetail',
-		'historyDialog',
-		'refreshStatus'
-	],
-	watch: {
-		refreshStatus: function() {
-			if(this.refreshStatus) {
-				this.initialize();
-				this.$emit('fire-refresh-finished');
-			}
+	computed: {
+		history: function() {
+			return this.$store.state.estimate.projectCostEstimateHistory
 		}
 	},
-	created () {
-		this.initialize();
-	},
 	methods: {
-		initialize() {
-			this.$http.get('/api/estimate/project/' + this.projectId + '/estimate/history').then(response => {
-				this.history = response.data
-			})
-		},
 		viewEstimate(item) {
-			if(confirm('원가견적 화면에서 선택한 버전이 다시 조회됩니다. \n저장하지 않은 내용이 있을 경우 취소 버튼을 클릭하세요.')) {
-				this.estimateDetail.estimateId = item.id;
-				this.$emit('fire-detail-clicked');
-				this.close();
+			if(confirm('원가견적 화면에서 선택한 버전이 조회됩니다. \n저장하지 않은 내용이 있을 경우 취소 버튼을 클릭하세요.')) {
+				this.$store.dispatch('estimate/getProjectCostEstimateHistoryDetail', {projectId: this.$router.currentRoute.params.projectId, estimateId: item.id})
+				this.$store.commit('estimate/setProjectCostEstimateHistoryDetailStatus', true)
 			}
-		},
-		close() {
-			this.$emit('fire-history-closed');
 		}
 	}
 }
 </script>
-
-<style>
-</style>

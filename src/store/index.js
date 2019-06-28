@@ -8,10 +8,15 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	//global
 	state: {
-		
+		asideToggleStatus: false
+	},
+	getters: {
+		asideToggleStatus: state => () => state.asideToggleStatus
 	},
 	mutations: {
-		
+		setAsideToggleStatus: function(state, payload) {
+			state.asideToggleStatus = payload.status
+		}
 	},
 	actions: {
 		

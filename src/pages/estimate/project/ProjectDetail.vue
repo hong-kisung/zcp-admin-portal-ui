@@ -14,38 +14,23 @@
 
 <script>
 export default {
-  	components: {
-  	},
 	data: () => ({
-      	project: {},
-      	newPage: true,
       	show: false
 	}),
   	props: [
-		'projectId',
 		'dialogVisible'
 	],
+	computed: {
+		project: function() {
+			return this.$store.state.estimate.project
+		}
+	},
     watch: {
-		projectId: function() {
-			if(this.projectId <= 0) {
-				this.project = {};
-				this.newPage = true;
-				return;
-			}
-			
-			this.newPage = false;
-			this.getProject();
-		},
 		dialogVisible: function() {
 			this.show = this.dialogVisible
 		}
     },
-	created () {
-		this.initialize()
-	},
 	methods: {
-		initialize() {
-		},
 		saveProject(e) {
 			if(!this.project.name) {
 				alert('Project명을 입력하세요.')
@@ -54,29 +39,17 @@ export default {
 			}
 			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				if(this.newPage) {
-					this.$http.post('/api/estimate/project', this.project).then(response => {
-						this.$emit('fire-dialog-saved');
-					})
+				if(this.project.id) {
+					this.$store.dispatch('estimate/saveProject', {project: this.project})
 				} else {
-					this.$http.put('/api/estimate/project/'+this.project.id, this.project).then(response => {
-						this.$emit('fire-dialog-saved');
-					})
+					this.$store.dispatch('estimate/addProject', {project: this.project})
 				}
-			} else {
-				this.cancel()
 			}
+			
+			this.cancel()
 		},
 		cancel() {
-			this.project = {};
 			this.$emit('fire-dialog-closed');
-		},
-		getProject() {
-			this.$http.get('/api/estimate/project/'+this.projectId).then(response => {
-				if(response && response.data) {
-					this.project = response.data;
-				}
-			})
 		}
 	}
 }

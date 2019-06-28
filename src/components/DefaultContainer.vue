@@ -11,8 +11,6 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
       </b-navbar-nav>
-      <AsideToggler class="d-none d-lg-block" />
-      <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">
       <AppSidebar fixed>
@@ -30,7 +28,7 @@
       </main>
       <AppAside fixed>
         <!--aside-->
-        <DefaultAside/>
+        <CostEstimateHistory/>
       </AppAside>
     </div>
   </div>
@@ -41,6 +39,10 @@ import nav from './_nav'
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
+import CostEstimateHistory from '@/pages/estimate/project/cost_estimate/CostEstimateHistory'
+
+import { asideMenuCssClasses, validBreakpoints, checkBreakpoint } from '@/shared/classes'
+import toggleClasses from '@/shared/toggle-classes'
 
 export default {
   name: 'DefaultContainer',
@@ -58,7 +60,8 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer
+    SidebarMinimizer,
+    CostEstimateHistory
   },
   data () {
     return {
@@ -72,6 +75,21 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
+  },
+  mounted () {
+  	this.$store.watch(this.$store.getters.asideToggleStatus, status => {
+  		this.toggle()
+  	})
+  },
+  methods: {
+	toggle(force) {
+	   	const [display, mobile] = ['lg', false]
+	   	let cssClass = asideMenuCssClasses[0]
+	   	if (!mobile && display && checkBreakpoint(display, validBreakpoints)) {
+	       	cssClass = `aside-menu-${display}-show`
+	   	}
+	   	toggleClasses(cssClass, asideMenuCssClasses, force)
+	}
   }
 }
 </script>

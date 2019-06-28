@@ -109,10 +109,6 @@
 export default {
 	data: () => ({
 		showDialog: false,
-		hardwareTypeItems: [],
-		fileStorageTypeItems: [],
-		enduranceIopsItems: [],
-		classificationTypes: [],
 		addonApplicationItems: [],
 		
 		selectedProduct: {},
@@ -127,18 +123,37 @@ export default {
 	props: [
 		'editedItem',
 		'estimate',
-		'iksGeneral',
-		'vmVersion',
-		'storageVersion',
-		'productMspCostVersion',
-		'productReferences',
 		'appsDialog',
 		'isNewAppsItem',
 		'estimateType'
 	],
 	computed: {
-		formDialogTitle () {
-			return !this.editedItem.id ? 'Classification 추가' : 'Classification 수정';
+		productReferences: function() {
+			return this.$store.state.estimate.productReferences
+		},
+		iksGeneral: function() {
+			return this.$store.state.estimate.general
+		},
+		vmVersion: function() {
+			return this.$store.state.estimate.vm
+		},
+		storageVersion: function() {
+			return this.$store.state.estimate.storage
+		},
+		productMspCostVersion: function() {
+			return this.$store.state.estimate.productMspCost
+		},
+		hardwareTypeItems: function() {
+			return this.$store.state.estimate.hardwareTypes
+		},
+		fileStorageTypeItems: function() {
+			return this.$store.state.estimate.fileStorageTypes
+		},
+		enduranceIopsItems: function() {
+			return this.$store.state.estimate.enduranceIops
+		},
+		classificationTypes: function() {
+			return this.$store.state.estimate.classificationTypes
 		},
 		disabledEnv () {
 			return this.isNewAppsItem ? false : true;
@@ -163,19 +178,6 @@ export default {
 	},
 	methods: {
 		initialize() {
-			this.$http.get('/api/estimate/code/hardware_type').then(response => {
-				this.hardwareTypeItems = response.data
-			})
-			this.$http.get('/api/estimate/code/file_storage_type').then(response => {
-				this.fileStorageTypeItems = response.data
-			})
-			this.$http.get('/api/estimate/code/endurance_iops').then(response => {
-				this.enduranceIopsItems = response.data
-			})
-			this.$http.get('/api/estimate/code/classification_type').then(response => {
-				this.classificationTypes = response.data
-			})
-			
 		},
 		closeAppsDialog() {
 			this.clearData();

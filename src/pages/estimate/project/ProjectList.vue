@@ -52,10 +52,8 @@
       </b-row>
   </b-card>
     <projectDetail
-    	v-bind:projectId="projectId"
     	v-bind:dialogVisible="projectDetailDialog"
-    	v-on:fire-dialog-saved="saveProjectDetailDialog"
-    	v-on:fire-dialog-closed="closeProjectDetailDialog"
+    	v-on:fire-dialog-closed="projectDetailDialog = false"
     />
 </div>
 </template>
@@ -68,33 +66,25 @@ export default {
   		projectDetail
   	},
 	data: () => ({
-      	projects: [],
       	projectDetailDialog: false,
       	projectId: 0
 	}),
+	computed: {
+		projects: function() {
+			return this.$store.state.estimate.projects
+		}
+	},
 	created () {
-		this.initialize()
+		this.$store.dispatch('estimate/getProjects')
 	},
 	methods: {
-		initialize() {
-			this.$http.get('/api/estimate/project').then(response => {
-				this.projects = response.data
-			})
-		},
 		addProject() {
-			this.projectId = 0;
+			this.$store.commit('estimate/setProject', {})
 			this.projectDetailDialog = true;
 		},
 		viewProject(project) {
-			this.projectId = project.id;
+			this.$store.dispatch('estimate/getProject', {projectId: project.id})
 			this.projectDetailDialog = true;
-		},
-		saveProjectDetailDialog() {
-			this.projectDetailDialog = false;
-			this.initialize();
-		},
-		closeProjectDetailDialog() {
-			this.projectDetailDialog = false;
 		},
 		goVolume(project) {
 			this.$router.push({ name: 'ProjectVolume', params: { projectId: project.id }});
@@ -108,6 +98,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-</style>
