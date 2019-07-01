@@ -8,7 +8,12 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	//global
 	state: {
-		asideToggleStatus: false
+		asideToggleStatus: false,
+		okMessage: {
+			show: false,
+			title: '',
+			content: ''
+		}
 	},
 	getters: {
 		asideToggleStatus: state => () => state.asideToggleStatus
@@ -16,6 +21,9 @@ const store = new Vuex.Store({
 	mutations: {
 		setAsideToggleStatus: function(state, payload) {
 			state.asideToggleStatus = payload.status
+		},
+		showOkMessage: function(state, payload) {
+			state.okMessage = payload
 		}
 	},
 	actions: {

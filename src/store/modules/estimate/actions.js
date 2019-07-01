@@ -11,6 +11,7 @@ export default {
 	},
 	saveGeneral: function (store, payload) {
 		axios.put('/api/estimate/general', payload.generalInfo).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getGeneral')
 			store.dispatch('getGeneralHistory')
 		})
@@ -41,6 +42,7 @@ export default {
 	},
 	saveVm: function (store, payload) {
 		axios.put('/api/estimate/iks_costs/vm', payload.vmInfo).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getVm')
 			store.dispatch('getVmHistory')
 		})
@@ -71,6 +73,7 @@ export default {
 	},
 	saveStorage: function (store, payload) {
 		axios.put('/api/estimate/iks_costs/storage', payload.storageInfo).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getStorage')
 			store.dispatch('getStorageHistory')
 		})
@@ -108,6 +111,7 @@ export default {
 	},
 	saveProductMspCost: function (store, payload) {
 		axios.put('/api/estimate/platform/msp', payload.productMspCostInfo).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProductMspCost')
 			store.dispatch('getProductMspCostHistory')
 		})
@@ -145,11 +149,13 @@ export default {
 	},
 	addProject: function (store, payload) {
 		axios.post('/api/estimate/project', payload.project).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjects')
 		})
 	},
 	saveProject: function (store, payload) {
 		axios.put('/api/estimate/project/'+ payload.project.id, payload.project).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjects')
 		})
 	},
@@ -162,6 +168,7 @@ export default {
 	},
 	saveProjectVolume: function (store, payload) {
 		axios.put('/api/estimate/project/' + payload.projectId + '/volume', payload.volumes).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjectVolume', {projectId: payload.projectId})
 		})
 	},
@@ -234,6 +241,7 @@ export default {
 	},
 	saveProjectCostEstimate: function (store, payload) {
 		axios.put('/api/estimate/project/' + payload.projectId + '/estimate', payload.estimate).then(response => {
+			store.commit('showOkMessage', {show:true, content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjectCostEstimate', {projectId: payload.projectId})
 			store.dispatch('getProjectCostEstimateHistory', {projectId: payload.projectId})
 		})
@@ -255,7 +263,7 @@ export default {
 	},
 	removeProjectCostEstimateHistoryDetail: function (store, payload) {
 		axios.delete('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
-			alert("삭제되었습니다.");
+			store.commit('showOkMessage', {show:true, content:'삭제되었습니다.'}, {root:true})
 			history.go(-1);
 		})
 	},

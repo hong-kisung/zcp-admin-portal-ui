@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-	    <template v-for="(item) in services">
+	    <template v-for="(item, serviceIndex) in services">
 	      <template v-if="item.classifications.length == 0">
 	        <tr>
 	          <th class="text-left" scope="row">
@@ -44,13 +44,18 @@
 		      <td class="text-left">{{ classification.classificationName }}</td>
 		      <td class="text-center">{{ classification.classificationType }}</td>
 			  <td class="text-center">
-			    <a class="rotate-btn" @click="editAppsItem(item, classification, index)">
+			    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(serviceIndex, classification, index)">
 			      <i class="fa fa-pencil fa-sm"></i>
-                </a>
-                &nbsp;
-			    <a class="rotate-btn" @click="deleteAppItem(item, classification, index)">
+                </b-link>
+                <b-link href="#" class="card-header-action" v-on:click="deleteAppItem(serviceIndex, classification, index)">
 			      <i class="fa fa-times fa-sm"></i>
-                </a>
+                </b-link>
+                <b-link href="#" class="card-header-action" v-on:click="moveUpAppsItem(serviceIndex, classification, index)">
+			      <i class="fa fa-arrow-up fa-sm"></i>
+                </b-link>
+                <b-link href="#" class="card-header-action" v-on:click="moveDownAppsItem(serviceIndex, classification, index)">
+			      <i class="fa fa-arrow-down fa-sm"></i>
+                </b-link>
 			  </td>
 	        </tr>
 	        </template>
@@ -180,8 +185,8 @@ export default {
 				this.editedAppsIndex = -1;
 			}, 300);
 		},
-		editAppsItem (servItem, appItem, appIndex) {
-			this.editedServIndex = this.services.indexOf(servItem);
+		editAppsItem (serviceIndex, appItem, appIndex) {
+			this.editedServIndex = serviceIndex;
 			this.editedAppsIndex = appIndex;
 			this.editedAppsItem = Object.assign({}, appItem);
 			this.applicationDialog = true;
@@ -205,9 +210,20 @@ export default {
 			}
 			this.closeAppsDialog();
 		},
-		deleteAppItem(servItem, appItem, appIndex) {
-			const servIndex = this.services.indexOf(servItem);
-			confirm('삭제하시겠습니까?') && this.services[servIndex].classifications.splice(appIndex, 1);
+		deleteAppItem(serviceIndex, appItem, appIndex) {
+			confirm('삭제하시겠습니까?') && this.services[serviceIndex].classifications.splice(appIndex, 1);
+		},
+		moveUpAppsItem(serviceIndex, appItem, appIndex) {
+			if(appIndex == 0) return
+			
+			const removed = this.services[serviceIndex].classifications.splice(appIndex, 1)
+			this.services[serviceIndex].classifications.splice(appIndex -1 , 0, removed[0])
+		},
+		moveDownAppsItem(serviceIndex, appItem, appIndex) {
+			if(appIndex == this.services[serviceIndex].classifications.length -1) return
+			
+			const removed = this.services[serviceIndex].classifications.splice(appIndex, 1)
+			this.services[serviceIndex].classifications.splice(appIndex +1, 0, removed[0])
 		}
 	}
 }

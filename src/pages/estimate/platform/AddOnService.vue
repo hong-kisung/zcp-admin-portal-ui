@@ -54,13 +54,12 @@
 			      <td class="text-center">{{ application.backupYn }}</td>
 			      <td class="text-left">{{ application.description }}</td>
 				  <td class="text-center">
-				    <a class="rotate-btn" @click="editAppsItem(item, application, applicationIndex)">
+				    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(item, application, applicationIndex)">
 				      <i class="fa fa-pencil fa-sm"></i>
-	                </a>
-	                &nbsp;
-				    <a class="rotate-btn" @click="deleteAppItem(item, application, applicationIndex)">
+	                </b-link>
+	                <b-link href="#" class="card-header-action" v-on:click="deleteAppItem(item, application, applicationIndex)">
 				      <i class="fa fa-times fa-sm"></i>
-	                </a>
+	                </b-link>
 				  </td>
 		        </tr>
 			    <tr>

@@ -30,6 +30,7 @@
         <!--aside-->
         <CostEstimateHistory/>
       </AppAside>
+      <OkMessageBox/>
     </div>
   </div>
 </template>
@@ -40,6 +41,7 @@ import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFoot
 import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
 import CostEstimateHistory from '@/pages/estimate/project/cost_estimate/CostEstimateHistory'
+import OkMessageBox from '@/components/common/OkMessageBox'
 
 import { asideMenuCssClasses, validBreakpoints, checkBreakpoint } from '@/shared/classes'
 import toggleClasses from '@/shared/toggle-classes'
@@ -61,7 +63,8 @@ export default {
     SidebarHeader,
     SidebarNav,
     SidebarMinimizer,
-    CostEstimateHistory
+    CostEstimateHistory,
+    OkMessageBox
   },
   data () {
     return {

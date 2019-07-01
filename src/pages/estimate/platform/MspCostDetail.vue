@@ -62,13 +62,12 @@
 				      <td class="text-center">{{ mspCosts.memory }}</td>
 				      <td class="text-right">{{ mspCosts.cost | formatNumber }} 원</td>
 					  <td class="text-center" v-if="editable">
-					    <a class="rotate-btn" @click="editItem(item, mspCosts)">
+					    <b-link href="#" class="card-header-action" v-on:click="editItem(item, mspCosts)">
 					      <i class="fa fa-pencil fa-sm"></i>
-		                </a>
-		                &nbsp;
-					    <a class="rotate-btn" @click="deleteItem(item, mspCosts)">
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="deleteItem(item, mspCosts)">
 					      <i class="fa fa-times fa-sm"></i>
-		                </a>
+		                </b-link>
 					  </td>
 			        </tr>
 			        </template>

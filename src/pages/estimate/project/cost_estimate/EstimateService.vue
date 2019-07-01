@@ -58,7 +58,7 @@
 				        </div>
 					  </td>
 					  <td class="font-weight-bold text-left" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
-					  <td class="font-weight-bold text-left" :class="classification.updated ? 'red-text':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
+					  <td class="font-weight-bold text-left" :class="classification.updated ? 'text-danger':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
 					  <td class="text-center">{{ classification.storageType }}</td>
@@ -67,16 +67,21 @@
 					  <td class="text-center">{{ classification.number | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
-					  <td class="text-right" :class="classification.updated ? 'red-text':''">{{ classification.pricePerMonthly | formatNumber }}</td>
-					  <td class="text-right" :class="classification.updated ? 'red-text':''">{{ classification.pricePerYearly | formatNumber }}</td>
+					  <td class="text-right" :class="classification.updated ? 'text-danger':''">{{ classification.pricePerMonthly | formatNumber }}</td>
+					  <td class="text-right" :class="classification.updated ? 'text-danger':''">{{ classification.pricePerYearly | formatNumber }}</td>
 					  <td class="text-center" v-if="editable">
-					    <a class="rotate-btn" @click="editAppsItem(productIndex, serviceIndex, index, classification)">
+					    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(productIndex, serviceIndex, index, classification)">
 					      <i class="fa fa-pencil fa-sm"></i>
-		                </a>
-		                &nbsp;
-					    <a class="rotate-btn" @click="deleteAppsItem(productIndex, serviceIndex, index, classification)">
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(productIndex, serviceIndex, index, classification)">
 					      <i class="fa fa-times fa-sm"></i>
-		                </a>
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="moveUpAppsItem(productIndex, serviceIndex, index, classification)">
+					      <i class="fa fa-arrow-up fa-sm"></i>
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="moveDownAppsItem(productIndex, serviceIndex, index, classification)">
+					      <i class="fa fa-arrow-down fa-sm"></i>
+		                </b-link>
 					  </td>
 				    </tr>
 			    </template>
@@ -347,6 +352,18 @@ export default {
 				this.$emit('fire-estimate-changed');
 			}
 		},
+		moveUpAppsItem(productIndex, serviceIndex, appIndex, appItem) {
+			if(appIndex == 0) return
+			
+			const removed = this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1)
+			this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex -1 , 0, removed[0])
+		},
+		moveDownAppsItem(productIndex, serviceIndex, appIndex, appItem) {
+			if(appIndex == this.estimate.products[productIndex].services[serviceIndex].classifications.length -1) return
+			
+			const removed = this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1)
+			this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex +1, 0, removed[0])
+		},
 		closeAppsDialog () {
 			this.appsDialog = false;
 			this.isNewAppsItem = false;
@@ -407,15 +424,18 @@ export default {
 		},
 		updateReference(estimateItem) {
 			if(estimateItem.classificationType == 'VM') {
+				//상세spec 데이터가 없는 것
 				if(estimateItem.iksVmId <= 0) {
 					return;
 				}
 				
+				//최신버전인 것
 				const vmData = this.vmVersion.vms.find(vm => vm.name === estimateItem.iksVmName);
 				if(vmData && vmData.id == estimateItem.iksVmId) {
 					return;
 				}
 				
+				//버전업 대상인데 name매칭 결과가 있으면 update, 아니면 id/name 삭제
 				estimateItem.iksVmId = vmData ? vmData.id : 0;
 				estimateItem.iksVmName = vmData? vmData.name : '';
 				estimateItem.updated = true;
@@ -435,7 +455,6 @@ export default {
 				estimateItem.updated = true;
 
 			} else if(estimateItem.classificationType == 'IP_Allocation') {
-				console.log(estimateItem.pricePerMonthly);
 				if(estimateItem.pricePerMonthly == this.iksGeneral.ipAllocation) {
 					return;
 				}

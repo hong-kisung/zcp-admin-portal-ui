@@ -17,20 +17,28 @@
 		        <b-form-input id="description" type="text" v-model="estimate.description"></b-form-input>
 		      </b-form-group>
 		      <b-form-group label="기준정보 버전" label-for="generalVersion" :label-cols="3" >
-		        <b-button size="sm" variant="info" @click="generalDialog=true; generalVersionId=estimate.generalId">현재버전({{ estimate.generalVersion }}) 조회</b-button>
-		        <b-button size="sm" v-if="editable" :variant="estimate.generalId==iksGeneral.id ? 'info' : 'danger'" @click="generalDialog=true; generalVersionId=iksGeneral.id">최신버전({{ iksGeneral.version }}) 조회</b-button>
+		        <b-button size="sm" variant="info" v-if="estimate.generalId > 0" @click="generalDialog=true; generalVersionId=estimate.generalId">현재버전({{ estimate.generalVersion }}) 조회</b-button>
+		        <small class="text-danger" v-if="editable && !iksGeneral.id || iksGeneral.id==0">조회된 기준정보가 없습니다.</small>
+		        <small class="text-info"   v-if="editable && iksGeneral.id > 0 && estimate.generalId==iksGeneral.id">최신 버전입니다.</small>
+		        <b-button size="sm" 	   v-if="editable && iksGeneral.id > 0 && estimate.generalId!=iksGeneral.id" variant="danger" @click="generalDialog=true; generalVersionId=iksGeneral.id">최신버전({{ iksGeneral.version }}) 조회</b-button>
 		      </b-form-group>
 		      <b-form-group label="VM 버전" label-for="iksVmVersionVersion" :label-cols="3" >
-		        <b-button size="sm" variant="info" @click="iksVmDialog=true; iksVmVersionId=estimate.iksVmVersionId">현재버전({{ estimate.iksVmVersionVersion }}) 조회</b-button>
-		        <b-button size="sm" v-if="editable" :variant="estimate.iksVmVersionId==vmVersion.id ? 'info' : 'danger'" @click="iksVmDialog=true; iksVmVersionId=vmVersion.id">최신버전({{ vmVersion.version }}) 조회</b-button>
+		        <b-button size="sm" variant="info" v-if="estimate.iksVmVersionId > 0" @click="iksVmDialog=true; iksVmVersionId=estimate.iksVmVersionId">현재버전({{ estimate.iksVmVersionVersion }}) 조회</b-button>
+		        <small class="text-danger" v-if="!vmVersion.id || vmVersion.id==0">조회된 VM이 없습니다.</small>
+		        <small class="text-info"   v-if="editable && vmVersion.id > 0 && estimate.iksVmVersionId==vmVersion.id">최신 버전입니다.</small>
+		        <b-button size="sm" 	   v-if="editable && vmVersion.id > 0 && estimate.iksVmVersionId!=vmVersion.id" :variant="estimate.iksVmVersionId==vmVersion.id ? 'info' : 'danger'" @click="iksVmDialog=true; iksVmVersionId=vmVersion.id">최신버전({{ vmVersion.version }}) 조회</b-button>
 		      </b-form-group>
 		      <b-form-group label="Storage 버전" label-for="iksStorageVersionVersion" :label-cols="3" >
-		        <b-button size="sm" variant="info" @click="iksStorageDialog=true; iksStorageVersionId=estimate.iksStorageVersionId">현재버전({{ estimate.iksStorageVersionVersion }}) 조회</b-button>
-		        <b-button size="sm" v-if="editable" :variant="estimate.iksStorageVersionId==storageVersion.id ? 'info' : 'danger'" @click="iksStorageDialog=true; iksStorageVersionId=storageVersion.id">최신버전({{ storageVersion.version }}) 조회</b-button>
+		        <b-button size="sm" variant="info" v-if="estimate.iksStorageVersionId > 0" @click="iksStorageDialog=true; iksStorageVersionId=estimate.iksStorageVersionId">현재버전({{ estimate.iksStorageVersionVersion }}) 조회</b-button>
+		        <small class="text-danger" v-if="!storageVersion.id || storageVersion.id==0">조회된 Storage가 없습니다.</small>
+		        <small class="text-info"   v-if="editable && storageVersion.id > 0 && estimate.iksStorageVersionId==storageVersion.id">최신 버전입니다.</small>
+		        <b-button size="sm" 	   v-if="editable && storageVersion.id > 0 && estimate.iksStorageVersionId!=storageVersion.id" :variant="estimate.iksStorageVersionId==storageVersion.id ? 'info' : 'danger'" @click="iksStorageDialog=true; iksStorageVersionId=storageVersion.id">최신버전({{ storageVersion.version }}) 조회</b-button>
 		      </b-form-group>
 		      <b-form-group label="MSP 비용 버전" label-for="mspCostVersionVersion" :label-cols="3" >
-		        <b-button size="sm" variant="info" @click="mspCostDialog=true; mspCostVersionId=estimate.mspCostVersionId">현재버전({{ estimate.mspCostVersionVersion }}) 조회</b-button>
-		        <b-button size="sm" v-if="editable" :variant="estimate.mspCostVersionId==productMspCostVersion.id ? 'info' : 'danger'" @click="mspCostDialog=true; mspCostVersionId=productMspCostVersion.id">최신버전({{ productMspCostVersion.version }}) 조회</b-button>
+		        <b-button size="sm" variant="info" v-if="estimate.mspCostVersionId > 0" @click="mspCostDialog=true; mspCostVersionId=estimate.mspCostVersionId">현재버전({{ estimate.mspCostVersionVersion }}) 조회</b-button>
+		        <small class="text-danger" v-if="!productMspCostVersion.id || productMspCostVersion.id==0">조회된 MSP 비용이 없습니다.</small>
+		        <small class="text-info"   v-if="editable && productMspCostVersion.id > 0 && estimate.mspCostVersionId==productMspCostVersion.id">최신 버전입니다.</small>
+		        <b-button size="sm" 	   v-if="editable && productMspCostVersion.id > 0 && estimate.mspCostVersionId!=productMspCostVersion.id" :variant="estimate.mspCostVersionId==productMspCostVersion.id ? 'info' : 'danger'" @click="mspCostDialog=true; mspCostVersionId=productMspCostVersion.id">최신버전({{ productMspCostVersion.version }}) 조회</b-button>
 		      </b-form-group>
 		    </b-form>
 	        <b-row>
@@ -140,17 +148,18 @@ export default {
       	
       	referenceUpdateStatus: false,
       	
-      	projectId: 0,
-      	editable: false,
-      	estimateDetail: {estimateId: 0}
+      	projectId: 0
 	}),
 	props: [
 	],
 	computed: {
-		estimate: function() {
+		editable: function() {
 			if(this.$store.state.estimate.projectCostEstimateHistoryDetailStatus) {
-				this.editable = false
+				return false
 			}
+			return true
+		},
+		estimate: function() {
 			return this.$store.state.estimate.projectCostEstimate
 		},
 		productReferences: function() {
@@ -173,6 +182,11 @@ export default {
 		},
 		showEstimateUpdate: function() {
 			if(!this.estimate.id || this.estimate.id == 0) return false
+			if(!this.iksGeneral.id || this.iksGeneral.id == 0) return false
+			if(!this.vmVersion.id || this.vmVersion.id == 0) return false
+			if(!this.storageVersion.id || this.storageVersion.id == 0) return false
+			if(!this.productMspCostVersion.id || this.productMspCostVersion.id == 0) return false
+			
 			if(this.estimate.generalId != this.iksGeneral.id || this.estimate.iksVmVersionId != this.vmVersion.id
 				 || this.estimate.iksStorageVersionId != this.storageVersion.id || this.estimate.mspCostVersionId != this.productMspCostVersion.id) {
 				return true
@@ -201,9 +215,6 @@ export default {
 		initialize() {
 			if(this.$route.params.projectId) {
 				this.projectId = this.$route.params.projectId;
-			}
-			if(this.$route.params.editable) {
-				this.editable = this.$route.params.editable;
 			}
 			
 			if(!this.editable) {
@@ -257,19 +268,19 @@ export default {
 		},
 		save() {
 			if(this.estimate.id > 0) {
-				if(!this.iksGeneral.id || this.iksGeneral.id <  1) {
+				if(!this.iksGeneral.id || this.iksGeneral.id == 0) {
 					alert('조회된 기준정보가 없습니다. 기준정보 생성 후 저장할 수 없습니다.')
 					return
 				}
-				if(!this.vmVersion.id || this.vmVersion.id <  1) {
+				if(!this.vmVersion.id || this.vmVersion.id == 0) {
 					alert('조회된 VM 정보가 없습니다.  VM 정보 생성 후 저장할 수 없습니다.')
 					return
 				}
-				if(!this.storageVersion.id || this.storageVersion.id <  1) {
+				if(!this.storageVersion.id || this.storageVersion.id == 0) {
 					alert('조회된 Storage 정보가 없습니다. Storage 정보 생성 후 저장할 수 없습니다.')
 					return
 				}
-				if(!this.productMspCostVersion.id || this.productMspCostVersion.id <  1) {
+				if(!this.productMspCostVersion.id || this.productMspCostVersion.id == 0) {
 					alert('조회된 MSP 비용 정보가 없습니다. MSP 비용 정보 생성 후 저장할 수 없습니다.')
 					return
 				}

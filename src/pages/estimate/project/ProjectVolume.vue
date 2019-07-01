@@ -82,13 +82,12 @@
 					  <td class="text-right">{{ application.podCpuRequestSum | formatNumber }}</td>
 					  <td class="text-right">{{ application.podCpuLimitSum | formatNumber }}</td>
 					  <td class="text-center">
-					    <a @click="editAppsItem(item, application, index)">
+					    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(item, application, index)">
 					      <i class="fa fa-pencil fa-sm"></i>
-		                </a>
-		                &nbsp;
-					    <a @click="deleteAppsItem(item, application, index)">
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(item, application, index)">
 					      <i class="fa fa-times fa-sm"></i>
-		                </a>
+		                </b-link>
 					  </td>
 				    </tr>
 				  </template>

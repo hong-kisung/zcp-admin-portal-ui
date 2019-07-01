@@ -70,13 +70,12 @@
 				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | formatNumber }}</td>
 				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
 				  <td class="text-center" v-if="editable">
-				    <a class="rotate-btn" @click="editItem(item)">
+				    <b-link href="#" class="card-header-action" v-on:click="editItem(item)">
 				      <i class="fa fa-pencil fa-sm"></i>
-	                </a>
-	                &nbsp;
-				    <a class="rotate-btn" @click="deleteItem(item)">
+	                </b-link>
+	                <b-link href="#" class="card-header-action" v-on:click="deleteItem(item)">
 				      <i class="fa fa-times fa-sm"></i>
-	                </a>
+	                </b-link>
 				  </td>
 				</tr>
 	        </tbody>
