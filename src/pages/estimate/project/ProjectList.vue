@@ -47,7 +47,7 @@
       </b-row>
       <b-row>
         <b-col class="text-right">
-          <b-button variant="primary" size="sm" @click="addProject">Project 추가</b-button>
+          <b-button variant="primary" size="md" @click="addProject">Project 추가</b-button>
         </b-col>
       </b-row>
   </b-card>

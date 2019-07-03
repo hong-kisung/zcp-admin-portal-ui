@@ -77,10 +77,10 @@
 	</b-row>
     <b-row v-if="editable">
       <b-col cols="9">
-	    <b-button size="sm" variant="secondary" class="m-1" v-if="editable" @click="openDialog">Storage 추가</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" v-if="editable" @click="openDialog">Storage 추가</b-button>
       </b-col>
       <b-col cols="3" class="text-right">
-	    <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
+	    <b-button size="md" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
       </b-col>
     </b-row>
   </b-card>

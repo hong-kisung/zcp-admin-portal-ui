@@ -1,15 +1,17 @@
 <template>
-<b-list-group class="list-group-accent">
-	<b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
-		원가 견적 History
-	</b-list-group-item>
-	<b-list-group-item @click="viewEstimate(item)" class="list-group-item-divider" v-for="(item, index) in history" :key="item.id">
-		<div>버전: {{ item.version }}
-			<small class="text-muted float-right mt-1"">{{ item.createdDt }}</small>
-		</div>
-		<small class="text-muted mr-3">{{ item.label }}</small>
-	</b-list-group-item>
-</b-list-group>
+  <b-tabs>
+    <b-tab title="원가 견적 History">
+		<b-list-group class="list-group-accent">
+			<b-list-group-item href="#" @click="viewEstimate(item)" class="list-group-item-divider" v-for="(item, index) in history" :key="item.id">
+		      <div class="d-flex w-100 justify-content-between">
+		        <p class="mb-1">버전: {{ item.version }}</p>
+		        <small class="text-muted">{{ item.createdDt }}</small>
+		      </div>
+		      <small class="text-muted mr-3">{{ item.label }}</small>
+			</b-list-group-item>
+		</b-list-group>
+    </b-tab>
+  </b-tabs>
 </template>
 
 <script>

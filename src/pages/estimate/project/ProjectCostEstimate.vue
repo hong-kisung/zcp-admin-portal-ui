@@ -80,13 +80,13 @@
 		</b-tabs>
         <b-row class="mt-2">
           <b-col cols="9">
-	        <b-button size="sm" variant="info" class="m-1" @click="showHistory">History 조회</b-button>
-	        <b-button size="sm" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate">견적서 Update</b-button>
+	        <b-button size="md" variant="info" class="m-1" @click="showHistory">History {{ historyDialog ? '닫기':'조회'}}</b-button>
+	        <b-button size="md" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate">견적서 Update</b-button>
           </b-col>
           <b-col cols="3" class="text-right">
-            <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
-	        <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
-	        <b-button size="sm" variant="primary" class="m-1" v-if="!editable" @click="remove">삭제</b-button>
+            <b-button size="md" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
+	        <b-button size="md" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
+	        <b-button size="md" variant="primary" class="m-1" v-if="!editable" @click="remove">삭제</b-button>
           </b-col>
         </b-row>
     </b-card>

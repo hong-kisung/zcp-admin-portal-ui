@@ -2,9 +2,9 @@
 <div>
   <b-row>
     <b-col class="text-right">
-      <b-button size="sm" variant="secondary" class="m-1" @click="openServiceDialog">Service 추가</b-button>
-      <b-button size="sm" variant="secondary" class="m-1" @click="deleteService" v-bind:disabled="selected.length == 0">Service 삭제</b-button>
-      <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Classification 추가</b-button>
+      <b-button size="md" variant="secondary" class="m-1" @click="openServiceDialog">Service 추가</b-button>
+      <b-button size="md" variant="secondary" class="m-1" @click="deleteService" v-bind:disabled="selected.length == 0">Service 삭제</b-button>
+      <b-button size="md" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Classification 추가</b-button>
     </b-col>
   </b-row>
   <div class="table-responsive-sm">

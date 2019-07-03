@@ -120,14 +120,14 @@
     </b-row>
     <b-row>
       <b-col cols="9">
-	    <b-button size="sm" variant="secondary" class="m-1" @click="openClusterDialog">Environment 추가</b-button>
-	    <b-button size="sm" variant="secondary" class="m-1" @click="editCluster" v-bind:disabled="selected.length != 1">Environment 수정</b-button>
-	    <b-button size="sm" variant="secondary" class="m-1" @click="deleteCluster" v-bind:disabled="selected.length == 0">Environment 삭제</b-button>
-	    <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" @click="openClusterDialog">Environment 추가</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" @click="editCluster" v-bind:disabled="selected.length != 1">Environment 수정</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" @click="deleteCluster" v-bind:disabled="selected.length == 0">Environment 삭제</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</b-button>
       </b-col>
       <b-col cols="3" class="text-right">
-        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
-	    <b-button size="sm" variant="primary" class="m-1" @click="save">저장</b-button>
+        <b-button size="md" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
+	    <b-button size="md" variant="primary" class="m-1" @click="save">저장</b-button>
       </b-col>
     </b-row>
   </b-card>

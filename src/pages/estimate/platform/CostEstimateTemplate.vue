@@ -17,8 +17,8 @@
 		</b-tabs>
         <b-row class="mt-2">
           <b-col class="text-right">
-            <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
-	        <b-button size="sm" variant="primary" class="m-1" @click="saveService">저장</b-button>
+            <b-button size="md" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
+	        <b-button size="md" variant="primary" class="m-1" @click="saveService">저장</b-button>
           </b-col>
         </b-row>
 	</b-card>
