@@ -16,7 +16,7 @@
       </b-col>
     </b-row>
     
-    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS VM" v-model="detailDialog" scrollable>
+    <b-modal size="xl-custom" ok-only ok-title="Close" ok-variant="danger" title="IKS VM" v-model="detailDialog" scrollable>
 		<iks-vm-detail 
 			v-bind:editable="false"
 		   	v-bind:versionId="versionId"
@@ -58,4 +58,3 @@ export default {
     }
 }
 </script>
-

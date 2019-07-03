@@ -67,7 +67,7 @@
 
   <b-modal centered no-close-on-backdrop title="Service" v-model="serviceDialog" @close="closeServiceDialog" @cancel="closeServiceDialog" @ok="saveServiceDialog">
     <b-form>
-      <b-form-group label="서비스명" label-for="serviceName" :label-cols="4" >
+      <b-form-group label="Service" label-for="serviceName" label-class="astertisk" :label-cols="4" >
         <b-form-input id="serviceName" type="text" v-model="editedServItem.serviceName"></b-form-input>
       </b-form-group>
     </b-form>
@@ -75,14 +75,13 @@
 
   <b-modal centered no-close-on-backdrop title="Application" v-model="applicationDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
     <b-form>
-      <b-form-group label="Classification" label-for="classificationName" :label-cols="4" >
+      <b-form-group label="Classification" label-for="classificationName" label-class="astertisk" :label-cols="4" >
         <b-form-input id="classificationName" type="text" v-model="editedAppsItem.classificationName"></b-form-input>
       </b-form-group>
-      <b-form-group label="Classification Type" label-for="classificationType" :label-cols="4">
+      <b-form-group label="Classification Type" label-for="classificationType" label-class="astertisk" :label-cols="4">
         <b-form-select id="classificationType"
           :plain="true"
           v-model="editedAppsItem.classificationType">
-	        <option value=""></option>
 	        <option v-for="(item, index) in classificationTypeItems" :value="item">{{ item }}</option>
         </b-form-select>
       </b-form-group>
@@ -141,7 +140,7 @@ export default {
 		},
 		saveServiceDialog(e) {
 			if(!this.editedServItem.serviceName) {
-				alert('서비스명 값을 입력하세요');
+				alert('Service를 입력하세요');
 				e.preventDefault()
 				return;
 			}
@@ -193,12 +192,12 @@ export default {
 		},
 		saveAppsDialog (e) {
 			if(!this.editedAppsItem.classificationName) {
-				alert('Classification 값을 입력하세요');
+				alert('Classification을 입력하세요');
 				e.preventDefault()
 				return;
 			}
 			if(!this.editedAppsItem.classificationType) {
-				alert('Classification Type 값을 선택하세요');
+				alert('Classification Type을 선택하세요');
 				e.preventDefault()
 				return;
 			}

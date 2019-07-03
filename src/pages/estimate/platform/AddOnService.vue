@@ -96,7 +96,7 @@
 	    <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</b-button>
       </b-col>
       <b-col cols="3" class="text-right">
-        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
+        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
 	    <b-button size="sm" variant="primary" class="m-1" @click="saveService">저장</b-button>
       </b-col>
     </b-row>
@@ -104,7 +104,7 @@
 
   <b-modal centered no-close-on-backdrop title="Service" v-model="serviceDialog" @close="closeServiceDialog" @cancel="closeServiceDialog" @ok="saveServiceDialog">
     <b-form>
-      <b-form-group label="서비스명" label-for="serviceName" :label-cols="4" >
+      <b-form-group label="Service" label-for="serviceName" label-class="astertisk" :label-cols="4" >
         <b-form-input id="serviceName" type="text" v-model="editedServItem.serviceName"></b-form-input>
       </b-form-group>
     </b-form>
@@ -112,7 +112,7 @@
 		  
   <b-modal centered no-close-on-backdrop title="Application" v-model="applicationDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
     <b-form>
-      <b-form-group label="Application명" label-for="applicationName" :label-cols="4" >
+      <b-form-group label="Application" label-for="applicationName" label-class="astertisk" :label-cols="4" >
         <b-form-input id="applicationName" type="text" v-model="editedAppsItem.applicationName"></b-form-input>
       </b-form-group>
       <b-form-group label="CPU (Millicore)" label-for="cpu" :label-cols="4" >
@@ -233,14 +233,14 @@ export default {
 		},
 		saveServiceDialog(e) {
 			if(!this.editedServItem.serviceName) {
-				alert('서비스명 값을 입력하세요');
+				alert('Service를 입력하세요');
 				e.preventDefault()
 				return;
 			}
 			
 			for(let service of this.addonService.services) {
 				if(service.serviceName == this.editedServItem.serviceName) {
-					alert('존재하는 Add-on Service입니다. 다시 입력하세요.');
+					alert('존재하는Service입니다. 다시 입력하세요.');
 					e.preventDefault()
 					return;
 				}
@@ -285,7 +285,7 @@ export default {
 		},
 		saveAppsDialog (e) {
 			if (!this.editedAppsItem.applicationName) {
-				alert('Application명 값을 입력하세요');
+				alert('Application을 입력하세요');
 				e.preventDefault()
 				return;
 			}

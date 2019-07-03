@@ -8,31 +8,30 @@
           <thead>
 	        <tr>
 	          <th class="text-center" rowspan="3">Environment</th>
-	          <th class="text-center" rowspan="3">Application</th>
-	          <th class="text-center" colspan="2">Application</th>
-	          <th class="text-center" rowspan="3">Replication<br>Count</th>
-	          <th class="text-center" colspan="4">POD별 설정</th>
-	          <th class="text-center" colspan="4">POD별 총량</th>
+	          <th class="text-center" colspan="6">Application</th>
+	          <th class="text-center" colspan="4">Container</th>
+	          <th class="text-center" colspan="2">Total Size</th>
 	          <th class="text-center" rowspan="3">Actions</th>
 	        </tr>
 	        <tr>
-	          <th class="text-center" colspan="2">Memory</th>
-	          <th class="text-center" colspan="2">Memory</th>
-	          <th class="text-center" colspan="2">CPU</th>
-	          <th class="text-center" colspan="2">Memory</th>
-	          <th class="text-center" colspan="2">CPU</th>
+	          <th class="text-center" rowspan="2">Kind</th>
+	          <th class="text-center" rowspan="2">Instance<br>Number</th>
+	          <th class="text-center" colspan="2">CPU (Millicore)</th>
+	          <th class="text-center" colspan="2">Memory (MB)</th>
+	          <th class="text-center" colspan="2">CPU (Millicore)</th>
+	          <th class="text-center" colspan="2">Memory (MB)</th>
+	          <th class="text-center" rowspan="2">CPU<br>(Millicore)</th>
+	          <th class="text-center" rowspan="2">Memory<br>(MB)</th>
 	        </tr>
 	        <tr>
 	          <th class="text-center">Min</th>
 	          <th class="text-center">Max</th>
-	          <th class="text-center">Requests</th>
-	          <th class="text-center">Limits</th>
-	          <th class="text-center">Requests</th>
-	          <th class="text-center">Limits</th>
-	          <th class="text-center">Requests</th>
-	          <th class="text-center">Limits</th>
-	          <th class="text-center">Requests</th>
-	          <th class="text-center">Limits</th>
+	          <th class="text-center">Min</th>
+	          <th class="text-center">Max</th>
+	          <th class="text-center">Request</th>
+	          <th class="text-center">Limit</th>
+	          <th class="text-center">Request</th>
+	          <th class="text-center">Limit</th>
 	        </tr>
           </thead>
           <tbody>
@@ -46,16 +45,16 @@
 		            </div>
 	          	  </td>
 				  <td class="text-left"></td>
-				  <td class="text-left"></td>
-				  <td class="text-left"></td>
 				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
-				  <td class="text-center"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
+				  <td class="text-right"></td>
 				  <td class="text-right"></td>
 				  <td class="text-center"></td>
 			    </tr>
@@ -63,24 +62,24 @@
 			  <template v-else>
 				  <template v-for="(application, index) in item.applications">
 				  	<tr>
-				      <td class="text-left" v-if="index == 0" v-bind:rowspan="item.applications.length + 1">
+				      <td class="text-left" v-if="index == 0" v-bind:rowspan="item.applications.length + 2">
 			            <div class="custom-control custom-checkbox custom-control-inline">
 			              <input type="checkbox" class="custom-control-input" :id="item.name" :value="item" v-model="selected" unchecked>
 			              <label class="custom-control-label" :for="item.name">{{ item.name }}</label>
 			            </div>
 				      </td>
 					  <td class="text-left">{{ application.appName }}</td>
+					  <td class="text-center">{{ application.instanceNumber | formatNumber }}</td>
+					  <td class="text-right">{{ application.appCpuMin | formatNumber }}</td>
+					  <td class="text-right">{{ application.appCpuMax | formatNumber }}</td>
 					  <td class="text-right">{{ application.appMemoryMin | formatNumber }}</td>
 					  <td class="text-right">{{ application.appMemoryMax | formatNumber }}</td>
-					  <td class="text-right">{{ application.replicaCount | formatNumber }}</td>
-					  <td class="text-right">{{ application.podMemoryRequest | formatNumber }}</td>
-					  <td class="text-right">{{ application.podMemoryLimit | formatNumber }}</td>
 					  <td class="text-right">{{ application.podCpuRequest | formatNumber }}</td>
 					  <td class="text-right">{{ application.podCpuLimit | formatNumber }}</td>
-					  <td class="text-right">{{ application.podMemoryRequestSum | formatNumber }}</td>
-					  <td class="text-right">{{ application.podMemoryLimitSum | formatNumber }}</td>
-					  <td class="text-right">{{ application.podCpuRequestSum | formatNumber }}</td>
-					  <td class="text-right">{{ application.podCpuLimitSum | formatNumber }}</td>
+					  <td class="text-right">{{ application.podMemoryRequest | formatNumber }}</td>
+					  <td class="text-right">{{ application.podMemoryLimit | formatNumber }}</td>
+					  <td class="text-right">{{ application.totalCpu | formatNumber }}</td>
+					  <td class="text-right">{{ application.totalMemory | formatNumber }}</td>
 					  <td class="text-center">
 					    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(item, application, index)">
 					      <i class="fa fa-pencil fa-sm"></i>
@@ -93,22 +92,24 @@
 				  </template>
 				  
 				  <tr class="text-right">
-				      <td class="font-weight-bold" colspan="8">소계</td>
-					  <td class="font-weight-bold">Memory (GB)</td>
-					  <td class="font-weight-bold">{{item.sumMemory | formatNumber}}</td>
-					  <td class="font-weight-bold">CPU (Core)</td>
-					  <td class="font-weight-bold">{{item.sumCpu | formatNumber}}</td>
+				      <td class="font-weight-bold" colspan="10" rowspan="2">Summary</td>
+					  <td class="font-weight-bold">{{item.sumTotalCpu | formatNumber}} Millicore</td>
+					  <td class="font-weight-bold">{{item.sumTotalMemory | formatNumber}} MB</td>
+					  <td class="font-weight-bold">
+					  </td>
+			      </tr>
+				  <tr class="text-right">
+					  <td class="font-weight-bold">{{item.sumCpu | formatNumber}} GB</td>
+					  <td class="font-weight-bold">{{item.sumMemory | formatNumber}} Core</td>
 					  <td class="font-weight-bold">
 					  </td>
 			      </tr>
 				</template>
 		    </template>
   			<tr class="text-right">
-		      <td class="font-weight-bold" colspan="9">합계</td>
-			  <td class="font-weight-bold">Memory (GB)</td>
-			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}}</td>
-			  <td class="font-weight-bold">CPU (Core)</td>
-			  <td class="font-weight-bold">{{volumes.sumCpu | formatNumber}}</td>
+		      <td class="font-weight-bold" colspan="11">합계</td>
+			  <td class="font-weight-bold">{{volumes.sumCpu | formatNumber}} GB</td>
+			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}} Core</td>
 			  <td class="font-weight-bold">
 			  </td>
   			</tr>
@@ -125,7 +126,7 @@
 	    <b-button size="sm" variant="secondary" class="m-1" @click="openAppsDialog" v-bind:disabled="selected.length != 1">Application 추가</b-button>
       </b-col>
       <b-col cols="3" class="text-right">
-        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
+        <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
 	    <b-button size="sm" variant="primary" class="m-1" @click="save">저장</b-button>
       </b-col>
     </b-row>
@@ -133,7 +134,7 @@
   
   <b-modal centered no-close-on-backdrop title="Environment" v-model="clusterDialog" @close="closeClusterDialog" @cancel="closeClusterDialog" @ok="saveClusterDialog">
     <b-form>
-      <b-form-group label="Environment" label-for="name" :label-cols="4" >
+      <b-form-group label="Environment" label-for="name" label-class="astertisk" :label-cols="4" >
         <b-form-input id="name" type="text" v-model="editedItem.name"></b-form-input>
       </b-form-group>
     </b-form>
@@ -141,29 +142,35 @@
 		  
   <b-modal centered no-close-on-backdrop title="Application" v-model="appsDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
     <b-form>
-      <b-form-group label="Application" label-for="appName" :label-cols="5" >
+      <b-form-group label="Application Kind" label-for="appName" label-class="astertisk" :label-cols="7" >
         <b-form-input id="appName" type="text" v-model="editedAppsItem.appName"></b-form-input>
       </b-form-group>
-      <b-form-group label="Application Memory Min" label-for="appMemoryMin" :label-cols="5" >
+      <b-form-group label="Application Instance Number" label-for="instanceNumber" :label-cols="7" >
+        <b-form-input id="instanceNumber" type="number" v-model="editedAppsItem.instanceNumber"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Application CPU(Millicore) Min" label-for="appCpuMin" :label-cols="7" >
+        <b-form-input id="appCpuMin" type="number" v-model="editedAppsItem.appCpuMin"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Application CPU(Millicore) Max" label-for="appCpuMax" :label-cols="7" >
+        <b-form-input id="appCpuMax" type="number" v-model="editedAppsItem.appCpuMax"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Application Memory(MB) Min" label-for="appMemoryMin" :label-cols="7" >
         <b-form-input id="appMemoryMin" type="number" v-model="editedAppsItem.appMemoryMin"></b-form-input>
       </b-form-group>
-      <b-form-group label="Application Memory Max" label-for="appMemoryMax" :label-cols="5" >
+      <b-form-group label="Application Memory(MB) Max" label-for="appMemoryMax" :label-cols="7" >
         <b-form-input id="appMemoryMax" type="number" v-model="editedAppsItem.appMemoryMax"></b-form-input>
       </b-form-group>
-      <b-form-group label="Replication Count" label-for="replicaCount" :label-cols="5" >
-        <b-form-input id="replicaCount" type="number" v-model="editedAppsItem.replicaCount"></b-form-input>
-      </b-form-group>
-      <b-form-group label="POD Memory Requests" label-for="podMemoryRequest" :label-cols="5" >
-        <b-form-input id="podMemoryRequest" type="number" v-model="editedAppsItem.podMemoryRequest"></b-form-input>
-      </b-form-group>
-      <b-form-group label="POD Memory Limits" label-for="podMemoryLimit" :label-cols="5" >
-        <b-form-input id="podMemoryLimit" type="number" v-model="editedAppsItem.podMemoryLimit"></b-form-input>
-      </b-form-group>
-      <b-form-group label="POD CPU Requests" label-for="podCpuRequest" :label-cols="5" >
+      <b-form-group label="Container CPU(Millicore) Request" label-for="podCpuRequest" :label-cols="7" >
         <b-form-input id="podCpuRequest" type="number" v-model="editedAppsItem.podCpuRequest"></b-form-input>
       </b-form-group>
-      <b-form-group label="POD CPU Limits" label-for="podCpuLimit" :label-cols="5" >
+      <b-form-group label="Container CPU(Millicore) Limit" label-for="podCpuLimit" :label-cols="7" >
         <b-form-input id="podCpuLimit" type="number" v-model="editedAppsItem.podCpuLimit"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Container Memory(MB) Request" label-for="podMemoryRequest" :label-cols="7" >
+        <b-form-input id="podMemoryRequest" type="number" v-model="editedAppsItem.podMemoryRequest"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Container Memory(MB) Limit" label-for="podMemoryLimit" :label-cols="7" >
+        <b-form-input id="podMemoryLimit" type="number" v-model="editedAppsItem.podMemoryLimit"></b-form-input>
       </b-form-group>
     </b-form>
   </b-modal>
@@ -301,7 +308,7 @@ export default {
 		},
 		saveAppsDialog (e) {
 			if(!this.editedAppsItem.appName) {
-				alert('Application명을 입력하세요.')
+				alert('Application Kind를 입력하세요.')
 				e.preventDefault()
 				return
 			}
@@ -325,30 +332,27 @@ export default {
 				let sumMemory = 0;
 				let sumCpu = 0;
 				for(let application of environment.applications) {
-					if(application.podMemoryLimitSum) sumMemory += application.podMemoryLimitSum;
-					if(application.podCpuLimitSum) sumCpu += application.podCpuLimitSum;
+					if(application.totalMemory) sumMemory += application.totalMemory;
+					if(application.totalCpu) sumCpu += application.totalCpu;
 				}
 				
-				environment.sumMemory = Math.ceil(sumMemory/1024);
-				environment.sumCpu = sumCpu/1000;
+				environment.sumTotalCpu = sumCpu
+				environment.sumTotalMemory = sumMemory
+				environment.sumCpu = sumCpu/1000
+				environment.sumMemory = Math.ceil(sumMemory/1024)
 				
 				this.volumes.sumMemory += environment.sumMemory;
 				this.volumes.sumCpu += environment.sumCpu;
 			}
 		},
 		calcAppSum(application) {
-			if(!application.replicaCount)  {
+			if(!application.instanceNumber)  {
 				return;
 			}
 			
-			if(application.podMemoryRequest) application.podMemoryRequestSum = application.replicaCount * application.podMemoryRequest;
-			if(application.podMemoryLimit) application.podMemoryLimitSum = application.replicaCount * application.podMemoryLimit;
-			if(application.podCpuRequest) application.podCpuRequestSum = application.replicaCount * application.podCpuRequest;
-			if(application.podCpuLimit) application.podCpuLimitSum = application.replicaCount * application.podCpuLimit;
+			if(application.podCpuLimit) application.totalCpu = application.instanceNumber * application.podCpuLimit;
+			if(application.podMemoryLimit) application.totalMemory = application.instanceNumber * application.podMemoryLimit;
 		}
 	}
 }
 </script>
-
-<style>
-</style>

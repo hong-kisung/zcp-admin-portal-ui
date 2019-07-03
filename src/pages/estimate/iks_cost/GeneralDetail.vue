@@ -7,19 +7,19 @@
       <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
         <b-form-input id="createdDt" type="text" v-model="generalInfo.createdDt" readonly></b-form-input>
       </b-form-group>
-      <b-form-group label="Platform Resolved CPU" label-for="platformCpuPerWorker" :label-cols="3" >
+      <b-form-group label="Platform Reserved CPU" label-for="platformCpuPerWorker" label-class="astertisk" :label-cols="3" >
         <b-form-input id="platformCpuPerWorker" type="number" v-model="generalInfo.platformCpuPerWorker"></b-form-input>
       </b-form-group>
-      <b-form-group label="Platform Resolved Memory" label-for="platformMemoryPerWorker" :label-cols="3" >
+      <b-form-group label="Platform Reserved Memory" label-for="platformMemoryPerWorker" label-class="astertisk" :label-cols="3" >
         <b-form-input id="platformMemoryPerWorker" type="number" v-model="generalInfo.platformMemoryPerWorker"></b-form-input>
       </b-form-group>
-      <b-form-group label="IBM 할인율(%)" label-for="ibmDcRate" :label-cols="3" >
+      <b-form-group label="IBM 할인율(%)" label-for="ibmDcRate" label-class="astertisk" :label-cols="3" >
         <b-form-input id="ibmDcRate" type="number" v-model="generalInfo.ibmDcRate"></b-form-input>
       </b-form-group>
-      <b-form-group label="매매기준환율(원)" label-for="exchangeRate" :label-cols="3" >
+      <b-form-group label="매매기준환율(₩)" label-for="exchangeRate" label-class="astertisk" :label-cols="3" >
         <b-form-input id="exchangeRate" type="number" v-model="generalInfo.exchangeRate"></b-form-input>
       </b-form-group>
-      <b-form-group label="IP Allocation Cost(원)" label-for="ipAllocation" :label-cols="3" >
+      <b-form-group label="IP Allocation Cost(₩)" label-for="ipAllocation" label-class="astertisk" :label-cols="3" >
         <b-form-input id="ipAllocation" type="number" v-model="generalInfo.ipAllocation"></b-form-input>
       </b-form-group>
       <b-form-group label="설명" label-for="description" :label-cols="3" >
@@ -28,7 +28,7 @@
     </b-form>
     <b-row v-if="editable">
 	  <b-col class="text-right">
-	    <b-button size="sm" variant="primary" class="m-1" v-if="editable" v-on:click="save">저장</b-button>
+	    <b-button size="md" variant="primary" class="m-1" v-if="editable" v-on:click="save">저장</b-button>
 	  </b-col>
     </b-row>
   </b-card>
@@ -80,23 +80,23 @@ export default {
 		},
 		save () {
 			if(!this.generalInfo.platformCpuPerWorker) {
-				alert('Platform Resolved CPU 값을 입력하세요');
+				alert('Platform Reserved CPU를 입력하세요');
 				return;
 			}
 			if(!this.generalInfo.platformMemoryPerWorker) {
-				alert('Platform Resolved Memory 값을 입력하세요');
+				alert('Platform Reserved Memory를 입력하세요');
 				return;
 			} 
 			if(!this.generalInfo.ibmDcRate) {
-				alert('IBM 할인율  값을 입력하세요');
+				alert('IBM 할인율을 입력하세요');
 				return;
 			}
 			if(!this.generalInfo.exchangeRate) {
-				alert('매매기준환율  값을 입력하세요');
+				alert('매매기준환율을 입력하세요');
 				return;
 			}
 			if(!this.generalInfo.ipAllocation) {
-				alert('IP Allocation Cost 값을 입력하세요');
+				alert('IP Allocation Cost를 입력하세요');
 				return;
 			}
 			

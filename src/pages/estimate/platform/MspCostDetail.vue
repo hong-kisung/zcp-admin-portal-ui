@@ -23,8 +23,8 @@
 		        <tr>
 		          <th class="text-center">Product</th>
 		          <th class="text-center">Alias</th>
-		          <th class="text-center">Mem Spec(GB) 초과</th>
-		          <th class="text-center">MSP Cost</th>
+		          <th class="text-center">Memory Spec(GB) 초과</th>
+		          <th class="text-center">MSP 비용(₩)</th>
 		          <th class="text-center" v-if="editable">Actions</th>
 		        </tr>
 		      </thead>
@@ -60,7 +60,7 @@
 			          </th>
 				      <td class="text-left">{{ mspCosts.alias }}</td>
 				      <td class="text-center">{{ mspCosts.memory }}</td>
-				      <td class="text-right">{{ mspCosts.cost | formatNumber }} 원</td>
+				      <td class="text-right">{{ mspCosts.cost | formatNumber | toKRW }}</td>
 					  <td class="text-center" v-if="editable">
 					    <b-link href="#" class="card-header-action" v-on:click="editItem(item, mspCosts)">
 					      <i class="fa fa-pencil fa-sm"></i>
@@ -91,13 +91,13 @@
 		    
   <b-modal centered no-close-on-backdrop title="MSP Cost" v-model="mspCostDialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
     <b-form>
-      <b-form-group label="Alias" label-for="alias" :label-cols="4" >
+      <b-form-group label="Alias" label-for="alias" label-class="astertisk" :label-cols="5" >
         <b-form-input id="alias" type="text" v-model="editedItem.alias"></b-form-input>
       </b-form-group>
-      <b-form-group label="Mem Spec(GB) 초과" label-for="memory" :label-cols="4" >
+      <b-form-group label="Memory Spec(GB) 초과" label-for="memory" label-class="astertisk" :label-cols="5" >
         <b-form-input id="memory" type="number" v-model="editedItem.memory"></b-form-input>
       </b-form-group>
-      <b-form-group label="MSP Cost(원)" label-for="cost" :label-cols="4" >
+      <b-form-group label="MSP 비용(₩)" label-for="cost" label-class="astertisk" :label-cols="5" >
         <b-form-input id="cost" type="number" v-model="editedItem.cost"></b-form-input>
       </b-form-group>
     </b-form>
@@ -177,17 +177,17 @@ export default {
 		},
 		saveDialog (e) {
       		if(!this.editedItem.alias) {
-      			alert('Alias 값을 입력하세요');
+      			alert('Alias를 입력하세요');
       			e.preventDefault()
       			return;
       		}
       		if(!this.editedItem.memory) {
-      			alert('Mem Spec(GB) 초과 값을 입력하세요');
+      			alert('Mem Spec(GB) 초과를 입력하세요');
       			e.preventDefault()
       			return;
       		}
       		if(!this.editedItem.cost) {
-      			alert('MSP Cost 값을 입력하세요');
+      			alert('MSP 비용을 입력하세요');
       			e.preventDefault()
       			return;
       		}

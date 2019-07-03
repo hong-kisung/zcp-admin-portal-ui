@@ -11,8 +11,8 @@
       <b-form-group label="설명" label-for="description" :label-cols="3" >
         <b-form-input id="description" type="text" v-model="storageData.description"></b-form-input>
       </b-form-group>
-      <b-form-group label="Object Storage 비용(Daily) (원)" label-for="objectStoragePricePerDay" :label-cols="3" >
-        <b-form-input id="objectStoragePricePerDay" type="number" v-model="storageData.objectStoragePricePerDay"></b-form-input>
+      <b-form-group label="Object Storage Price(₩)/Monthly" label-for="objectStoragePricePerMonth" label-class="astertisk" :label-cols="3" >
+        <b-form-input id="objectStoragePricePerMonth" type="number" v-model="storageData.objectStoragePricePerMonth"></b-form-input>
       </b-form-group>
     </b-form>
 	<b-row>
@@ -20,55 +20,47 @@
 	    <div class="table-responsive-sm">
 	      <table class="table b-table table-striped table-hover table-bordered table-sm">
 			  <colgroup>
-			    <col width="80">
+			    <col width="60">
 			  </colgroup>
 		      <thead>
 		        <tr>
 		          <th class="text-center" rowspan="2">Disk<br>Size(GB)</th>
-		          <th class="text-center" colspan="4">0.25 IOPS</th>
-		          <th class="text-center" colspan="4">2 IOPS</th>
-		          <th class="text-center" colspan="4">4 IOPS</th>
-		          <th class="text-center" colspan="4">10 IOPS</th>
+		          <th class="text-center" colspan="3">0.25 IOPS</th>
+		          <th class="text-center" colspan="3">2 IOPS</th>
+		          <th class="text-center" colspan="3">4 IOPS</th>
+		          <th class="text-center" colspan="3">10 IOPS</th>
 		          <th class="text-center" rowspan="2" v-if="editable">Actions</th>
 		        </tr>
 		        <tr>
-				  <th class="text-center">Total<br>IOPS</th>
-				  <th class="text-center">Hourly($)</th>
-				  <th class="text-center">Monthly</th>
-				  <th class="text-center">Yearly</th>
-				  <th class="text-center">Total<br>IOPS</th>
-				  <th class="text-center">Hourly($)</th>
-				  <th class="text-center">Monthly</th>
-				  <th class="text-center">Yearly</th>
-				  <th class="text-center">Total<br>IOPS</th>
-				  <th class="text-center">Hourly($)</th>
-				  <th class="text-center">Monthly</th>
-				  <th class="text-center">Yearly</th>
-				  <th class="text-center">Total<br>IOPS</th>
-				  <th class="text-center">Hourly($)</th>
-				  <th class="text-center">Monthly</th>
-				  <th class="text-center">Yearly</th>
+				  <th class="text-center">List Price($)<br>/Hourly</th>
+				  <th class="text-center">List Price(₩)<br>/Monthly</th>
+				  <th class="text-center">SK Price(₩)<br>/Monthly</th>
+				  <th class="text-center">List Price($)<br>/Hourly</th>
+				  <th class="text-center">List Price(₩)<br>/Monthly</th>
+				  <th class="text-center">SK Price(₩)<br>/Monthly</th>
+				  <th class="text-center">List Price($)<br>/Hourly</th>
+				  <th class="text-center">List Price(₩)<br>/Monthly</th>
+				  <th class="text-center">SK Price(₩)<br>/Monthly</th>
+				  <th class="text-center">List Price($)<br>/Hourly</th>
+				  <th class="text-center">List Price(₩)<br>/Monthly</th>
+				  <th class="text-center">SK Price(₩)<br>/Monthly</th>
 		        </tr>
 		      </thead>
 		      <tbody>
 				<tr v-for="(item) in storageData.fileStorages">
 				  <td class="text-left">{{ item.disk }}</td>
-				  <td class="text-right">{{ item.disk * 0.25 }}</td>
-				  <td class="text-right">{{ item.iops1PricePerHour }}</td>
-				  <td class="text-right">{{ item.iops1PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | formatNumber }}</td>
-				  <td class="text-right">{{ item.iops1PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
-				  <td class="text-right">{{ item.disk * 2 }}</td>
-				  <td class="text-right">{{ item.iops2PricePerHour }}</td>
-				  <td class="text-right">{{ item.iops2PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | formatNumber }}</td>
-				  <td class="text-right">{{ item.iops2PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
-				  <td class="text-right">{{ item.disk * 4 }}</td>
-				  <td class="text-right">{{ item.iops3PricePerHour }}</td>
-				  <td class="text-right">{{ item.iops3PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | formatNumber }}</td>
-				  <td class="text-right">{{ item.iops3PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
-				  <td class="text-right">{{ item.disk * 10 }}</td>
-				  <td class="text-right">{{ item.iops4PricePerHour }}</td>
-				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | formatNumber }}</td>
-				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.ibmDcRate, iksGeneral.exchangeRate) | toYearlyPrice | formatNumber }}</td>
+				  <td class="text-right">{{ item.iops1PricePerHour | toUSD}}</td>
+				  <td class="text-right">{{ item.iops1PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops1PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | toSKPrice(iksGeneral.ibmDcRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops2PricePerHour | toUSD}}</td>
+				  <td class="text-right">{{ item.iops2PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops2PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | toSKPrice(iksGeneral.ibmDcRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops3PricePerHour | toUSD}}</td>
+				  <td class="text-right">{{ item.iops3PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops3PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | toSKPrice(iksGeneral.ibmDcRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops4PricePerHour | toUSD}}</td>
+				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | formatNumber | toKRW }}</td>
+				  <td class="text-right">{{ item.iops4PricePerHour | toMonthlyPrice(iksGeneral.exchangeRate) | toSKPrice(iksGeneral.ibmDcRate) | formatNumber | toKRW }}</td>
 				  <td class="text-center" v-if="editable">
 				    <b-link href="#" class="card-header-action" v-on:click="editItem(item)">
 				      <i class="fa fa-pencil fa-sm"></i>
@@ -95,19 +87,19 @@
 
   <b-modal centered no-close-on-backdrop title="Storage" v-model="dialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
     <b-form>
-      <b-form-group label="Disk Size(GB)" label-for="disk" :label-cols="4" >
+      <b-form-group label="Disk Size(GB)" label-for="disk" label-class="astertisk" :label-cols="4" >
         <b-form-input id="disk" type="number" v-model="editedItem.disk"></b-form-input>
       </b-form-group>
-      <b-form-group label="0.25 IOPS Hourly($)" label-for="iops1PricePerHour" :label-cols="4" >
+      <b-form-group label="0.25 IOPS Hourly($)" label-for="iops1PricePerHour" label-class="astertisk" :label-cols="4" >
         <b-form-input id="iops1PricePerHour" type="number" v-model="editedItem.iops1PricePerHour"></b-form-input>
       </b-form-group>
-      <b-form-group label="2 IOPS Hourly($)" label-for="iops2PricePerHour" :label-cols="4" >
+      <b-form-group label="2 IOPS Hourly($)" label-for="iops2PricePerHour" label-class="astertisk" :label-cols="4" >
         <b-form-input id="iops2PricePerHour" type="number" v-model="editedItem.iops2PricePerHour"></b-form-input>
       </b-form-group>
-      <b-form-group label="4 IOPS Hourly($)" label-for="iops3PricePerHour" :label-cols="4" >
+      <b-form-group label="4 IOPS Hourly($)" label-for="iops3PricePerHour" label-class="astertisk" :label-cols="4" >
         <b-form-input id="iops3PricePerHour" type="number" v-model="editedItem.iops3PricePerHour"></b-form-input>
       </b-form-group>
-      <b-form-group label="10 IOPS Hourly($)" label-for="iops4PricePerHour" :label-cols="4" >
+      <b-form-group label="10 IOPS Hourly($)" label-for="iops4PricePerHour" label-class="astertisk" :label-cols="4" >
         <b-form-input id="iops4PricePerHour" type="number" v-model="editedItem.iops4PricePerHour"></b-form-input>
       </b-form-group>
     </b-form>
@@ -123,10 +115,7 @@ export default {
 		dialog: false,
 		editedIndex: -1,
 		editedItem: {},
-		defaultItem: {},
-		
-      	messageShow: false,
-      	messages: []
+		defaultItem: {}
 	}),
   	props: [
 		'versionId',
@@ -147,22 +136,6 @@ export default {
 			return this.editedIndex === -1 ? 'Storage 추가' : 'Storage 수정';
 		}
     },
-    filters: {
-    	toMonthlyPrice: function(value, dcRate, exchangeRate) {
-    		if(dcRate == undefined || exchangeRate == undefined) {
-    			return '';
-    		} else {
-    			return Math.ceil(value * 24 * 31 * (1 - dcRate/100) * exchangeRate);
-    		}
-    	},
-    	toYearlyPrice: function(value) {
-    		if(Number.isInteger(value)) {
-    			return value * 12;
-    		} else {
-    			return '';
-    		}
-    	}
-    },
     watch: {
 		dialog (val) {
 			val || this.closeDialog();
@@ -182,35 +155,6 @@ export default {
 			} else {
 				this.$store.dispatch('estimate/getStorage')
 			}
-		},
-		getGeneralInfo() {
-			this.$http.get('/api/estimate/general').then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.iksGeneral = response.data;
-				} else {
-					this.showMessage('기준정보', '조회된 데이터가 없습니다. 일부 항목의 값이 표시되지 않습니다.');
-				}
-			}).catch(error => {
-				this.showMessage('기준정보', error.response.data.message);
-			})
-		},
-		getStorageInfo(url) {
-			this.$http.get(url).then(response => {
-				if(response && response.data && response.data.id > 0) {
-					this.storageData = response.data;
-				} else {
-					this.showMessage('Storage', '조회된 데이터가 없습니다.');
-				}
-			}).catch(error => {
-				this.showMessage('VM', error.response.data.message);
-			})
-		},
-		showMessage(title, text) {
-			let message = {};
-			message.title = title;
-			message.text = text;
-			this.messages.push(message);
-			this.messageShow = true;
 		},
 		editItem (item) {
 			this.editedIndex = this.storageData.fileStorages.indexOf(item);
@@ -267,6 +211,10 @@ export default {
 			this.closeDialog();
 		},
 		save () {
+			if(!this.storageData.objectStoragePricePerMonth) {
+				alert('Object Storage Price(₩)/Monthly 값을 입력하세요');
+				return;
+			}
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
 				this.$store.dispatch('estimate/saveStorage', {storageInfo: this.storageData})
 			}

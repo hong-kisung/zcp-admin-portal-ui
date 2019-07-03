@@ -1,8 +1,8 @@
 <template>
 <b-modal centered no-close-on-backdrop title="Product 추가" v-model="dialog" @close="closeEnvironmentDialog" @cancel="closeEnvironmentDialog" @ok="saveEnvironmentDialog">
     <b-form>
-      <div class="custom-control custom-checkbox custom-control-inline mt-3" v-for="product in products">
-        <input type="checkbox" class="custom-control-input" :id="product.productId" :value="product" v-model="editedItem.products" unchecked>
+      <div class="custom-control custom-checkbox custom-control-inline" v-for="product in productReferences">
+        <input type="checkbox" class="custom-control-input" :id="product.productId" :value="product" v-model="editedItem.products" :disabled="estimate.products.find(p => p.productId === product.productId) ? true:false">
         <label class="custom-control-label" :for="product.productId">{{ product.productName }}</label>
       </div>
     </b-form>
@@ -20,7 +20,7 @@ export default {
 		'environmentDialog'
 	],
 	computed: {
-		products: function() {
+		productReferences: function() {
 			return this.$store.state.estimate.productReferences
 		}
 	},

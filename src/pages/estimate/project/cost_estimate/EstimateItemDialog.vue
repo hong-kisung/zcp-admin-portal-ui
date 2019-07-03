@@ -2,32 +2,32 @@
 <b-modal centered no-close-on-backdrop title="Classification" v-model="showDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
   <b-form>
       <div class="form-group row mt-3">
-        <label for="productName" class="col-md-5 col-form-label">Product</label>
-        <div class="col-md-7">
+        <label for="productName" class="col-md-4 col-form-label astertisk">Product</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="productName" v-model="editedItem.productId" :disabled="disabledEnv" @change="changeProduct">
 	        <option v-for="(item, index) in productReferences" :value="item.productId">{{ item.productName }}</option>
 	      </select>
         </div>
       </div>
       <div class="form-group row">
-        <label for="serviceName" class="col-md-5 col-form-label">Service</label>
-        <div class="col-md-7">
+        <label for="serviceName" class="col-md-4 col-form-label astertisk">Service</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="serviceName" v-model="editedItem.serviceName" :disabled="disabledEnv" @change="changeService">
 	        <option v-for="(item, index) in targetServices" :value="item.serviceName">{{ item.serviceName }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row">
-        <label for="classificationName" class="col-md-5 col-form-label">Classification</label>
-        <div class="col-md-7">
-	      <select class="custom-select custom-select-md" id="classificationName" v-model="editedItem.classificationName" :disabled="disabledEnv" @change="changeClassification">
-	        <option v-for="(item, index) in selectedService.classifications" :value="item.classificationName">{{ item.classificationName }}</option>
+        <label for="classificationName" class="col-md-4 col-form-label astertisk">Classification</label>
+        <div class="col-md-8">
+	      <select class="custom-select custom-select-md" id="classificationName" v-model="editedItem.classificationTemp" :disabled="disabledEnv" @change="changeClassification">
+	        <option v-for="(item, index) in selectedService.classifications" :value="item.classificationName + '|' + item.classificationType">{{ item.classificationName + ' (' + item.classificationType + ')' }}</option>
 	      </select>
         </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="addonId" class="col-md-5 col-form-label">Addon Application</label>
-        <div class="col-md-7">
+        <label for="addonId" class="col-md-4 col-form-label">Addon Application</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="addonId" v-model="editedItem.addonId" @change="changeApplication">
 	        <option value=""></option>
 	        <option v-for="(item, index) in addonApplicationItems" :value="item.id">{{ item.applicationName }}</option>
@@ -35,8 +35,8 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="editedItem.classificationType == 'VM'">
-        <label for="iksVmId" class="col-md-5 col-form-label">Machine Type</label>
-        <div class="col-md-7">
+        <label for="iksVmId" class="col-md-4 col-form-label">Machine Type</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="iksVmId" v-model="editedItem.iksVmId" @change="changeMachineType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in vmVersion.vms" :value="item.id">{{ item.name }}</option>
@@ -44,8 +44,8 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="editedItem.classificationType == 'VM'">
-        <label for="hardwareType" class="col-md-5 col-form-label">Hardware Type</label>
-        <div class="col-md-7">
+        <label for="hardwareType" class="col-md-4 col-form-label">Hardware Type</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="hardwareType" v-model="editedItem.hardwareType" @change="changeHardwareType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in hardwareTypeItems" :value="item">{{ item }}</option>
@@ -53,8 +53,8 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="storageType" class="col-md-5 col-form-label">Storage Type</label>
-        <div class="col-md-7">
+        <label for="storageType" class="col-md-4 col-form-label">Storage Type</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="storageType" v-model="editedItem.storageType">
 	        <option value=""></option>
 	        <option v-for="(item, index) in fileStorageTypeItems" :value="item">{{ item }}</option>
@@ -62,8 +62,8 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="enduranceIops" class="col-md-5 col-form-label">Storage Performance</label>
-        <div class="col-md-7">
+        <label for="enduranceIops" class="col-md-4 col-form-label">Storage Performance</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="enduranceIops" v-model="editedItem.enduranceIops">
 	        <option value=""></option>
 	        <option v-for="(item, index) in enduranceIopsItems" :value="item">{{ item }}</option>
@@ -71,8 +71,8 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="showAddonApplication">
-        <label for="iksFileStorageId" class="col-md-5 col-form-label">Storage Size</label>
-        <div class="col-md-7">
+        <label for="iksFileStorageId" class="col-md-4 col-form-label">Storage Size(GB)</label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="iksFileStorageId" v-model.number="editedItem.iksFileStorageId" @change="changeStorageSize">
 	        <option value=""></option>
 	        <option v-for="(item, index) in storageVersion.fileStorages" :value="item.id">{{ item.disk }}</option>
@@ -80,23 +80,23 @@
 	    </div>
       </div>
       <div class="form-group row" v-show="!showLaborCostInput">
-        <label for="number" class="col-md-5 col-form-label">Number</label>
-        <div class="col-md-7">
+        <label for="number" class="col-md-4 col-form-label">Number</label>
+        <div class="col-md-8">
 	      <input type="number" class="form-control form-control-md" id="number" v-model.number="editedItem.number">
 	    </div>
       </div>
       <div class="form-group row" v-show="showLaborCostInput">
-        <label for="mspCost" class="col-md-5 col-form-label">{{ editedItem.classificationName + ' 선택' }} </label>
-        <div class="col-md-7">
+        <label for="mspCost" class="col-md-4 col-form-label">{{ editedItem.classificationName + ' 선택' }} </label>
+        <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="mspCost" v-model="editedItem.mspCost" @change="changeMspCost">
 	        <option value=""></option>
-	        <option v-for="(item, index) in targetMspCosts" :value="item.cost">{{ item.cost + "원 (" + item.alias + " - " + item.memory + " 초과)" }}</option>
+	        <option v-for="(item, index) in targetMspCosts" :value="item.cost">{{ item.cost + " 원 (" + item.alias + " - " + item.memory + " 초과)" }}</option>
 	      </select>
 	    </div>
       </div>
       <div class="form-group row" v-show="showLaborCostInput">
-        <label for="pricePerMonthly" class="col-md-5 col-form-label">{{ this.editedItem.classificationName + ' 직접 입력' }}</label>
-        <div class="col-md-7">
+        <label for="pricePerMonthly" class="col-md-4 col-form-label">{{ this.editedItem.classificationName + ' 직접 입력' }}(₩)</label>
+        <div class="col-md-8">
 	      <input type="number" class="form-control form-control-md" id="pricePerMonthly" v-model.number="editedItem.pricePerMonthly">
 	    </div>
       </div>
@@ -162,13 +162,14 @@ export default {
 	watch: {
 		appsDialog: function (){
 			if(this.appsDialog) {
-				this.showDialog = true;
-				this.clearData();
+				this.showDialog = true
+				this.clearData()
 
 				if(!this.isNewAppsItem) {
-					this.changeProduct();
-					this.changeService();
-					this.changeClassification();
+					this.editedItem.classificationTemp = this.editedItem.classificationName + '|' + this.editedItem.classificationType
+					this.changeProduct()
+					this.changeService()
+					this.changeClassification()
 				}
 			}
 		}
@@ -233,35 +234,49 @@ export default {
 			this.selectedService = this.targetServices.find(service => service.serviceName === this.editedItem.serviceName);
 		},
 		changeClassification() {
-			this.addonApplicationItems = [];
-			this.showAddonApplication = false;
-			this.showLaborCostInput = false;
+			this.addonApplicationItems = []
+			this.showAddonApplication = false
+			this.showLaborCostInput = false
 			
-			this.selectedClassification = this.selectedService.classifications.find(classification => classification.classificationName === this.editedItem.classificationName);
-			this.editedItem.classificationType = this.selectedClassification.classificationType;
+			if(!this.editedItem.classificationTemp) return
+			
+			//classification select box의 value = name|type
+			let selected = this.editedItem.classificationTemp.split('|')
+			this.editedItem.classificationName = selected[0]
+			this.editedItem.classificationType = selected[1]
 			
 			if(this.editedItem.classificationType == 'File_Storage') {
 				for(let service of this.selectedProduct.services) {
 					for(let application of service.applications) {
-						if(application.storageType == 'File' || application.storageType == 'Object') {
-							this.addonApplicationItems.push(application);
+						if(application.storageType == 'File') {
+							this.addonApplicationItems.push(application)
 						} 
 					}
 				}
-				this.showAddonApplication = true;
+				this.showAddonApplication = true
 				
 			} else if(this.editedItem.classificationType == 'Block_Storage') {
 				for(let service of this.selectedProduct.services) {
 					for(let application of service.applications) {
 						if(application.storageType == 'Block') {
-							this.addonApplicationItems.push(application);
+							this.addonApplicationItems.push(application)
 						} 
 					}
 				}
-				this.showAddonApplication = true;
+				this.showAddonApplication = true
+				
+			} else if(this.editedItem.classificationType == 'Object_Storage') {
+				for(let service of this.selectedProduct.services) {
+					for(let application of service.applications) {
+						if(application.storageType == 'Object') {
+							this.addonApplicationItems.push(application)
+						} 
+					}
+				}
+				this.showAddonApplication = true
 				
 			} else if(this.editedItem.classificationType == 'Labor_Cost') {
-				this.showLaborCostInput = true;
+				this.showLaborCostInput = true
 			}
 		},
 		changeApplication() {

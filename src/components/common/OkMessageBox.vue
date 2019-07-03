@@ -3,7 +3,7 @@
 
 <script>
 export default {
-  	name: 'MessageBox',
+  	name: 'OkMessageBox',
   	computed: {
   		okMessage: function() {
   			return this.$store.state.okMessage
@@ -18,7 +18,7 @@ export default {
   					buttonSize: 'sm',
   					okTitle: '확인',
   					okVariant: 'success',
-  					centered: true
+  					centered: false
   				}).then(value => {
   					this.$store.commit('showOkMessage', {show:false})
   				}).catch(err => {

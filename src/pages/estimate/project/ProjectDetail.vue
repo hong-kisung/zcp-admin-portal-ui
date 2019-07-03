@@ -1,7 +1,7 @@
 <template>
   <b-modal centered no-close-on-backdrop title="Project 기본정보" v-model="show" @close="cancel" @cancel="cancel" @ok="saveProject">
     <b-form>
-      <b-form-group label="Project명" label-for="name" :label-cols="3" >
+      <b-form-group label="Project명" label-for="name" label-class="astertisk" :label-cols="3" >
         <b-form-input id="name" type="text" v-model="project.name"></b-form-input>
       </b-form-group>
       <b-form-group label="설명" label-for="description" :label-cols="3" >

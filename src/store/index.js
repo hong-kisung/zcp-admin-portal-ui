@@ -23,6 +23,9 @@ const store = new Vuex.Store({
 			state.asideToggleStatus = payload.status
 		},
 		showOkMessage: function(state, payload) {
+			if(payload.show == undefined) {
+				payload.show = true
+			}
 			state.okMessage = payload
 		}
 	},

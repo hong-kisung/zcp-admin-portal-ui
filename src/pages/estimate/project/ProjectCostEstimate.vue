@@ -84,7 +84,7 @@
 	        <b-button size="sm" variant="danger" class="m-1" @click="updateEstimate" v-if="editable && showEstimateUpdate">견적서 Update</b-button>
           </b-col>
           <b-col cols="3" class="text-right">
-            <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">취소</b-button>
+            <b-button size="sm" variant="outline-primary" class="m-1" @click="cancel">목록</b-button>
 	        <b-button size="sm" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
 	        <b-button size="sm" variant="primary" class="m-1" v-if="!editable" @click="remove">삭제</b-button>
           </b-col>
