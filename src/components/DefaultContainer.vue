@@ -10,6 +10,7 @@
       <b-navbar-nav class="d-md-down-none">
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
+        <b-nav-item class="px-5">{{ userName }}</b-nav-item>
       </b-navbar-nav>
     </AppHeader>
     <div class="app-body">
@@ -77,12 +78,18 @@ export default {
     },
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
+    },
+    userName () {
+    	return this.$store.getters.getUserName
     }
   },
   mounted () {
   	this.$store.watch(this.$store.getters.asideToggleStatus, status => {
   		this.toggle()
   	})
+  },
+  created () {
+  	this.$store.dispatch('getUserInfo')
   },
   methods: {
 	toggle(force) {

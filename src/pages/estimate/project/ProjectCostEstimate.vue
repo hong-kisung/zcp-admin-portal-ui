@@ -97,13 +97,13 @@
 	    	v-bind:versionId="generalVersionId" 
 	    />
 	</b-modal>
-    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS VM" v-model="iksVmDialog" scrollable>
+    <b-modal size="xl-custom" ok-only ok-title="Close" ok-variant="danger" title="IKS VM" v-model="iksVmDialog" scrollable>
 	    <iks-vm-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="iksVmVersionId" 
 	    />
 	</b-modal>
-    <b-modal size="xl" ok-only ok-title="Close" ok-variant="danger" title="IKS Storage" v-model="iksStorageDialog" scrollable>
+    <b-modal size="xl-custom" ok-only ok-title="Close" ok-variant="danger" title="IKS Storage" v-model="iksStorageDialog" scrollable>
 	    <iks-storage-detail
 	    	v-bind:editable="false"
 	    	v-bind:versionId="iksStorageVersionId" 
@@ -194,6 +194,9 @@ export default {
 		},
 		projectCostEstimateHistoryDetail: function() {
 			return this.$store.state.estimate.projectCostEstimateHistoryDetail
+		},
+		userId : function() {
+			return this.$store.getters.getUserId
 		}
 	},
 	watch: {
@@ -293,10 +296,11 @@ export default {
 			}
 			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.estimate.generalId = this.iksGeneral.id;
-				this.estimate.iksVmVersionId = this.vmVersion.id;
-				this.estimate.iksStorageVersionId = this.storageVersion.id;
-				this.estimate.mspCostVersionId = this.productMspCostVersion.id;
+				this.estimate.generalId = this.iksGeneral.id
+				this.estimate.iksVmVersionId = this.vmVersion.id
+				this.estimate.iksStorageVersionId = this.storageVersion.id
+				this.estimate.mspCostVersionId = this.productMspCostVersion.id
+				this.estimate.created = this.userId
 
 				this.$store.dispatch('estimate/saveProjectCostEstimate', {projectId: this.projectId, estimate: this.estimate})
 			}

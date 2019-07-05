@@ -111,6 +111,9 @@ export default {
 		'classificationTypeItems'
 	],
 	computed: {
+		userId : function() {
+			return this.$store.getters.getUserId
+		}
     },
 	created () {
 		this.initialize()
@@ -205,6 +208,7 @@ export default {
 			if (this.editedAppsIndex > -1) {
 				this.$set(this.services[this.editedServIndex].classifications, this.editedAppsIndex, this.editedAppsItem);
 			} else {
+				this.editedAppsItem.created = this.userId
 				this.services[this.editedServIndex].classifications.push(this.editedAppsItem);
 			}
 			this.closeAppsDialog();

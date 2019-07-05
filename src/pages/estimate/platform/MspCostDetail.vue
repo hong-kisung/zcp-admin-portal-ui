@@ -131,6 +131,9 @@ export default {
 		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'Mem Spec 추가' : 'Mem Spec 수정';
+		},
+		userId : function() {
+			return this.$store.getters.getUserId
 		}
     },
     watch: {
@@ -153,6 +156,7 @@ export default {
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
+				this.productMspCostVersion.created = this.userId
 				this.$store.dispatch('estimate/saveProductMspCost', {productMspCostInfo: this.productMspCostVersion})
 				this.selected = [];
 			}

@@ -23,6 +23,9 @@ export default {
 	computed: {
 		project: function() {
 			return this.$store.state.estimate.project
+		},
+		userId : function() {
+			return this.$store.getters.getUserId
 		}
 	},
     watch: {
@@ -42,6 +45,7 @@ export default {
 				if(this.project.id) {
 					this.$store.dispatch('estimate/saveProject', {project: this.project})
 				} else {
+					this.project.created = this.userId
 					this.$store.dispatch('estimate/addProject', {project: this.project})
 				}
 			}

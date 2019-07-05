@@ -99,8 +99,8 @@
 					  </td>
 			      </tr>
 				  <tr class="text-right">
-					  <td class="font-weight-bold">{{item.sumCpu | formatNumber}} GB</td>
-					  <td class="font-weight-bold">{{item.sumMemory | formatNumber}} Core</td>
+					  <td class="font-weight-bold">{{item.sumCpu | formatNumber}} Core</td>
+					  <td class="font-weight-bold">{{item.sumMemory | formatNumber}} GB</td>
 					  <td class="font-weight-bold">
 					  </td>
 			      </tr>
@@ -108,8 +108,8 @@
 		    </template>
   			<tr class="text-right">
 		      <td class="font-weight-bold" colspan="11">합계</td>
-			  <td class="font-weight-bold">{{volumes.sumCpu | formatNumber}} GB</td>
-			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}} Core</td>
+			  <td class="font-weight-bold">{{volumes.sumCpu | formatNumber}} Core</td>
+			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}} GB</td>
 			  <td class="font-weight-bold">
 			  </td>
   			</tr>
@@ -201,6 +201,9 @@ export default {
 	computed: {
 		volumes: function() {
 			return this.$store.state.estimate.projectVolume
+		},
+		userId : function() {
+			return this.$store.getters.getUserId
 		}
 	},
 	created () {
@@ -260,6 +263,7 @@ export default {
 			if (this.editedIndex > -1) {
 				this.$set(this.volumes.environments, this.editedIndex, this.editedItem);
 			} else {
+				this.editedItem.created = this.userId
 				this.volumes.environments.push(this.editedItem);
 				this.volumes.environments[this.volumes.environments.length -1].applications = new Array();
 			}
@@ -315,6 +319,7 @@ export default {
 			if (this.editedAppsIndex > -1) {
 				this.$set(this.volumes.environments[this.editedIndex].applications, this.editedAppsIndex, this.editedAppsItem);
 			} else {
+				this.editedAppsItem.created = this.userId
 				this.volumes.environments[this.editedIndex].applications.push(this.editedAppsItem);
 			}
 			this.calcAppSum(this.editedAppsItem);

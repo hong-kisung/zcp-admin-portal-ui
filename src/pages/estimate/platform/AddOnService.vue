@@ -181,6 +181,9 @@ export default {
 		}
     },
 	computed: {
+		userId : function() {
+			return this.$store.getters.getUserId
+		}
     },
 	created () {
 		this.initialize()
@@ -293,6 +296,7 @@ export default {
 			if (this.editedAppsIndex > -1) {
 				this.$set(this.addonService.services[this.editedServIndex].applications, this.editedAppsIndex, this.editedAppsItem);
 			} else {
+				this.editedAppsItem.created = this.userId
 				this.addonService.services[this.editedServIndex].applications.push(this.editedAppsItem);
 			}
 			this.closeAppsDialog();
