@@ -6,7 +6,7 @@ def DOCKER_IMAGE='cloudzcp/zcp-estimate-ui'
 def K8S_NAMESPACE='zcp-system'
 
 podTemplate(label:label,
-    serviceAccount: "zcp-system-sa-${ZCP_USERID}",
+    serviceAccount: "zcp-system-admin",
     containers: [
         containerTemplate(name: 'maven', image: 'maven:3.5.2-jdk-8-alpine', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat', envVars: [
