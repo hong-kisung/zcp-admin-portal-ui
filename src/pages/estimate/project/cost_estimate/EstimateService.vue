@@ -456,6 +456,13 @@ export default {
 				estimateItem.iksFileStorageDisk = storageData ? storageData.disk : 0
 				estimateItem.updated = true
 
+			} else if(estimateItem.classificationType == 'Object_Storage') {
+				if(estimateItem.pricePerMonthly == this.storageVersion.objectStoragePricePerMonth) {
+					return
+				}
+				
+				estimateItem.updated = true
+
 			} else if(estimateItem.classificationType == 'IP_Allocation') {
 				if(estimateItem.pricePerMonthly == this.iksGeneral.ipAllocation) {
 					return

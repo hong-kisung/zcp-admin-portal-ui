@@ -17,6 +17,11 @@
     </b-form>
 	<b-row>
 	  <b-col>
+	  	<p class="mb-1">File Storages</p>
+	  </b-col>
+	</b-row>
+	<b-row>
+	  <b-col>
 	    <div class="table-responsive-sm">
 	      <table class="table b-table table-striped table-hover table-bordered table-sm">
 			  <colgroup>
@@ -77,7 +82,7 @@
 	</b-row>
     <b-row v-if="editable">
       <b-col cols="9">
-	    <b-button size="md" variant="secondary" class="m-1" v-if="editable" @click="openDialog">Storage 추가</b-button>
+	    <b-button size="md" variant="secondary" class="m-1" v-if="editable" @click="openDialog">File Storage 추가</b-button>
       </b-col>
       <b-col cols="3" class="text-right">
 	    <b-button size="md" variant="primary" class="m-1" v-if="editable" @click="save">저장</b-button>
@@ -85,7 +90,7 @@
     </b-row>
   </b-card>
 
-  <b-modal centered no-close-on-backdrop title="Storage" v-model="dialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
+  <b-modal centered no-close-on-backdrop title="File Storage" v-model="dialog" @close="closeDialog" @cancel="closeDialog" @ok="saveDialog">
     <b-form>
       <b-form-group label="Disk Size(GB)" label-for="disk" label-class="astertisk" :label-cols="4" >
         <b-form-input id="disk" type="number" v-model="editedItem.disk"></b-form-input>

@@ -1,28 +1,28 @@
 <template>
   <b-card :header="title">
     <b-form>
-      <b-form-group label="버전" label-for="version" :label-cols="3" >
+      <b-form-group label="버전" label-for="version" :label-cols="4" >
         <b-form-input id="version" type="text" v-model="generalInfo.version" readonly></b-form-input>
       </b-form-group>
-      <b-form-group label="생성일시" label-for="createdDt" :label-cols="3" >
+      <b-form-group label="생성일시" label-for="createdDt" :label-cols="4" >
         <b-form-input id="createdDt" type="text" v-model="generalInfo.createdDt" readonly></b-form-input>
       </b-form-group>
-      <b-form-group label="Platform Reserved CPU" label-for="platformCpuPerWorker" label-class="astertisk" :label-cols="3" >
+      <b-form-group label="Platform Reserved CPU" label-for="platformCpuPerWorker" label-class="astertisk" :label-cols="4" >
         <b-form-input id="platformCpuPerWorker" type="number" v-model="generalInfo.platformCpuPerWorker"></b-form-input>
       </b-form-group>
-      <b-form-group label="Platform Reserved Memory" label-for="platformMemoryPerWorker" label-class="astertisk" :label-cols="3" >
+      <b-form-group label="Platform Reserved Memory" label-for="platformMemoryPerWorker" label-class="astertisk" :label-cols="4" >
         <b-form-input id="platformMemoryPerWorker" type="number" v-model="generalInfo.platformMemoryPerWorker"></b-form-input>
       </b-form-group>
-      <b-form-group label="IBM 할인율(%)" label-for="ibmDcRate" label-class="astertisk" :label-cols="3" >
+      <b-form-group label="IBM 할인율(%)" label-for="ibmDcRate" label-class="astertisk" :label-cols="4" >
         <b-form-input id="ibmDcRate" type="number" v-model="generalInfo.ibmDcRate"></b-form-input>
       </b-form-group>
-      <b-form-group label="매매기준환율(₩)" label-for="exchangeRate" label-class="astertisk" :label-cols="3" >
+      <b-form-group label="매매기준환율(₩)" label-for="exchangeRate" label-class="astertisk" :label-cols="4" >
         <b-form-input id="exchangeRate" type="number" v-model="generalInfo.exchangeRate"></b-form-input>
       </b-form-group>
-      <b-form-group label="IP Allocation Cost(₩)" label-for="ipAllocation" label-class="astertisk" :label-cols="3" >
+      <b-form-group label="IP Allocation Cost(₩)" label-for="ipAllocation" label-class="astertisk" :label-cols="4" >
         <b-form-input id="ipAllocation" type="number" v-model="generalInfo.ipAllocation"></b-form-input>
       </b-form-group>
-      <b-form-group label="설명" label-for="description" :label-cols="3" >
+      <b-form-group label="설명" label-for="description" :label-cols="4" >
         <b-form-input id="description" type="text" v-model="generalInfo.description"></b-form-input>
       </b-form-group>
     </b-form>
