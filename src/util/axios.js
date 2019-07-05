@@ -26,7 +26,7 @@ axios.interceptors.response.use(
 			
 			const url = new URL(location.href)
 			document.cookie = 'SESSION='
-			window.location.href = url.orign
+			window.location.href = url.origin
 		} else {
 			return Promise.reject(error)
 		}
