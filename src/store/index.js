@@ -52,7 +52,7 @@ const store = new Vuex.Store({
 	},
 	actions: {
 		getUserInfo: function (store, payload) {
-			axios.get('/user').then(response => {
+			axios.get('/api/gateway/user').then(response => {
 				store.commit('setUserInfo', response.data)
 			}).catch(error => {
 				console.log('failed getUserInfo')
