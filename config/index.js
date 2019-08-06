@@ -17,7 +17,14 @@ module.exports = {
             pathRewrite: {
               '^/api/estimate': ''
             }
-          }
+        },
+        '/api/operation': {
+            target: 'http://localhost:8086',
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api/operation': ''
+            }
+        }
     },
 
     // Various Dev Server settings

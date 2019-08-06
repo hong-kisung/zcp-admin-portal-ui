@@ -31,5 +31,16 @@ export default {
         },
       ]
     },
+    {
+      name: '운영',
+      url: '/operation',
+      icon: 'icon-note',
+      children: [
+        {
+          name: '주문 관리',
+          url: '/operation/order'
+        }
+      ]
+    }
   ]
 }
