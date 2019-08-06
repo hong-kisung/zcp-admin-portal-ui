@@ -18,11 +18,18 @@ module.exports = {
               '^/api/estimate': ''
             }
         },
-        '/api/operation': {
+        '/api/admin-order': {
+            target: 'http://localhost:8085',
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api/admin-order': ''
+            }
+        },
+        '/api/admin-cluster': {
             target: 'http://localhost:8086',
             changeOrigin: true,
             pathRewrite: {
-              '^/api/operation': ''
+              '^/api/admin-cluster': ''
             }
         }
     },

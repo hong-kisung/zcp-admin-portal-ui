@@ -125,7 +125,7 @@
     <b-col>
       <b-card header="주문 클러스터">
         <b-form>
-          <div class="row" v-if="!orderClusters[0]">
+          <div class="row" v-if="!orderCluster">
             <div class="col-sm-12">
               <b-form-group label="클러스터명" :label-cols="2">
                 <b-form-input type="text" v-model="autocomplete.clusterName" placeholder="클러스터명을 입력하세요."></b-form-input>
@@ -167,18 +167,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item) in orderClusters">
-                    <td class="text-center">{{ item.clusterId }}</td>
-                    <td class="text-center">{{ item.clusterName }}</td>
-                    <td class="text-center">{{ item.regId }}</td>
-                    <td class="text-center">{{ item.regDate }}</td>
+                  <tr v-if="orderCluster">
+                    <td class="text-center">{{ orderCluster.clusterId }}</td>
+                    <td class="text-center">{{ orderCluster.clusterName }}</td>
+                    <td class="text-center">{{ orderCluster.clusterModId }}</td>
+                    <td class="text-center">{{ orderCluster.clusterModDate }}</td>
                     <td class="text-center">
                       <b-link href="#" class="card-header-action" v-on:click="removeOrderClusters()">
                         <i class="fa fa-times fa-sm"></i>
                       </b-link>
                     </td>
                   </tr>
-                  <tr v-if="orderClusters.length === 0">
+                  <tr v-if="!orderCluster">
                     <td class="text-center" colspan="5">등록된 클러스터 정보가 없습니다.</td>
                   </tr>
                 </tbody>
@@ -218,8 +218,8 @@ export default {
     orderPackageCategories: function() {
       return this.$store.state.operation.orderDetail.orderPackageCategories;
     },
-    orderClusters: function() {
-      return this.$store.state.operation.orderDetail.orderClusters;
+    orderCluster: function() {
+      return this.$store.state.operation.orderDetail.orderCluster;
     },
     clusters: function() {
       return this.$store.state.operation.clusters;
@@ -234,7 +234,7 @@ export default {
       this.$store.dispatch('operation/getClusters')
     },
     updateOrderClusters(cluster) {
-      axios.put('api/operation/orders/' + this.order.id + '/clusters', [cluster.id]).then(response => {
+      axios.put('api/admin-order/orders/' + this.order.id + '/cluster/' + cluster.id).then(response => {
         this.autocomplete.clusterName = '';
         this.reload();
         this.$emit('list-reload');
@@ -245,7 +245,7 @@ export default {
     },
     removeOrderClusters() {
       if(confirm('클러스터 정보를 삭제하시겠습니까?')){
-        axios.delete('api/operation/orders/' + this.order.id + '/clusters').then(response => {
+        axios.delete('api/admin-order/orders/' + this.order.id + '/cluster').then(response => {
     			if (response && response.status === 204) {
     				this.reload();
             this.$emit('list-reload');

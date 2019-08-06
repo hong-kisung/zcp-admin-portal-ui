@@ -39,6 +39,14 @@ export default {
         {
           name: '주문 관리',
           url: '/operation/order'
+        },
+        {
+          name: '클러스터 관리',
+          url: '/operation/cluster'
+        },
+        {
+          name: '프로젝트 관리',
+          url: '/operation/cluster'
         }
       ]
     }

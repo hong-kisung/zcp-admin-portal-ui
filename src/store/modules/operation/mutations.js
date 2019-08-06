@@ -9,14 +9,15 @@ export default {
 		state.orderDetail.orderPackageCategories = data.orderProduct.orderPackageCategories;
 		state.orderDetail.orderStatusLogs = data.orderStatusLogs;
 
-		state.orderDetail.orderClusters = [];
-		if (data.orderClusters.length !== 0) {
-			let orderCluster = data.orderClusters[0];
-
-			orderCluster.clusterId = orderCluster.cluster.clusterId;
-			orderCluster.clusterName = orderCluster.cluster.clusterName;
-			
-			state.orderDetail.orderClusters.push(orderCluster);
+		if (data.cluster) {
+			state.orderDetail.orderCluster = {
+				clusterModDate: data.clusterModDate,
+				clusterModId: data.clusterModId,
+				clusterId: data.cluster.clusterId,
+				clusterName: data.cluster.clusterName,
+			}
+		} else {
+			state.orderDetail.orderCluster = null;
 		}
 	},
 	setOrderClusters: function(state, data) {

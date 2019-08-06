@@ -310,7 +310,7 @@ export default {
       }
 
       if (confirm(confirmMsg)){
-        axios.put('api/operation/orders/' + item.id + '/status/' + orderStatus).then(response => {
+        axios.put('api/admin-order/orders/' + item.id + '/status/' + orderStatus).then(response => {
     			this.$store.commit('showOkMessage', {content: '주문 상태가 변경되었습니다.'}, {root:true})
     			this.reload();
     		}).catch(error => {
@@ -327,7 +327,7 @@ export default {
     },
     updateOrderBatchTarget(id, batchTargetYn) {
       let yn = (batchTargetYn == 'Y') ? 'N' : 'Y';
-      axios.put('api/operation/orders/' + id + '/batch-target/' + yn).then(response => {
+      axios.put('api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
   			this.reload();
   		}).catch(error => {
   			console.log(error);
