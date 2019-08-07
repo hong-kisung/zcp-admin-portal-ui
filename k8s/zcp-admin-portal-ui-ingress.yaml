@@ -4,9 +4,9 @@ metadata:
   annotations:
     #ingress.bluemix.net/ALB-ID: private-cr7a9b181c82674f478e461c648c3000da-alb1
     ingress.bluemix.net/redirect-to-https: "True"
-    ingress.bluemix.net/rewrite-path: "serviceName=zcp-estimate-backend-service rewrite=/"
-  name: zcp-estimate-ui-ingress
-  namespace: zcp-system
+    ingress.bluemix.net/rewrite-path: "serviceName=zcp-admin-estimate rewrite=/"
+  name: zcp-admin-portal-ui
+  namespace: zcp-admin
 spec:
   tls:
   - hosts:
@@ -17,11 +17,11 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: zcp-estimate-ui-service
+          serviceName: zcp-admin-portal-ui
           servicePort: 80
         path: /
       - backend:
-          serviceName: zcp-estimate-backend-service
+          serviceName: zcp-admin-estimate
           servicePort: 8088
         path: /api
           

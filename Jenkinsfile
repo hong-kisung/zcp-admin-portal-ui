@@ -2,8 +2,8 @@
 def label = "jenkins-${UUID.randomUUID().toString()}"
 
 def ZCP_USERID='cloudzcp-admin'
-def DOCKER_IMAGE='cloudzcp/zcp-estimate-ui'
-def K8S_NAMESPACE='zcp-system'
+def DOCKER_IMAGE='cloudzcp/zcp-admin-portal-ui'
+def K8S_NAMESPACE='zcp-admin'
 
 podTemplate(label:label,
     serviceAccount: "zcp-system-admin",
@@ -43,10 +43,10 @@ podTemplate(label:label,
 
         stage('DEPLOY') {
             container('kubectl') {
-                kubeCmd.apply file: 'k8s/zcp-estimate-ui-service.yaml', namespace: K8S_NAMESPACE
-                yaml.update file: 'k8s/zcp-estimate-ui-deployment.yaml', update: ['.spec.template.spec.containers[0].image': "${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${BUILD_NUMBER}"]
+                kubeCmd.apply file: 'k8s/zcp-admin-portal-ui-service.yaml', namespace: K8S_NAMESPACE
+                yaml.update file: 'k8s/zcp-admin-portal-ui-deployment.yaml', update: ['.spec.template.spec.containers[0].image': "${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${BUILD_NUMBER}"]
 
-                kubeCmd.apply file: 'k8s/zcp-estimate-ui-deployment.yaml', wait: 1000, recoverOnFail: false, namespace: K8S_NAMESPACE
+                kubeCmd.apply file: 'k8s/zcp-admin-portal-ui-deployment.yaml', wait: 1000, recoverOnFail: false, namespace: K8S_NAMESPACE
             }
         }
     }
