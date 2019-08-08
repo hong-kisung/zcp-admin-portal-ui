@@ -116,13 +116,13 @@
         <b-form-input id="applicationName" type="text" v-model="editedAppsItem.applicationName"></b-form-input>
       </b-form-group>
       <b-form-group label="CPU (Millicore)" label-for="cpu" :label-cols="4" >
-        <b-form-input id="cpu" type="number" v-model="editedAppsItem.cpu"></b-form-input>
+        <b-form-input id="cpu" type="number" v-model.number="editedAppsItem.cpu"></b-form-input>
       </b-form-group>
       <b-form-group label="Memory (MB)" label-for="memory" :label-cols="4" >
-        <b-form-input id="memory" type="number" v-model="editedAppsItem.memory"></b-form-input>
+        <b-form-input id="memory" type="number" v-model.number="editedAppsItem.memory"></b-form-input>
       </b-form-group>
       <b-form-group label="Disk (GB)" label-for="disk" :label-cols="4" >
-        <b-form-input id="disk" type="number" v-model="editedAppsItem.disk"></b-form-input>
+        <b-form-input id="disk" type="number" v-model.number="editedAppsItem.disk"></b-form-input>
       </b-form-group>
       <b-form-group label="Storage Type" label-for="storageType" :label-cols="4">
         <b-form-select id="basicSelect"

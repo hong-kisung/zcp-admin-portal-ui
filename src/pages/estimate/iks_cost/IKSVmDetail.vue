@@ -240,6 +240,9 @@ export default {
 				return
 			}
 
+			if (!this.vmData.vms) {
+				this.vmData.vms = new Array()
+			}
 			if (this.editedIndex > -1) {
 				Object.assign(this.vmData.vms[this.editedIndex], this.editedItem);
 			} else {
