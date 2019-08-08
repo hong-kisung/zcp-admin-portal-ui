@@ -211,6 +211,10 @@ export default {
 				e.preventDefault()
 				return;
 			}
+			
+			if (!this.storageData.fileStorages) {
+				this.storageData.fileStorages = new Array()
+			}
 			if (this.editedIndex > -1) {
 				Object.assign(this.storageData.fileStorages[this.editedIndex], this.editedItem);
 			} else {
