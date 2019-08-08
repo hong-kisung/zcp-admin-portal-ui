@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: zcp-estimate-ui-deployment
+  name: zcp-admin-portal-ui
   labels:
-    app: zcp-estimate-ui
+    app: zcp-admin-portal-ui
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        run: zcp-estimate-ui
+        run: zcp-admin-portal-ui
     spec:
       containers:
-      - name: zcp-estimate-ui
-        image: pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-estimate-ui:0.0.1
+      - name: zcp-admin-portal-ui
+        image: pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-admin-portal-ui:0.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 80
