@@ -22,8 +22,6 @@
               <div role="group" class="">
                 <label for="month1"></label>
                 <select class="form-control" v-model="page.pageSize" @change="getOrders(1)">
-                  <option value="2">2</option>
-                  <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="30">30</option>
@@ -80,12 +78,12 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <b-form-group id="input-group-2" label="주문자" label-for="input-2">
-                      <b-form-input id="orderUserName" required placeholder="이름을 입력하세요." v-model="search.orderUserName"></b-form-input>
+                      <b-form-input id="orderUserName" placeholder="이름을 입력하세요." v-model="search.orderUserName"></b-form-input>
                     </b-form-group>
                   </div>
                   <div class="col-sm-4">
                     <b-form-group id="input-group-2" label="클러스터" label-for="input-2">
-                      <b-form-input id="orderUserName" required placeholder="클러스터명을 입력하세요." v-model="search.clusterName"></b-form-input>
+                      <b-form-input id="orderUserName" placeholder="클러스터명을 입력하세요." v-model="search.clusterName"></b-form-input>
                     </b-form-group>
                   </div>
                 </div>
@@ -106,7 +104,7 @@
               <col width="80">
               <col width="100">
               <col width="120">
-              <col width="100">
+              <col width="140">
               <col>
               <col width="150">
               <col width="100">
