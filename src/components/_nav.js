@@ -2,7 +2,7 @@ export default {
   items: [
     {
     	title: true,
-    	name: 'ZCP Admin Portal',
+    	name: 'Z-Management Portal',
     	class: '',
         wrapper: {
             element: '',

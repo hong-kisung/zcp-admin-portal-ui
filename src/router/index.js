@@ -22,7 +22,7 @@ import OrderList from '@/pages/operation/order/OrderList.vue'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'hash', // https://router.vuejs.org/api/#mode
+  mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
   scrollBehavior: () => ({
     y: 0
@@ -149,11 +149,29 @@ export default new Router({
           }
         ]
       },
-      {
-        path: '*',
-        component: Page404
-      }
 
     ]
+  },
+  {
+      path: '*',
+      redirect: '/error/404',
+      name: 'Error',
+      component: DefaultContainer,
+      children: [
+        {
+          path: 'error',
+          component: {
+              render(c) {
+                return c('router-view')
+              }
+          },
+          children: [
+            {
+                path: '404',
+                component: Page404,
+            },
+          ]
+        }
+      ]
   }]
 })
