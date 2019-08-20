@@ -4,6 +4,8 @@ import Router from 'vue-router'
 // Containers
 import DefaultContainer from '@/components/DefaultContainer'
 
+import Page404 from '@/pages/common/Page404.vue'
+
 import General from '@/pages/estimate/iks_cost/General.vue'
 import IKSVmCost from '@/pages/estimate/iks_cost/IKSVmCost.vue'
 import IKSStorageCost from '@/pages/estimate/iks_cost/IKSStorageCost.vue'
@@ -27,80 +29,58 @@ export default new Router({
   }),
   routes: [{
     path: '/',
-    redirect: '/estimate',
+    redirect: '/product',
     name: 'Home',
     component: DefaultContainer,
-    children: [{
+    children: [
+      {
+        path: 'product',
+        meta: {
+            label: 'Product Mgmt',
+        },
+        component: {
+            render(c) {
+              return c('router-view')
+            }
+        },
+        children: [
+          {
+              path: '',
+              component: ProductList
+          },
+          {
+              path: ':productId/addonservice',
+              name: 'ProductAddOnService',
+              component: ProductAddOnService,
+              meta: {
+                label: 'Add-on Service 관리',
+              }
+            },
+            {
+              path: ':productId/cost_estimate_template',
+              name: 'ProductCostEstimateTemplate',
+              component: ProductCostEstimateTemplate,
+              meta: {
+                label: '원가 견적서 템플릿 관리',
+              }
+            },
+        ]
+      },
+      {
         path: 'estimate',
-        redirect: '/estimate/project',
-        name: '견적서',
+        redirect: '/estimate/estimates',
+        name: 'Estimate Mgmt',
         component: {
           render(c) {
             return c('router-view')
           }
         },
-        children: [{
-            path: 'general',
-            name: 'general',
-            component: General,
-            meta: {
-              label: '기준정보',
-            }
-          },
+        children: [
           {
-            path: 'iks_vm',
-            name: 'iks_vm',
-            component: IKSVmCost,
-            meta: {
-              label: 'VM',
-            }
-          },
-          {
-            path: 'iks_storage',
-            name: 'iks_storage',
-            component: IKSStorageCost,
-            meta: {
-              label: 'Storage',
-            }
-          },
-          {
-            path: 'product',
-            name: 'product',
-            component: ProductList,
-            meta: {
-              label: 'Product',
-            }
-          },
-          {
-            path: 'product/:productId/addonservice',
-            name: 'ProductAddOnService',
-            component: ProductAddOnService,
-            meta: {
-              label: 'Product > Add-on Service 관리',
-            }
-          },
-          {
-            path: 'product/:productId/cost_estimate_template',
-            name: 'ProductCostEstimateTemplate',
-            component: ProductCostEstimateTemplate,
-            meta: {
-              label: 'Product > 원가 견적서 템플릿 관리',
-            }
-          },
-          {
-            path: 'product_msp',
-            name: 'product_msp',
-            component: ProductMspCost,
-            meta: {
-              label: 'MSP 비용',
-            }
-          },
-          {
-            path: 'project',
-            name: 'Project',
+            path: 'estimates',
             component: ProjectList,
             meta: {
-              label: 'Project',
+                label: 'Estimates',
             }
           },
           {
@@ -108,7 +88,7 @@ export default new Router({
             name: 'ProjectVolume',
             component: ProjectVolume,
             meta: {
-              label: 'Project > 용량산정',
+              label: 'Estimates 용량산정',
             }
           },
           {
@@ -116,7 +96,39 @@ export default new Router({
             name: 'project_cost_estimate',
             component: ProjectCostEstimate,
             meta: {
-              label: 'Project > 원가 견적',
+              label: 'Estimates 원가 견적서',
+            }
+          },
+          {
+            path: 'general',
+            name: 'general',
+            component: General,
+            meta: {
+              label: 'Standard Information',
+            }
+          },
+          {
+            path: 'iks_vm',
+            name: 'iks_vm',
+            component: IKSVmCost,
+            meta: {
+              label: 'VM Cost',
+            }
+          },
+          {
+            path: 'iks_storage',
+            name: 'iks_storage',
+            component: IKSStorageCost,
+            meta: {
+              label: 'Storage Cost',
+            }
+          },
+          {
+            path: 'product_msp',
+            name: 'product_msp',
+            component: ProductMspCost,
+            meta: {
+              label: 'MSP Cost',
             }
           }
         ]
@@ -124,7 +136,7 @@ export default new Router({
       {
         path: 'operation',
         redirect: '/operation/order',
-        name: '운영',
+        name: 'Order Mgmt',
         component: {
           render(c) {
             return c('router-view')
@@ -133,13 +145,13 @@ export default new Router({
         children: [
           {
             path: 'order',
-            name: 'order',
-            component: OrderList,
-            meta: {
-              label: '주문 관리',
-            }
+            component: OrderList
           }
         ]
+      },
+      {
+        path: '*',
+        component: Page404
       }
 
     ]
