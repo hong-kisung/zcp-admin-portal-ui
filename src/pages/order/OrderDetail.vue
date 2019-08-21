@@ -240,7 +240,7 @@ export default {
         this.$emit('list-reload');
   		}).catch(error => {
   			console.log(error);
-  			store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
+  			this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
   		})
     },
     removeOrderClusters() {
@@ -250,11 +250,11 @@ export default {
     				this.reload();
             this.$emit('list-reload');
     			} else {
-    				store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
+    				this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
     			}
     		}).catch(error => {
     			console.log(error);
-    			store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
+    			this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
     		})
       }
     },
