@@ -210,19 +210,19 @@ export default {
   ],
   computed: {
 		order: function() {
-			return this.$store.state.operation.orderDetail.order;
+			return this.$store.state.order.orderDetail.order;
 		},
     orderProduct: function() {
-      return this.$store.state.operation.orderDetail.orderProduct;
+      return this.$store.state.order.orderDetail.orderProduct;
     },
     orderPackageCategories: function() {
-      return this.$store.state.operation.orderDetail.orderPackageCategories;
+      return this.$store.state.order.orderDetail.orderPackageCategories;
     },
     orderCluster: function() {
-      return this.$store.state.operation.orderDetail.orderCluster;
+      return this.$store.state.order.orderDetail.orderCluster;
     },
     clusters: function() {
-      return this.$store.state.operation.clusters;
+      return this.$store.state.order.clusters;
     }
 	},
   created () {
@@ -230,11 +230,11 @@ export default {
   },
   methods: {
     initialize() {
-      this.$store.dispatch('operation/getOrder', {id: this.id})
-      this.$store.dispatch('operation/getClusters')
+      this.$store.dispatch('order/getOrder', {id: this.id})
+      this.$store.dispatch('order/getClusters')
     },
     updateOrderClusters(cluster) {
-      axios.put('api/admin-order/orders/' + this.order.id + '/cluster/' + cluster.id).then(response => {
+      axios.put('/api/admin-order/orders/' + this.order.id + '/cluster/' + cluster.id).then(response => {
         this.autocomplete.clusterName = '';
         this.reload();
         this.$emit('list-reload');
@@ -245,7 +245,7 @@ export default {
     },
     removeOrderClusters() {
       if(confirm('클러스터 정보를 삭제하시겠습니까?')){
-        axios.delete('api/admin-order/orders/' + this.order.id + '/cluster').then(response => {
+        axios.delete('/api/admin-order/orders/' + this.order.id + '/cluster').then(response => {
     			if (response && response.status === 204) {
     				this.reload();
             this.$emit('list-reload');
@@ -259,7 +259,7 @@ export default {
       }
     },
     reload() {
-      this.$store.dispatch('operation/getOrder', {id: this.id})
+      this.$store.dispatch('order/getOrder', {id: this.id})
     }
   }
 }

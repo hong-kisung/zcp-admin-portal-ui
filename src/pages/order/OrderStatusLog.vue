@@ -44,7 +44,7 @@ export default {
   }),
   computed: {
 		orderStatusLogs: function() {
-      return this.$store.state.operation.orderDetail.orderStatusLogs;
+      return this.$store.state.order.orderDetail.orderStatusLogs;
     }
 	},
 	created () {
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     initialize() {
-      this.$store.dispatch('operation/getOrder', {id: this.id})
+      this.$store.dispatch('order/getOrder', {id: this.id})
     }
   }
 }

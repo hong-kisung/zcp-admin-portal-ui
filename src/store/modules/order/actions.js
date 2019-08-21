@@ -21,21 +21,21 @@ export default {
 		let pageNo = payload.page.pageNo;
 		let pageSize = payload.page.pageSize;
 
-		axios.get('api/admin-order/orders?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize).then(response => {
+		axios.get('/api/admin-order/orders?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize).then(response => {
 			store.commit('setOrders', response.data)
 		}).catch(error => {
 			console.log('failed get orders')
 		})
 	},
 	getOrder: function (store, payload) {
-		axios.get('api/admin-order/orders/' + payload.id).then(response => {
+		axios.get('/api/admin-order/orders/' + payload.id).then(response => {
 			store.commit('setOrder', response.data)
 		}).catch(error => {
 			console.log('failed get order')
 		})
 	},
 	getClusters: function(store, payload) {
-		axios.get('api/admin-cluster/clusters').then(response => {
+		axios.get('/api/admin-cluster/clusters').then(response => {
 			store.commit('setClusters', response.data)
 		}).catch(error => {
 			console.log('failed get getClusters')

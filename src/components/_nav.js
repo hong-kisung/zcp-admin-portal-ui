@@ -77,7 +77,7 @@ export default {
     },
     {
     	name: 'Order Mgmt',
-    	url: '/operation',
+    	url: '/order',
     	icon: 'icon-puzzle',
     },
     {

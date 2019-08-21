@@ -253,10 +253,10 @@ export default {
   }),
   computed: {
 		orders: function() {
-			return this.$store.state.operation.orders;
+			return this.$store.state.order.orders;
 		},
     ordersPage: function() {
-      return this.$store.state.operation.ordersPage;
+      return this.$store.state.order.ordersPage;
     }
 	},
 	created () {
@@ -308,7 +308,7 @@ export default {
       }
 
       if (confirm(confirmMsg)){
-        axios.put('api/admin-order/orders/' + item.id + '/status/' + orderStatus).then(response => {
+        axios.put('/api/admin-order/orders/' + item.id + '/status/' + orderStatus).then(response => {
     			this.$store.commit('showOkMessage', {content: '주문 상태가 변경되었습니다.'}, {root:true})
     			this.reload();
     		}).catch(error => {
@@ -325,8 +325,8 @@ export default {
     },
     updateOrderBatchTarget(id, batchTargetYn) {
       let yn = (batchTargetYn == 'Y') ? 'N' : 'Y';
-      axios.put('api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
-  			this.reload();
+      axios.put('/api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
+  			//this.reload();
   		}).catch(error => {
   			console.log(error);
   			this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
@@ -336,7 +336,7 @@ export default {
       let listPars = this.getOrdersPars();
       listPars.page.pageNo = pageNo;
 
-      this.$store.dispatch('operation/getOrders', listPars)
+      this.$store.dispatch('order/getOrders', listPars)
     },
     getOrdersPars() {
       let search = this.search;
@@ -352,7 +352,7 @@ export default {
     },
     reload() {
       let pars = this.getOrdersPars();
-      this.$store.dispatch('operation/getOrders', pars)
+      this.$store.dispatch('order/getOrders', pars)
     }
   }
 }

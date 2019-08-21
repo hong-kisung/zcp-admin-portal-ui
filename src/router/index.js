@@ -17,7 +17,7 @@ import ProjectList from '@/pages/estimate/project/ProjectList.vue'
 import ProjectVolume from '@/pages/estimate/project/ProjectVolume.vue'
 import ProjectCostEstimate from '@/pages/estimate/project/ProjectCostEstimate.vue'
 
-import OrderList from '@/pages/operation/order/OrderList.vue'
+import OrderList from '@/pages/order/OrderList.vue'
 
 Vue.use(Router)
 
@@ -134,8 +134,8 @@ export default new Router({
         ]
       },
       {
-        path: 'operation',
-        redirect: '/operation/order',
+        path: 'order',
+        redirect: '/order/orders',
         name: 'Order Mgmt',
         component: {
           render(c) {
@@ -144,7 +144,7 @@ export default new Router({
         },
         children: [
           {
-            path: 'order',
+            path: 'orders',
             component: OrderList
           }
         ]
