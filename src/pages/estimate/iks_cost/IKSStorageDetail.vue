@@ -139,9 +139,6 @@ export default {
 		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'Storage 추가' : 'Storage 수정';
-		},
-		userId : function() {
-			return this.$store.getters.getUserId
 		}
     },
     watch: {
@@ -228,7 +225,6 @@ export default {
 				return;
 			}
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.storageData.created = this.userId
 				this.$store.dispatch('estimate/saveStorage', {storageInfo: this.storageData})
 			}
 		}

@@ -50,9 +50,6 @@ export default {
 			} else {
 				return this.$store.state.estimate.general
 			}
-		},
-		userId : function() {
-			return this.$store.getters.getUserId
 		}
 	},
 	created () {
@@ -104,7 +101,6 @@ export default {
 			}
 			
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.generalInfo.created = this.userId
 				this.$store.dispatch('estimate/saveGeneral', {generalInfo: this.generalInfo});
 			}
 		}

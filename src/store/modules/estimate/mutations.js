@@ -66,6 +66,9 @@ export default {
 	setProjectCostEstimateHistoryDetail: function (state, data) {
 		state.projectCostEstimateHistoryDetail = data
 	},
+	setCustomers: function(state, data) {
+		state.customers = data
+	},
 	
 	//common code
 	setHardwareTypes: function (state, data) {

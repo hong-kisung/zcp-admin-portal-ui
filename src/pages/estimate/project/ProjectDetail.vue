@@ -4,6 +4,13 @@
       <b-form-group label="Project명" label-for="name" label-class="astertisk" :label-cols="3" >
         <b-form-input id="name" type="text" v-model="project.name"></b-form-input>
       </b-form-group>
+      <b-form-group label="Customer" label-for="customerId" label-class="astertisk" :label-cols="3">
+        <b-form-select id="customerId"
+          :plain="true"
+          v-model="project.customerId">
+	        <option v-for="(item, index) in customers" :value="item.id">{{ item.name_kr }}</option>
+        </b-form-select>
+      </b-form-group>
       <b-form-group label="설명" label-for="description" :label-cols="3" >
         <b-form-input id="description" type="text" v-model="project.description"></b-form-input>
       </b-form-group>
@@ -24,8 +31,8 @@ export default {
 		project: function() {
 			return this.$store.state.estimate.project
 		},
-		userId : function() {
-			return this.$store.getters.getUserId
+		customers: function() {
+			return this.$store.state.estimate.customers
 		}
 	},
     watch: {
@@ -33,6 +40,9 @@ export default {
 			this.show = this.dialogVisible
 		}
     },
+	created () {
+		this.$store.dispatch('estimate/getCustomers')
+	},
 	methods: {
 		saveProject(e) {
 			if(!this.project.name) {
@@ -40,12 +50,16 @@ export default {
 				e.preventDefault()
 				return
 			}
+			if(!this.project.customerId) {
+				alert('Customer를 선택하세요.')
+				e.preventDefault()
+				return
+			}
 			
-			if(confirm('변경된 내용을 저장하시겠습니까?')) {
+			if(confirm('저장하시겠습니까?')) {
 				if(this.project.id) {
 					this.$store.dispatch('estimate/saveProject', {project: this.project})
 				} else {
-					this.project.created = this.userId
 					this.$store.dispatch('estimate/addProject', {project: this.project})
 				}
 			}

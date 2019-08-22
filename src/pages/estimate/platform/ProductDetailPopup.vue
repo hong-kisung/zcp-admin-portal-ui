@@ -41,7 +41,7 @@ export default {
 		initialize() {
 		},
 		saveProduct() {
-			if(confirm("변경된 내용을 저장하시겠습니까?")) {
+			if(confirm("저장하시겠습니까?")) {
 				this.$http.put('/api/estimate/platform/product/'+this.product.id, this.product).then(response => {
 					alert("저장되었습니다.");
 					this.$emit('fire-dialog-saved');
