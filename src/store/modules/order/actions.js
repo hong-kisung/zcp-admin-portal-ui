@@ -20,8 +20,10 @@ export default {
 		// set page
 		let pageNo = payload.page.pageNo;
 		let pageSize = payload.page.pageSize;
+		let sort = 'orderDate';
+		let orderBy = 'desc';
 
-		axios.get('/api/admin-order/orders?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize).then(response => {
+		axios.get('/api/admin-order/orders?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setOrders', response.data)
 		}).catch(error => {
 			console.log('failed get orders')
