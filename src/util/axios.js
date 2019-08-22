@@ -26,7 +26,7 @@ axios.interceptors.response.use(
 			
 			const url = new URL(location.href)
 			document.cookie = 'SESSION='
-			window.location.href = url.origin + '/api'
+			window.location.href = url.origin
 		} else if (error.response.data && error.response.data.message) {
 			store.commit('showOkMessage', {title: error.response.data.error, content: error.response.data.message}, {root:true})
 			return Promise.reject(error)
