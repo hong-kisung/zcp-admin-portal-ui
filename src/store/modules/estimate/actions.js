@@ -10,6 +10,7 @@ export default {
 		})
 	},
 	saveGeneral: function (store, payload) {
+		payload.generalInfo.created = store.rootGetters.getUserId
 		axios.put('/api/estimate/general', payload.generalInfo).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getGeneral')
@@ -17,7 +18,7 @@ export default {
 		})
 	},
 	getGeneralHistory: function(store, payload) {
-		axios.get('api/estimate/general/history').then(response => {
+		axios.get('/api/estimate/general/history').then(response => {
 			store.commit('setGeneralHistory', response.data)
 		}).catch(error => {
 			console.log('failed get getGeneralHistory')
@@ -25,7 +26,7 @@ export default {
 	},
 	getGeneralHistoryDetail: function(store, payload) {
 		store.commit('setGeneralHistoryDetail', {})
-		axios.get('api/estimate/general/history/' + payload.versionId).then(response => {
+		axios.get('/api/estimate/general/history/' + payload.versionId).then(response => {
 			store.commit('setGeneralHistoryDetail', response.data)
 		}).catch(error => {
 			console.log('failed get getGeneralHistoryDetail')
@@ -41,6 +42,7 @@ export default {
 		})
 	},
 	saveVm: function (store, payload) {
+		payload.vmInfo.created = store.rootGetters.getUserId
 		axios.put('/api/estimate/iks_costs/vm', payload.vmInfo).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getVm')
@@ -48,7 +50,7 @@ export default {
 		})
 	},
 	getVmHistory: function(store, payload) {
-		axios.get('api/estimate/iks_costs/vm/history').then(response => {
+		axios.get('/api/estimate/iks_costs/vm/history').then(response => {
 			store.commit('setVmHistory', response.data)
 		}).catch(error => {
 			console.log('failed get getVmHistory')
@@ -56,7 +58,7 @@ export default {
 	},
 	getVmHistoryDetail: function(store, payload) {
 		store.commit('setVmHistoryDetail', {vms: []})
-		axios.get('api/estimate/iks_costs/vm/history/' + payload.versionId).then(response => {
+		axios.get('/api/estimate/iks_costs/vm/history/' + payload.versionId).then(response => {
 			store.commit('setVmHistoryDetail', response.data)
 		}).catch(error => {
 			console.log('failed get getVmHistoryDetail')
@@ -72,6 +74,7 @@ export default {
 		})
 	},
 	saveStorage: function (store, payload) {
+		payload.storageInfo.created = store.rootGetters.getUserId
 		axios.put('/api/estimate/iks_costs/storage', payload.storageInfo).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getStorage')
@@ -79,7 +82,7 @@ export default {
 		})
 	},
 	getStorageHistory: function(store, payload) {
-		axios.get('api/estimate/iks_costs/storage/history').then(response => {
+		axios.get('/api/estimate/iks_costs/storage/history').then(response => {
 			store.commit('setStorageHistory', response.data)
 		}).catch(error => {
 			console.log('failed get getStorageHistory')
@@ -87,7 +90,7 @@ export default {
 	},
 	getStorageHistoryDetail: function(store, payload) {
 		store.commit('setStorageHistoryDetail', {fileStorages: []})
-		axios.get('api/estimate/iks_costs/storage/history/' + payload.versionId).then(response => {
+		axios.get('/api/estimate/iks_costs/storage/history/' + payload.versionId).then(response => {
 			store.commit('setStorageHistoryDetail', response.data)
 		}).catch(error => {
 			console.log('failed get getStorageHistoryDetail')
@@ -110,6 +113,7 @@ export default {
 		})
 	},
 	saveProductMspCost: function (store, payload) {
+		payload.productMspCostInfo.created = store.rootGetters.getUserId
 		axios.put('/api/estimate/platform/msp', payload.productMspCostInfo).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProductMspCost')
@@ -117,7 +121,7 @@ export default {
 		})
 	},
 	getProductMspCostHistory: function (store, payload) {
-		axios.get('api/estimate/platform/msp/history').then(response => {
+		axios.get('/api/estimate/platform/msp/history').then(response => {
 			store.commit('setProductMspCostHistory', response.data)
 		}).catch(error => {
 			console.log('failed get getProductMspCostHistory')
@@ -125,7 +129,7 @@ export default {
 	},
 	getProductMspCostHistoryDetail: function (store, payload) {
 		store.commit('setProductMspCostHistoryDetail', {fileStorages: []})
-		axios.get('api/estimate/platform/msp/history/' + payload.versionId).then(response => {
+		axios.get('/api/estimate/platform/msp/history/' + payload.versionId).then(response => {
 			store.commit('setProductMspCostHistoryDetail', response.data)
 		}).catch(error => {
 			console.log('failed get getProductMspCostHistoryDetail')
@@ -148,6 +152,7 @@ export default {
 		})
 	},
 	addProject: function (store, payload) {
+		payload.project.created = store.rootGetters.getUserId
 		axios.post('/api/estimate/project', payload.project).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjects')
@@ -240,6 +245,7 @@ export default {
 		})
 	},
 	saveProjectCostEstimate: function (store, payload) {
+		payload.estimate.created = store.rootGetters.getUserId
 		axios.put('/api/estimate/project/' + payload.projectId + '/estimate', payload.estimate).then(response => {
 			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
 			store.dispatch('getProjectCostEstimate', {projectId: payload.projectId})
@@ -265,6 +271,13 @@ export default {
 		axios.delete('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
 			store.commit('showOkMessage', {content:'삭제되었습니다.'}, {root:true})
 			history.go(-1);
+		})
+	},
+	getCustomers: function (store, payload) {
+		axios.get('/api/estimate/project/customer').then(response => {
+			store.commit('setCustomers', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomers')
 		})
 	},
 	

@@ -20,10 +20,12 @@ export default {
   		icon: 'icon-puzzle',
         children: [
             {
-              name: 'Projects',
+            	name: 'Projects',
+            	url: '/project/a',
             },
             {
                 name: 'Ops. Cost Transfer',
+                url: '/project/b',
             },
         ]
     },
@@ -39,12 +41,15 @@ export default {
         children: [
             {
             	name: 'Cluster Status',
+            	url: '/cluster/a',
             },
             {
                 name: 'Node Status',
+                url: '/cluster/b',
             },
             {
                 name: 'Add-on Service Status',
+                url: '/cluster/c',
             },
         ]
     },

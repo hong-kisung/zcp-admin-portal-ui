@@ -136,9 +136,6 @@ export default {
 		},
 		formDialogTitle () {
 			return this.editedIndex === -1 ? 'VM 추가' : 'VM 수정';
-		},
-		userId : function() {
-			return this.$store.getters.getUserId
 		}
     },
     filters: {
@@ -252,7 +249,6 @@ export default {
 		},
 		save () {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.vmData.created = this.userId
 				this.$store.dispatch('estimate/saveVm', {vmInfo: this.vmData})
 			}
 		}

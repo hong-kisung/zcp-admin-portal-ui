@@ -29,5 +29,6 @@ export default {
 	productReferences: [],	//product addon-service & estimate template
 	projectCostEstimateHistory: [],
 	projectCostEstimateHistoryDetailStatus: false,
-	projectCostEstimateHistoryDetail: {}
+	projectCostEstimateHistoryDetail: {},
+	customers: []
 }

@@ -26,9 +26,15 @@ axios.interceptors.response.use(
 			
 			const url = new URL(location.href)
 			document.cookie = 'SESSION='
-			window.location.href = url.origin
-		} else {
+			window.location.href = url.origin + '/api'
+		} else if (error.response.data && error.response.data.message) {
+			store.commit('showOkMessage', {title: error.response.data.error, content: error.response.data.message}, {root:true})
 			return Promise.reject(error)
+		} else if (error.response.statusText) {
+			store.commit('showOkMessage', {title: 'Error', content: error.response.statusText}, {root:true})
+			return Promise.reject(error)
+		} else {
+			console.log(error)
 		}
 	}
 )

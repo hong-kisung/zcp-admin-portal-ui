@@ -194,9 +194,6 @@ export default {
 		},
 		projectCostEstimateHistoryDetail: function() {
 			return this.$store.state.estimate.projectCostEstimateHistoryDetail
-		},
-		userId : function() {
-			return this.$store.getters.getUserId
 		}
 	},
 	watch: {
@@ -300,7 +297,6 @@ export default {
 				this.estimate.iksVmVersionId = this.vmVersion.id
 				this.estimate.iksStorageVersionId = this.storageVersion.id
 				this.estimate.mspCostVersionId = this.productMspCostVersion.id
-				this.estimate.created = this.userId
 
 				this.$store.dispatch('estimate/saveProjectCostEstimate', {projectId: this.projectId, estimate: this.estimate})
 			}
