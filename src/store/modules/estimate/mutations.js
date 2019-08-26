@@ -82,5 +82,8 @@ export default {
 	},
 	setClassificationTypes: function (state, data) {
 		state.classificationTypes = data
+	},
+	setEnvironmentTypes: function (state, data) {
+		state.environmentTypes = data
 	}
 }
