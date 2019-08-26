@@ -134,8 +134,12 @@
   
   <b-modal centered no-close-on-backdrop title="Environment" v-model="clusterDialog" @close="closeClusterDialog" @cancel="closeClusterDialog" @ok="saveClusterDialog">
     <b-form>
-      <b-form-group label="Environment" label-for="name" label-class="astertisk" :label-cols="4" >
-        <b-form-input id="name" type="text" v-model="editedItem.name"></b-form-input>
+      <b-form-group label="Environment" label-for="environment" label-class="astertisk" :label-cols="4">
+        <b-form-select id="environment"
+          :plain="true"
+          v-model="editedItem.name">
+	        <option v-for="(item, index) in environmentTypes" :value="item">{{ item }}</option>
+        </b-form-select>
       </b-form-group>
     </b-form>
   </b-modal>
@@ -202,6 +206,9 @@ export default {
 		volumes: function() {
 			return this.$store.state.estimate.projectVolume
 		},
+		environmentTypes : function() {
+			return this.$store.state.estimate.environmentTypes
+		},
 		userId : function() {
 			return this.$store.getters.getUserId
 		}
@@ -216,6 +223,7 @@ export default {
 			}
 			
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
+			this.$store.dispatch('estimate/getEnvironmentTypes')
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
@@ -247,7 +255,7 @@ export default {
 		},
 		saveClusterDialog(e) {
 			if(!this.editedItem.name) {
-				alert('Environment를 입력하세요.')
+				alert('Environment를 선택하세요.')
 				e.preventDefault()
 				return
 			}

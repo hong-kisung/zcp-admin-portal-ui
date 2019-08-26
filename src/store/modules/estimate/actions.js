@@ -301,6 +301,11 @@ export default {
 		axios.get('/api/estimate/code/classification_type').then(response => {
 			store.commit('setClassificationTypes', response.data)
 		})
+	},
+	getEnvironmentTypes : function (store, payload) {
+		axios.get('/api/estimate/code/environment_type').then(response => {
+			store.commit('setEnvironmentTypes', response.data)
+		})
 	}
 
 }

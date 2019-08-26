@@ -18,6 +18,7 @@ export default {
 	fileStorageTypes: [],
 	enduranceIops: [],
 	classificationTypes: [],
+	environmentTypes: [],
 	
 	projects: [],
 	project: {},
