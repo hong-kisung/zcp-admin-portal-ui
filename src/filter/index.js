@@ -96,3 +96,19 @@ Vue.filter('toBillingCycleText', function (value) {
 
 	return val;
 })
+
+Vue.filter('toMeteringTypeText', function (value) {
+	if (!value || value == '') return;
+
+	let val;
+	switch(value) {
+	case 'MONTHLY':
+		val = '월';
+		break;
+	case 'USAGE':
+		val = '사용량 기반';
+		break;
+	}
+
+	return val;
+})
