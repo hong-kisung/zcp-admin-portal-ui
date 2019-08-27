@@ -311,7 +311,7 @@ export default {
         axios.put('/api/admin-order/orders/' + item.id + '/status/' + orderStatus).then(response => {
     			this.$store.commit('showOkMessage', {content: '주문 상태가 변경되었습니다.'}, {root:true})
     			this.reload();
-    		}).catch(error => {
+        }).catch(error => {
           let response = error.response;
           if (response.data) {
             let errorMsg = response.data.message + ' [' + response.data.code + ']'
@@ -326,8 +326,9 @@ export default {
     updateOrderBatchTarget(id, batchTargetYn) {
       let yn = (batchTargetYn == 'Y') ? 'N' : 'Y';
       axios.put('/api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
-  			this.reload();
-  		}).catch(error => {
+  		  let order = this.$store.state.order.orders.find(o => o.id == id) || {};
+        order.batchTargetYn = yn;
+      }).catch(error => {
   			console.log(error);
   			this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
   		})
