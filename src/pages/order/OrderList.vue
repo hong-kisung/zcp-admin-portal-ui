@@ -326,7 +326,7 @@ export default {
     updateOrderBatchTarget(id, batchTargetYn) {
       let yn = (batchTargetYn == 'Y') ? 'N' : 'Y';
       axios.put('/api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
-  			//this.reload();
+  			this.reload();
   		}).catch(error => {
   			console.log(error);
   			this.$store.commit('showOkMessage', {show:true, content:'처리 중 오류가 발생하였습니다.'}, {root:true})
