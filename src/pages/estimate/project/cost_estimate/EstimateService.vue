@@ -17,15 +17,15 @@
 			<th class="text-center">Product</th>
 			<th class="text-center" v-show="estimateType == 'cloudZService'">Service</th>
 			<th class="text-center">Classification</th>
-			<th class="text-center">Classification<br>Type</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Machine<br>Type</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Hardware<br>Type</th>
-			<th class="text-center">Storage<br>Type</th>
-			<th class="text-center">Storage<br>Performance</th>
-			<th class="text-center">Storage<br>Size(GB)</th>
+			<th class="text-center">Classification Type</th>
+			<th class="text-center" v-show="estimateType == 'cloudZService'">Machine Type</th>
+			<th class="text-center" v-show="estimateType == 'cloudZService'">Hardware Type</th>
 			<th class="text-center">Number</th>
 			<th class="text-center" v-show="estimateType == 'cloudZService'">Cores</th>
 			<th class="text-center" v-show="estimateType == 'cloudZService'">Memory(GB)</th>
+			<th class="text-center">Storage Type</th>
+			<th class="text-center">Storage IOPS</th>
+			<th class="text-center">Storage Size(GB)</th>
 			<th class="text-center">Monthly(₩)</th>
 			<th class="text-center">Yearly(₩)</th>
 			<th class="text-center" v-if="editable">Actions</th>
@@ -63,12 +63,12 @@
 					  <td class="text-left">{{ classification.classificationType }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
-					  <td class="text-center">{{ classification.storageType }}</td>
-					  <td class="text-center">{{ !classification.enduranceIops || classification.enduranceIops == 0 ? '' : classification.enduranceIops + ' IOPS' }}</td>
-					  <td class="text-center">{{ classification.iksFileStorageDisk | formatNumber }}</td>
 					  <td class="text-center">{{ classification.number | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
+					  <td class="text-center">{{ classification.storageType }}</td>
+					  <td class="text-center">{{ !classification.enduranceIops || classification.enduranceIops == 0 ? '' : classification.enduranceIops + ' IOPS' }}</td>
+					  <td class="text-center">{{ classification.iksFileStorageDisk | formatNumber }}</td>
 					  <td class="text-right" :class="classification.updated ? 'text-danger':''">{{ classification.pricePerMonthly | formatNumber | toKRW }}</td>
 					  <td class="text-right" :class="classification.updated ? 'text-danger':''">{{ classification.pricePerYearly | formatNumber | toKRW }}</td>
 					  <td class="text-center" v-if="editable">

@@ -3,8 +3,8 @@
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="/static/cloudzcp-logo.png" width="89" height="25" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="/static/cloudzcp-logo.png" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="/static/img/brand/logo.svg" width="90" height="25" alt="Z-Management Logo">
+        <img class="navbar-brand-minimized" src="/static/img/brand/sygnet.svg" width="30" height="30" alt="Z-Management Logo">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
       <b-navbar-nav class="d-md-down-none">
