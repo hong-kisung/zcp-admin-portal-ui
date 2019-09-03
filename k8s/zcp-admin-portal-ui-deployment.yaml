@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: zcp-admin-portal-ui
-        image: pog-dev-registry.cloudzcp.io/zcp-estimate/zcp-admin-portal-ui:0.0.1
+        image: cloudzcp/zcp-admin-portal-ui:develop
         imagePullPolicy: Always
         ports:
         - containerPort: 80
