@@ -54,13 +54,25 @@
           </div>
           <div class="row">
             <div class="col-sm-6">
+              <b-form-group label="상품명(단축)" :label-cols="3">
+                <b-form-input type="text" v-model="orderProduct.productShortName" readonly></b-form-input>
+              </b-form-group>
+            </div>
+            <div class="col-sm-6">
               <b-form-group label="상품명" :label-cols="3">
                 <b-form-input type="text" v-model="orderProduct.productName" readonly></b-form-input>
               </b-form-group>
             </div>
+          </div>
+          <div class="row">
             <div class="col-sm-6">
               <b-form-group label="상품패키지명" :label-cols="3">
                 <b-form-input type="text" v-model="orderProduct.productPackageName" readonly></b-form-input>
+              </b-form-group>
+            </div>
+            <div class="col-sm-6">
+              <b-form-group label="클라이언트ID" :label-cols="3">
+                <b-form-input type="text" v-model="orderProduct.clientId" readonly></b-form-input>
               </b-form-group>
             </div>
           </div>
@@ -100,6 +112,7 @@
                   <tr>
                     <th class="text-center">카테고리코드</th>
                     <th class="text-center">카테고리명</th>
+                    <th class="text-center">계량유형</th>
                     <th class="text-center">결제주기</th>
                     <th class="text-center">아이템명</th>
                     <th class="text-center">아이템가격</th>
@@ -109,6 +122,7 @@
                   <tr v-for="(item) in orderPackageCategories">
                     <td class="text-center">{{ item.categoryCode }}</td>
                     <td class="text-left">{{ item.categoryName }}</td>
+                    <td class="text-center">{{ item.meteringType | toMeteringTypeText }}</td>
                     <td class="text-center">{{ item.billingCycle | toBillingCycleText }}</td>
                     <td class="text-left">{{ item.itemName }}</td>
                     <td class="text-right">{{ item.itemPrice | formatNumber | toKRW }}</td>
