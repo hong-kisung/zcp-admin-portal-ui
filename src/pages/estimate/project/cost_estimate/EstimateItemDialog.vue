@@ -52,7 +52,7 @@
 	      </select>
 	    </div>
       </div>
-      <div class="form-group row" v-show="showAddonApplication">
+      <div class="form-group row" v-show="showAddonApplication && editedItem.classificationType != 'Object_Storage'">
         <label for="storageType" class="col-md-4 col-form-label">Storage Type</label>
         <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="storageType" v-model="editedItem.storageType">
@@ -61,7 +61,7 @@
 	      </select>
 	    </div>
       </div>
-      <div class="form-group row" v-show="showAddonApplication">
+      <div class="form-group row" v-show="showAddonApplication && editedItem.classificationType != 'Object_Storage'">
         <label for="enduranceIops" class="col-md-4 col-form-label">Storage Performance</label>
         <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="enduranceIops" v-model="editedItem.enduranceIops">
@@ -70,7 +70,7 @@
 	      </select>
 	    </div>
       </div>
-      <div class="form-group row" v-show="showAddonApplication">
+      <div class="form-group row" v-show="showAddonApplication && editedItem.classificationType != 'Object_Storage'">
         <label for="iksFileStorageId" class="col-md-4 col-form-label">Storage Size(GB)</label>
         <div class="col-md-8">
 	      <select class="custom-select custom-select-md" id="iksFileStorageId" v-model.number="editedItem.iksFileStorageId" @change="changeStorageSize">
@@ -79,7 +79,7 @@
 	      </select>
 	    </div>
       </div>
-      <div class="form-group row" v-show="!showLaborCostInput">
+      <div class="form-group row" v-show="!showLaborCostInput && editedItem.classificationType != 'Object_Storage'">
         <label for="number" class="col-md-4 col-form-label">Number</label>
         <div class="col-md-8">
 	      <input type="number" class="form-control form-control-md" id="number" v-model.number="editedItem.number">
