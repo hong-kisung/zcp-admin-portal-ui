@@ -14,6 +14,12 @@
           <th class="text-center">Service</th>
           <th class="text-center">Classification</th>
           <th class="text-center">Type</th>
+ 		  <th class="text-center">Machine Type</th>
+		  <th class="text-center">Hardware Type</th>
+		  <th class="text-center">Number</th>
+ 		  <th class="text-center">Storage Type</th>
+		  <th class="text-center">Storage IOPS</th>
+		  <th class="text-center">Storage Size(GB)</th>
           <th class="text-center">Actions</th>
         </tr>
       </thead>
@@ -43,6 +49,12 @@
 	          </th>
 		      <td class="text-left">{{ classification.classificationName }}</td>
 		      <td class="text-center">{{ classification.classificationType }}</td>
+		      <td class="text-center">{{ classification.iksVmName }}</td>
+		      <td class="text-center">{{ classification.hardwareType }}</td>
+		      <td class="text-center">{{ classification.classificationType == 'Object_Storage' ? '' : classification.number | formatNumber }}</td>
+		      <td class="text-center">{{ classification.storageType }}</td>
+		      <td class="text-center">{{ !classification.enduranceIops || classification.enduranceIops == 0 ? '' : classification.enduranceIops + ' IOPS' }}</td>
+		      <td class="text-center">{{ classification.iksFileStorageDisk | formatNumber }}</td>
 			  <td class="text-center">
 			    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(serviceIndex, classification, index)">
 			      <i class="fa fa-pencil fa-sm"></i>
@@ -73,25 +85,21 @@
     </b-form>
   </b-modal>
 
-  <b-modal centered no-close-on-backdrop title="Application" v-model="applicationDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
-    <b-form>
-      <b-form-group label="Classification" label-for="classificationName" label-class="astertisk" :label-cols="4" >
-        <b-form-input id="classificationName" type="text" v-model="editedAppsItem.classificationName"></b-form-input>
-      </b-form-group>
-      <b-form-group label="Classification Type" label-for="classificationType" label-class="astertisk" :label-cols="4">
-        <b-form-select id="classificationType"
-          :plain="true"
-          v-model="editedAppsItem.classificationType">
-	        <option v-for="(item, index) in classificationTypeItems" :value="item">{{ item }}</option>
-        </b-form-select>
-      </b-form-group>
-    </b-form>
-  </b-modal>
+  <estimateItemTemplateDialog 		 v-bind:editedAppsItem="editedAppsItem"
+ 								 v-bind:appsDialog="applicationDialog"
+ 								 v-on:fire-dialog-saved="saveAppsDialog"
+ 								 v-on:fire-dialog-closed="closeAppsDialog"
+  />
 </div>
 </template>
 
 <script>
+import estimateItemTemplateDialog from './EstimateItemTemplateDialog'
+
 export default {
+  	components: {
+    	estimateItemTemplateDialog
+  	},
 	data: () => ({
 		selected: [],
 
@@ -107,8 +115,7 @@ export default {
       	editedAppsItem: {}
 	}),
 	props: [
-		'services',
-		'classificationTypeItems'
+		'services'
 	],
 	computed: {
 		userId : function() {
@@ -194,17 +201,6 @@ export default {
 			this.applicationDialog = true;
 		},
 		saveAppsDialog (e) {
-			if(!this.editedAppsItem.classificationName) {
-				alert('Classification을 입력하세요');
-				e.preventDefault()
-				return;
-			}
-			if(!this.editedAppsItem.classificationType) {
-				alert('Classification Type을 선택하세요');
-				e.preventDefault()
-				return;
-			}
-			
 			if (this.editedAppsIndex > -1) {
 				this.$set(this.services[this.editedServIndex].classifications, this.editedAppsIndex, this.editedAppsItem);
 			} else {

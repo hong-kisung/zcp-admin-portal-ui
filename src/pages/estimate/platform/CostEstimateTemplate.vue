@@ -5,13 +5,11 @@
 		  <b-tab title="Cloud Z Service" active>
 			<estimateTypeTemplateTab 
 				v-bind:services="estimateTemplate.cloudZService"
-	 			v-bind:classificationTypeItems="classificationTypeItems"
 			/>
 		  </b-tab>
 		  <b-tab title="Application Storage Service">
 			<estimateTypeTemplateTab 
 				v-bind:services="estimateTemplate.storageService"
-	 			v-bind:classificationTypeItems="classificationTypeItems"
 			/>
 		  </b-tab>
 		</b-tabs>
@@ -34,15 +32,16 @@ export default {
   	},
 	data: () => ({
 		productId: 0,
-		active: null,
-		classificationTypeItems: [],
-      	estimateTemplate: {}
+		active: null
 	}),
 	props: [
 	],
     watch: {
     },
 	computed: {
+		estimateTemplate: function() {
+			return this.$store.state.estimate.costEstimateTemplate
+		}
     },
 	created () {
 		this.initialize()
@@ -50,26 +49,26 @@ export default {
 	methods: {
 		initialize() {
 			if(this.$route.params.productId) {
-				this.productId = this.$route.params.productId;
+				this.productId = this.$route.params.productId
 			}
-			this.$http.get('/api/estimate/code/classification_type').then(response => {
-				this.classificationTypeItems = response.data;
-			})
-			if(this.productId > 0) {
-				this.getCostEstimate();
+			if(this.productId < 1) {
+				return
 			}
-		},
-		getCostEstimate() {
-			this.$http.get('/api/estimate/platform/product/'+ this.productId + '/template').then(response => {
-				this.estimateTemplate = response.data;
-			})
+			
+			this.$store.dispatch('estimate/getCostEstimateTemplate', {productId: this.productId})
+			this.$store.dispatch('estimate/getVm')
+			this.$store.dispatch('estimate/getStorage')
+			this.$store.dispatch('estimate/getHardwareTypes')
+			this.$store.dispatch('estimate/getFileStorageTypes')
+			this.$store.dispatch('estimate/getEnduranceIops')
+			this.$store.dispatch('estimate/getClassificationTypes')
 		},
 		saveService() {
-			if(confirm('변경된 내용을 저장하시겠습니까?')) {
-				this.$http.put('/api/estimate/platform/product/'+ this.productId +'/template', this.estimateTemplate).then(response => {
-					alert("저장되었습니다.");
-				})
-			}
+			this.$bvModal.msgBoxConfirm('저장하시겠습니까?').then(value => {
+				if(value) {
+					this.$store.dispatch('estimate/saveCostEstimateTemplate', {productId: this.productId, costEstimateTemplate: this.estimateTemplate})
+				}
+			})
 		},
 		cancel() {
 			history.go(-1)
