@@ -63,7 +63,7 @@
 					  <td class="text-left">{{ classification.classificationType }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
-					  <td class="text-center">{{ classification.number | formatNumber }}</td>
+					  <td class="text-center">{{ classification.classificationType == 'Object_Storage' ? '' : classification.number | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
 					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
 					  <td class="text-center">{{ classification.storageType }}</td>
@@ -519,6 +519,7 @@ export default {
 				}
 				
 			} else if(estimateItem.classificationType == 'Object_Storage') {
+				estimateItem.number = 1
 				estimateItem.pricePerMonthly = this.storageVersion.objectStoragePricePerMonth * estimateItem.number
 				 
 			} else if(estimateItem.classificationType == 'IP_Allocation') {
