@@ -1,4 +1,12 @@
 export default {
+	//공통코드
+	hardwareTypes: [],
+	fileStorageTypes: [],
+	enduranceIops: [],
+	classificationTypes: [],
+	environmentTypes: [],
+	
+	//원가견적 기준정보
 	general: {},		//기준정보 상세
 	generalHistory: [],	//기준정보 history
 	generalHistoryDetail: {},
@@ -14,12 +22,10 @@ export default {
 	productMspCostHistory: [],
 	productMspCostHistoryDetail: {},
 	
-	hardwareTypes: [],
-	fileStorageTypes: [],
-	enduranceIops: [],
-	classificationTypes: [],
-	environmentTypes: [],
+	//원가견적 템플릿
+	costEstimateTemplate: {},
 	
+	//프로젝트 원가견적
 	projects: [],
 	project: {},
 	projectVolume: {},
@@ -32,4 +38,5 @@ export default {
 	projectCostEstimateHistoryDetailStatus: false,
 	projectCostEstimateHistoryDetail: {},
 	customers: []
+	
 }

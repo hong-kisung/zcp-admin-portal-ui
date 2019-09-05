@@ -195,8 +195,8 @@ export default {
 			for(let product of this.estimate.products) {
 				for(let service of product.services) {
 					for(let classification of service.classifications) {
-						this.updateReference(classification)
-						this.calculate(classification, true)
+						this.updateReference(classification, true)
+						this.calculate(classification)
 					}
 				}
 			}
@@ -306,13 +306,17 @@ export default {
 				estimateItem.serviceName = serviceName
 				estimateItem.classificationName = classification.classificationName
 				estimateItem.classificationType = classification.classificationType
+				estimateItem.iksVmName = classification.iksVmName
+				estimateItem.hardwareType = classification.hardwareType
+				estimateItem.number = classification.number
+				estimateItem.storageType = classification.storageType
+				estimateItem.enduranceIops = classification.enduranceIops
+				estimateItem.iksFileStorageDisk = classification.iksFileStorageDisk
+				
 				estimateItem.addonApplicationName = ""
 				
-				if(estimateItem.classificationType == 'IP_Allocation') {
-					estimateItem.pricePerMonthly = this.iksGeneral.ipAllocation
-					estimateItem.pricePerYearly = estimateItem.pricePerMonthly * 12
-				}
-				
+				this.updateReference(estimateItem)
+				this.calculate(estimateItem)
 				estimateItems.push(estimateItem)
 			}
 			return estimateItems
@@ -424,10 +428,10 @@ export default {
 			}
 			return -1
 		},
-		updateReference(estimateItem) {
+		updateReference(estimateItem, showUpdated) {
 			if(estimateItem.classificationType == 'VM') {
 				//상세spec 데이터가 없는 것
-				if(estimateItem.iksVmId <= 0) {
+				if(!estimateItem.iksVmName || estimateItem.iksVmName == '') {
 					return
 				}
 				
@@ -440,10 +444,10 @@ export default {
 				//버전업 대상인데 name매칭 결과가 있으면 update, 아니면 id/name 삭제
 				estimateItem.iksVmId = vmData ? vmData.id : 0
 				estimateItem.iksVmName = vmData? vmData.name : ''
-				estimateItem.updated = true
+				if(showUpdated) estimateItem.updated = true
 				
 			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
-				if(estimateItem.iksFileStorageId <= 0) {
+				if(!estimateItem.iksFileStorageDisk || estimateItem.iksFileStorageDisk == 0) {
 					return
 				}
 				
@@ -454,21 +458,21 @@ export default {
 				
 				estimateItem.iksFileStorageId = storageData ? storageData.id : 0
 				estimateItem.iksFileStorageDisk = storageData ? storageData.disk : 0
-				estimateItem.updated = true
+				if(showUpdated) estimateItem.updated = true
 
 			} else if(estimateItem.classificationType == 'Object_Storage') {
 				if(estimateItem.pricePerMonthly == this.storageVersion.objectStoragePricePerMonth) {
 					return
 				}
 				
-				estimateItem.updated = true
+				if(showUpdated) estimateItem.updated = true
 
 			} else if(estimateItem.classificationType == 'IP_Allocation') {
 				if(estimateItem.pricePerMonthly == this.iksGeneral.ipAllocation) {
 					return
 				}
 				
-				estimateItem.updated = true
+				if(showUpdated) estimateItem.updated = true
 			}
 		},
 		calculate(estimateItem) {
@@ -483,7 +487,7 @@ export default {
 						estimateItem.memory = 0
 					}
 					
-					if(estimateItem.hardwareType && estimateItem.hardwareType != "") {
+					if(estimateItem.hardwareType && estimateItem.hardwareType != '') {
 						let pricePerMonth = 0
 						if(estimateItem.hardwareType == 'shared') {
 							pricePerMonth = vmData.sharedGraduatedTierPricePerMonth

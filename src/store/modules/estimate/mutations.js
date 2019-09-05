@@ -41,6 +41,11 @@ export default {
 		state.productMspCostHistoryDetail = data
 	},
 	
+	//product cost estimate template
+	setCostEstimateTemplate: function(state, data) {
+		state.costEstimateTemplate = data
+	},
+	
 	//project
 	setProjects: function(state, data) {
 		state.projects = data

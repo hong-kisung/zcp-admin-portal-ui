@@ -136,6 +136,19 @@ export default {
 		})
 	},
 	
+	//product cost estimate template
+	getCostEstimateTemplate: function (store, payload) {
+		axios.get('/api/estimate/platform/product/'+ payload.productId + '/template').then(response => {
+			store.commit('setCostEstimateTemplate', response.data)
+		})
+	},
+	saveCostEstimateTemplate: function (store, payload) {
+		axios.put('/api/estimate/platform/product/'+ payload.productId +'/template', payload.costEstimateTemplate).then(response => {
+			store.commit('showOkMessage', {content:'저장되었습니다.'}, {root:true})
+			store.dispatch('getCostEstimateTemplate', {productId: payload.productId})
+		})
+	},
+	
 	//project
 	getProjects: function (store, payload) {
 		axios.get('/api/estimate/project').then(response => {
