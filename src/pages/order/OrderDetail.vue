@@ -112,6 +112,7 @@
                   <tr>
                     <th class="text-center">카테고리코드</th>
                     <th class="text-center">카테고리명</th>
+                    <th class="text-center">필수주문여부</th>
                     <th class="text-center">계량유형</th>
                     <th class="text-center">결제주기</th>
                     <th class="text-center">아이템명</th>
@@ -122,6 +123,7 @@
                   <tr v-for="(item) in orderPackageCategories">
                     <td class="text-center">{{ item.categoryCode }}</td>
                     <td class="text-left">{{ item.categoryName }}</td>
+                    <td class="text-center">{{ item.isMandatory == true ? 'Y' : 'N' }}</td>
                     <td class="text-center">{{ item.meteringType | toMeteringTypeText }}</td>
                     <td class="text-center">{{ item.billingCycle | toBillingCycleText }}</td>
                     <td class="text-left">{{ item.itemName }}</td>
