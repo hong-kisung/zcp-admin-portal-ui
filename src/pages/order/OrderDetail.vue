@@ -106,7 +106,13 @@
             <div class="table-responsive-sm">
               <table class="table b-table table-bordered table-sm">
               <colgroup>
+                <col width="70">
                 <col width="100">
+                <col width="70">
+                <col width="80">
+                <col width="100">
+                <col width="130">
+                <col width="80">
               </colgroup>
                 <thead>
                   <tr>
