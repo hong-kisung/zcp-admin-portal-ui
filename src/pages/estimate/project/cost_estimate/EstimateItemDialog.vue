@@ -1,5 +1,5 @@
 <template>
-<b-modal size="lg" centered no-close-on-backdrop title="Classification" v-model="showDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
+<b-modal size="lg" centered no-close-on-backdrop title="Classification" v-model="showDialog" @hidden="closeAppsDialog" @ok="saveAppsDialog">
   <b-form>
       <div class="form-group row mt-3">
         <label for="productName" class="col-md-4 col-form-label astertisk">Product</label>
