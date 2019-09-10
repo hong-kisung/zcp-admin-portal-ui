@@ -1,5 +1,5 @@
 <template>
-<b-modal centered no-close-on-backdrop title="Product 추가" v-model="dialog" @close="closeEnvironmentDialog" @cancel="closeEnvironmentDialog" @ok="saveEnvironmentDialog">
+<b-modal centered no-close-on-backdrop title="Product 추가" v-model="dialog" @hidden="closeEnvironmentDialog" @ok="saveEnvironmentDialog">
     <b-form>
       <div class="custom-control custom-checkbox custom-control-inline" v-for="product in productReferences">
         <input type="checkbox" class="custom-control-input" :id="product.productId" :value="product" v-model="editedItem.products" :disabled="estimate.products.find(p => p.productId === product.productId) ? true:false">

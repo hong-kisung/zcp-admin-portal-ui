@@ -1,5 +1,5 @@
 <template>
-  <b-modal centered no-close-on-backdrop title="Classification" v-model="showDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
+  <b-modal centered no-close-on-backdrop title="Classification" v-model="showDialog" @hidden="closeAppsDialog" @ok="saveAppsDialog">
     <b-form>
       <b-form-group label="Classification" label-for="classificationName" label-class="astertisk" :label-cols="4" >
         <b-form-input id="classificationName" type="text" v-model="editedAppsItem.classificationName"></b-form-input>
