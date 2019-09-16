@@ -8,7 +8,7 @@
 	          <th class="text-center">Cloud 사용료(₩)</th>
 	          <th class="text-center">인건비(₩)</th>
 	          <th class="text-center">월 비용 합계(₩)</th>
-	          <th class="text-center">GB당 원가(₩)</th>
+	          <!--th class="text-center">GB당 원가(₩)</th-->
 	        </tr>
           </thead>
           <tbody>
@@ -20,7 +20,7 @@
 				    <td class="text-right">{{ product.cloudCost | formatNumber | toKRW }}</td>
 				    <td class="text-right">{{ product.laborCost | formatNumber | toKRW }}</td>
 				    <td class="text-right">{{ product.totalCost | formatNumber | toKRW }}</td>
-				    <td class="text-right">{{ product.pricePerGb | formatNumber | toKRW }}</td>
+				    <!--td class="text-right">{{ product.pricePerGb | formatNumber | toKRW }}</td-->
 				  </tr>
 			  </template>
 	        </template>
@@ -29,8 +29,7 @@
 			  <td class="font-weight-bold text-right">{{ estimate.sumCloudCost | formatNumber | toKRW }}</td>
 			  <td class="font-weight-bold text-right">{{ estimate.sumLaborCost | formatNumber | toKRW }}</td>
 			  <td class="font-weight-bold text-right">{{ estimate.sumTotalCost | formatNumber | toKRW }}</td>
-			  <td class="font-weight-bold text-right"></td>
-			  </td>
+			  <!--td class="font-weight-bold text-right"></td-->
 		    </tr>
           </tbody>
         </table>
