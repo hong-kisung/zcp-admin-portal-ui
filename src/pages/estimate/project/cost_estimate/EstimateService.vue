@@ -15,14 +15,14 @@
       <thead>
 		  <tr>
 			<th class="text-center">Product</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Service</th>
+			<th class="text-center" v-show="estimateType == 'CloudZService'">Service</th>
 			<th class="text-center">Classification</th>
 			<th class="text-center">Classification Type</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Machine Type</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Hardware Type</th>
+			<th class="text-center" v-show="estimateType == 'CloudZService'">Machine Type</th>
+			<th class="text-center" v-show="estimateType == 'CloudZService'">Hardware Type</th>
 			<th class="text-center">Number</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Cores</th>
-			<th class="text-center" v-show="estimateType == 'cloudZService'">Memory(GB)</th>
+			<th class="text-center" v-show="estimateType == 'CloudZService'">Cores</th>
+			<th class="text-center" v-show="estimateType == 'CloudZService'">Memory(GB)</th>
 			<th class="text-center">Storage Type</th>
 			<th class="text-center">Storage IOPS</th>
 			<th class="text-center">Storage Size(GB)</th>
@@ -41,7 +41,7 @@
 			        <label class="custom-control-label" :for="getCheckboxId(product.productName)">{{ product.productName }}</label>
 			      </div>
 				</td>
-				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ? 10:6">{{ product.productName }} Summary</td>
+				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'CloudZService' ? 10:6">{{ product.productName }} Summary</td>
 				<td class="font-weight-bold text-right">{{ product.sumMonthly | formatNumber }}</td>
 				<td class="font-weight-bold text-right">{{ product.sumYearly | formatNumber }}</td>
 				<td class="font-weight-bold" v-if="editable">
@@ -58,14 +58,14 @@
 				          <label class="custom-control-label" :for="getCheckboxId(product.productName)">{{ product.productName }}</label>
 				        </div>
 					  </td>
-					  <td class="font-weight-bold text-left" v-if="index == 0" v-show="estimateType == 'cloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
+					  <td class="font-weight-bold text-left" v-if="index == 0" v-show="estimateType == 'CloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</td>
 					  <td class="font-weight-bold text-left" :class="classification.updated ? 'text-danger':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
 					  <td class="text-left">{{ classification.classificationType }}</td>
-					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.iksVmName }}</td>
-					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.hardwareType }}</td>
+					  <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.iksVmName }}</td>
+					  <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.hardwareType }}</td>
 					  <td class="text-center">{{ classification.classificationType == 'Object_Storage' ? '' : classification.number | formatNumber }}</td>
-					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.cores | formatNumber }}</td>
-					  <td class="text-center" v-show="estimateType == 'cloudZService'">{{ classification.memory | formatNumber }}</td>
+					  <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.cores | formatNumber }}</td>
+					  <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.memory | formatNumber }}</td>
 					  <td class="text-center">{{ classification.storageType }}</td>
 					  <td class="text-center">{{ !classification.enduranceIops || classification.enduranceIops == 0 ? '' : classification.enduranceIops + ' IOPS' }}</td>
 					  <td class="text-center">{{ classification.iksFileStorageDisk | formatNumber }}</td>
@@ -89,7 +89,7 @@
 			    </template>
 			  </template>
 			  <tr>
-				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ? 11:6">{{ product.productName }} Summary</td>
+				<td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'CloudZService' ? 11:6">{{ product.productName }} Summary</td>
 				<td class="font-weight-bold text-right">{{ product.sumMonthly | formatNumber }}</td>
 				<td class="font-weight-bold text-right">{{ product.sumYearly | formatNumber }}</td>
 				<td class="font-weight-bold" v-if="editable">
@@ -99,7 +99,7 @@
 	  	</template>
 	  	
 	  	<tr>
-		  <td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'cloudZService' ?  12:7">Summary</td>
+		  <td class="font-weight-bold text-right" v-bind:colspan="estimateType == 'CloudZService' ?  12:7">Summary</td>
 		  <td class="font-weight-bold text-right">{{ estimate.sumMonthly | formatNumber }}</td>
 		  <td class="font-weight-bold text-right">{{ estimate.sumYearly | formatNumber }}</td>
 		  <td class="font-weight-bold" v-if="editable">
@@ -161,9 +161,8 @@ export default {
 		'title',
 		'estimateEnvironment',
 		'estimateType',
-		'estimate',
-		'editable',
-		'referenceUpdateStatus'
+		'environmentIndex',
+		'editable'
 	],
 	computed: {
 		productReferences: function() {
@@ -183,26 +182,16 @@ export default {
 		},
 		productMspCostVersion: function() {
 			return this.$store.state.estimate.productMspCost
+		},
+		estimate: function() {
+			if(this.estimateType == 'CloudZService') {
+				return this.$store.state.estimate.projectCostEstimate.environments[this.environmentIndex].cloudZService
+			} else if(this.estimateType == 'StorageService') {
+				return this.$store.state.estimate.projectCostEstimate.environments[this.environmentIndex].storageService
+			}
 		}
 	},
 	watch: {
-		referenceUpdateStatus: function() {
-			if(!this.referenceUpdateStatus) {
-				return;
-			}
-			
-			// update estimate_items
-			for(let product of this.estimate.products) {
-				for(let service of product.services) {
-					for(let classification of service.classifications) {
-						this.updateReference(classification, true)
-						this.calculate(classification)
-					}
-				}
-			}
-			
-			this.$emit('fire-update-reference-finished')
-		}
 	},
 	created () {
 		this.initialize()
@@ -232,15 +221,9 @@ export default {
 		},
 		deleteProduct() {
 			if(confirm('삭제하시겠습니까?')) {
-				for(let i = 0; i < this.selected.length; i++) {
-					const index = this.estimate.products.indexOf(this.selected[i])
-					this.estimate.products.splice(index, 1)
-				}
-				
+				this.$store.commit('estimate/deleteCostEstimateProduct', {estimateType: this.estimateType, environmentIndex: this.environmentIndex, selectedProduct: this.selected})
 				this.selected = []
-				this.$emit('fire-estimate-changed')
 			}
-			
 		},
 		openEnvironmentDialog() {
 			this.selected = []
@@ -253,73 +236,8 @@ export default {
 			}, 300)
 		},
 		saveEnvironmentDialog() {
-			for(let productInfo of this.editedItem.products) {
-				let product = {}
-				product.productId = productInfo.productId
-				product.productName = productInfo.productName
-				product.services = new Array()
-				this.estimate.products.push(product)
-				
-				this.createFromProductTemplate(this.estimate.products.length -1, product)
-			}
+			this.$store.commit('estimate/addCostEstimateProduct', {estimateType: this.estimateType, environmentIndex: this.environmentIndex, products: this.editedItem.products})
 			this.closeEnvironmentDialog()
-		},
-		createFromProductTemplate(productIndex, product) {
-			let productTemplate
-			for(let reference of this.productReferences) {
-				productTemplate = undefined
-				if(product.productId == reference.productId) {
-					productTemplate = reference
-					break
-				}
-			}
-			
-			if(productTemplate) {
-				this.createProduct(productTemplate, productIndex, product)
-				this.$emit('fire-estimate-changed')
-			} else {
-				console.log('product template not found')
-			}
-		},
-		createProduct(productTemplate, productIndex, product) {
-			let templates
-			if(this.estimateType == 'cloudZService') {
-				templates = productTemplate.templates.cloudZService
-			} else if(this.estimateType == 'storageService') {
-				templates = productTemplate.templates.storageService
-			}
-			
-			for(let template of templates) {
-				let service = {}
-				service.serviceName = template.serviceName
-				service.classifications = new Array()
-				service.classifications = this.createClassification(product, service.serviceName, template.classifications)
-				this.estimate.products[productIndex].services.push(service)
-			}
-		},
-		createClassification(product, serviceName, classifications) {
-			let estimateItems = new Array()
-			for(let classification of classifications) {
-				let estimateItem = {}
-				estimateItem.productId = product.productId
-				estimateItem.productName = product.productName
-				estimateItem.serviceName = serviceName
-				estimateItem.classificationName = classification.classificationName
-				estimateItem.classificationType = classification.classificationType
-				estimateItem.iksVmName = classification.iksVmName
-				estimateItem.hardwareType = classification.hardwareType
-				estimateItem.number = classification.number
-				estimateItem.storageType = classification.storageType
-				estimateItem.enduranceIops = classification.enduranceIops
-				estimateItem.iksFileStorageDisk = classification.iksFileStorageDisk
-				
-				estimateItem.addonApplicationName = ""
-				
-				this.updateReference(estimateItem)
-				this.calculate(estimateItem)
-				estimateItems.push(estimateItem)
-			}
-			return estimateItems
 		},
 		
 		openAppsDialog() {
@@ -345,17 +263,13 @@ export default {
 		},
 		deleteAppsItem(productIndex, serviceIndex, appIndex, appItem) {
 			if(confirm('삭제하시겠습니까?')) {
-				this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1)
-				
-				if(this.estimate.products[productIndex].services[serviceIndex].classifications.length == 0) {
-					this.estimate.products[productIndex].services.splice(serviceIndex, 1)
+				let data = {
+					estimateType: this.estimateType, environmentIndex: this.environmentIndex, 
+					productIndex: productIndex,
+					serviceIndex: serviceIndex,
+					classificationIndex: appIndex
 				}
-				
-				if(this.estimate.products[productIndex].services.length == 0) {
-					this.estimate.products.splice(productIndex, 1)
-				}
-				
-				this.$emit('fire-estimate-changed')
+				this.$store.commit('estimate/deleteCostEstimateItem', data)
 			}
 		},
 		moveUpAppsItem(productIndex, serviceIndex, appIndex, appItem) {
@@ -379,163 +293,30 @@ export default {
 			}, 300)
 		},
 		saveAppsDialog () {
-			this.calculate(this.editedAppsItem)
-			
 			if (this.editedApps.index > -1) {
 				// edit
-				this.$set(this.estimate.products[this.editedApps.productIndex].services[this.editedApps.serviceIndex].classifications, this.editedApps.index, this.editedAppsItem)
+				let data = {
+					estimateType: this.estimateType, environmentIndex: this.environmentIndex, 
+					productIndex: this.editedApps.productIndex,
+					serviceIndex: this.editedApps.serviceIndex,
+					classificationIndex: this.editedApps.index,
+					estimateItem: this.editedAppsItem
+				}
+				this.$store.commit('estimate/modifyCostEstimateItem', data)
 			
 			} else {
 				// new
-				let productIndex = this.findProductIndex(this.estimate.products, this.editedAppsItem.productName)
-				if(productIndex == -1) {
-					let product = {}
-					product.productId = this.editedAppsItem.productId
-					product.productName = this.editedAppsItem.productName
-					product.services = new Array()
-					this.estimate.products.push(product)
-					productIndex = this.estimate.products.length -1
+				let data = {
+					estimateType: this.estimateType, environmentIndex: this.environmentIndex, 
+					productId: this.editedAppsItem.productId,
+					productName: this.editedAppsItem.productName,
+					serviceName: this.editedAppsItem.serviceName,
+					estimateItem: this.editedAppsItem
 				}
-				
-				let serviceIndex = this.findServiceIndex(this.estimate.products[productIndex].services, this.editedAppsItem.serviceName)
-				if(serviceIndex == -1) {
-					let service = {}
-					service.serviceName = this.editedAppsItem.serviceName
-					service.classifications = new Array()
-					this.estimate.products[productIndex].services.push(service)
-					serviceIndex = this.estimate.products[productIndex].services.length -1
-				}
-				
-				this.estimate.products[productIndex].services[serviceIndex].classifications.push(this.editedAppsItem)
+				this.$store.commit('estimate/addCostEstimateItem', data)
 			}
 			
 			this.closeAppsDialog()
-			this.$emit('fire-estimate-changed')
-		},
-		findProductIndex(products, productName) {
-			for(let i = 0; i < products.length; i++) {
-				if(products[i].productName == productName) {
-					return i
-				}
-			}
-			return -1
-		},
-		findServiceIndex(services, serviceName) {
-			for(let i = 0; i < services.length; i++) {
-				if(services[i].serviceName == serviceName) {
-					return i
-				}
-			}
-			return -1
-		},
-		updateReference(estimateItem, showUpdated) {
-			if(estimateItem.classificationType == 'VM') {
-				//상세spec 데이터가 없는 것
-				if(!estimateItem.iksVmName || estimateItem.iksVmName == '') {
-					return
-				}
-				
-				//최신버전인 것
-				const vmData = this.vmVersion.vms.find(vm => vm.name === estimateItem.iksVmName)
-				if(vmData && vmData.id == estimateItem.iksVmId) {
-					return
-				}
-				
-				//버전업 대상인데 name매칭 결과가 있으면 update, 아니면 id/name 삭제
-				estimateItem.iksVmId = vmData ? vmData.id : 0
-				estimateItem.iksVmName = vmData? vmData.name : ''
-				if(showUpdated) estimateItem.updated = true
-				
-			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
-				if(!estimateItem.iksFileStorageDisk || estimateItem.iksFileStorageDisk == 0) {
-					return
-				}
-				
-				const storageData = this.storageVersion.fileStorages.find(storage => storage.disk === estimateItem.iksFileStorageDisk)
-				if(storageData && storageData.id == estimateItem.iksFileStorageId) {
-					return
-				}
-				
-				estimateItem.iksFileStorageId = storageData ? storageData.id : 0
-				estimateItem.iksFileStorageDisk = storageData ? storageData.disk : 0
-				if(showUpdated) estimateItem.updated = true
-
-			} else if(estimateItem.classificationType == 'Object_Storage') {
-				if(estimateItem.pricePerMonthly == this.storageVersion.objectStoragePricePerMonth) {
-					return
-				}
-				
-				if(showUpdated) estimateItem.updated = true
-
-			} else if(estimateItem.classificationType == 'IP_Allocation') {
-				if(estimateItem.pricePerMonthly == this.iksGeneral.ipAllocation) {
-					return
-				}
-				
-				if(showUpdated) estimateItem.updated = true
-			}
-		},
-		calculate(estimateItem) {
-			if(estimateItem.classificationType == 'VM') {
-				const vmData = this.vmVersion.vms.find(vm => vm.id === estimateItem.iksVmId)
-				if(vmData) {
-					if(estimateItem.number && estimateItem.number > 0) {
-						estimateItem.cores = vmData.core * estimateItem.number
-						estimateItem.memory = vmData.memory * estimateItem.number
-					} else {
-						estimateItem.cores = 0
-						estimateItem.memory = 0
-					}
-					
-					if(estimateItem.hardwareType && estimateItem.hardwareType != '') {
-						let pricePerMonth = 0
-						if(estimateItem.hardwareType == 'shared') {
-							pricePerMonth = vmData.sharedGraduatedTierPricePerMonth
-						} else if(estimateItem.hardwareType == 'dedicated') {
-							pricePerMonth = vmData.dedicatedGraduatedTierPricePerMonth
-						}
-						
-						estimateItem.pricePerMonthly = Math.ceil(pricePerMonth * (1 - this.iksGeneral.ibmDcRate/100)) * estimateItem.number
-					} else {
-						estimateItem.pricePerMonthly = 0
-					}
-				} else {
-					estimateItem.pricePerMonthly = 0
-				}
-				
-			} else if(estimateItem.classificationType == 'File_Storage' || estimateItem.classificationType == 'Block_Storage') {
-				const storageData = this.storageVersion.fileStorages.find(storage => storage.id === estimateItem.iksFileStorageId)
-				if(storageData && estimateItem.enduranceIops && estimateItem.enduranceIops != "" && estimateItem.number && estimateItem.number > 0) {
-					let pricePerHour = 0
-					if(estimateItem.enduranceIops == 0.25) {
-						pricePerHour = storageData.iops1PricePerHour
-					} else if(estimateItem.enduranceIops == 2) {
-						pricePerHour = storageData.iops2PricePerHour
-					} else if(estimateItem.enduranceIops == 4) {
-						pricePerHour = storageData.iops3PricePerHour
-					} else if(estimateItem.enduranceIops = 10) {
-						pricePerHour = storageData.iops4PricePerHour
-					}
-					
-					estimateItem.pricePerMonthly = Math.ceil(pricePerHour * 730 * this.iksGeneral.exchangeRate * (1 - this.iksGeneral.ibmDcRate/100)) * estimateItem.number
-				} else {
-					estimateItem.pricePerMonthly = 0
-				}
-				
-			} else if(estimateItem.classificationType == 'Object_Storage') {
-				estimateItem.number = 1
-				estimateItem.pricePerMonthly = this.storageVersion.objectStoragePricePerMonth * estimateItem.number
-				 
-			} else if(estimateItem.classificationType == 'IP_Allocation') {
-				estimateItem.pricePerMonthly = this.iksGeneral.ipAllocation
-				
-			} else if(estimateItem.classificationType == 'Labor_Cost') {
-				//nothing
-			}
-			
-			if(estimateItem.pricePerMonthly || estimateItem.pricePerMonthly == 0) {
-				estimateItem.pricePerYearly = estimateItem.pricePerMonthly * 12
-			}
 		}
 	}
 }

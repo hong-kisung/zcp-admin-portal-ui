@@ -54,11 +54,8 @@
 					v-bind:title="'Cloud Z Service'"
 					v-bind:estimateEnvironment="environment.environmentName"
 					v-bind:estimateType="cloudZServiceEstimateType"
-					v-bind:estimate="environment.cloudZService"
+					v-bind:environmentIndex="index"
 		 			v-bind:editable="editable"
-		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
-		 			v-on:fire-estimate-changed="changeEstimate"
-		 			v-on:fire-update-reference-finished='finishReferenceUpdate'
 				/>
 		      </b-col>
 		    </b-row>
@@ -68,11 +65,8 @@
 					v-bind:title="'Application Storage Service'"
 					v-bind:estimateEnvironment="environment.environmentName"
 					v-bind:estimateType="storageServiceEstimateType"
-					v-bind:estimate="environment.storageService"
+					v-bind:environmentIndex="index"
 		 			v-bind:editable="editable"
-		 			v-bind:referenceUpdateStatus="referenceUpdateStatus"
-		 			v-on:fire-estimate-changed="changeEstimate"
-		 			v-on:fire-update-reference-finished='finishReferenceUpdate'
 				/>
 		      </b-col>
 		    </b-row>
@@ -132,8 +126,8 @@ export default {
   		estimateSummary, estimateService, costEstimateHistory, generalDetail, iksVmDetail, iksStorageDetail, productMspCostDetail
   	},
 	data: () => ({
-		cloudZServiceEstimateType: 'cloudZService',
-		storageServiceEstimateType: 'storageService',
+		cloudZServiceEstimateType: 'CloudZService',
+		storageServiceEstimateType: 'StorageService',
 		
       	historyDialog: false,
       	generalDialog: false,
@@ -245,23 +239,8 @@ export default {
 		},
 		updateEstimate() {
 			if(confirm('최신 버전으로 다시 계산하시겠습니까?')) {
-				this.referenceUpdateStatus = true;
+				this.$store.commit('estimate/updateCostEstimateReference', true)
 			}
-		},
-		finishReferenceUpdate() {
-			this.referenceUpdateStatus = false
-			this.changeEstimate()
-			//this.showEstimateUpdate = false
-			this.estimate.generalId = this.iksGeneral.id
-			this.estimate.generalVersion = this.iksGeneral.version
-			this.estimate.iksVmVersionId = this.vmVersion.id
-			this.estimate.iksVmVersionVersion = this.vmVersion.version
-			this.estimate.iksStorageVersionId = this.storageVersion.id
-			this.estimate.iksStorageVersionVersion = this.storageVersion.version
-			this.estimate.mspCostVersionId = this.productMspCostVersion.id
-			this.estimate.mspCostVersionVersion = this.productMspCostVersion.version
-
-			alert("견적서 Update가 완료되었습니다.");
 		},
 		cancel() {
 			history.go(-1);
@@ -305,68 +284,6 @@ export default {
 			if(confirm('삭제하시겠습니까?')) {
 				this.$store.dispatch('estimate/removeProjectCostEstimateHistoryDetail', {projectId: this.projectId, estimateId: this.estimate.id})
 			}
-		},
-		changeEstimate() {
-			let sumMonthly = 0;
-			let sumYearly = 0;
-			
-			for(let environment of this.estimate.environments) {
-				this.summaryEnvironments(environment);
-				
-				sumMonthly += environment.sumMonthly;
-				sumYearly += environment.sumYearly;
-			}
-			this.estimate.sumMonthly = sumMonthly;
-			this.estimate.sumYearly = sumYearly;
-		},
-		summaryEnvironments(environment) {
-			this.summaryEstimateType(environment.cloudZService);
-			this.summaryEstimateType(environment.storageService);
-			
-			environment.sumMonthly = environment.cloudZService.sumMonthly + environment.storageService.sumMonthly;
-			environment.sumYearly = environment.cloudZService.sumYearly + environment.storageService.sumYearly;
-		},
-		summaryEstimateType(estimateType) {
-			let sumMonthly = 0;
-			let sumYearly = 0;
-			
-			for(let product of estimateType.products) {
-				for(let service of product.services) {
-					this.summaryService(service);
-				}
-				
-				this.summaryProduct(product);
-				
-				sumMonthly += product.sumMonthly;
-				sumYearly += product.sumYearly;
-			}
-			
-			estimateType.sumMonthly = sumMonthly;
-			estimateType.sumYearly = sumYearly;
-		},
-		summaryProduct(product) {
-			let sumMonthly = 0;
-			let sumYearly = 0;
-			
-			for(let service of product.services) {
-				sumMonthly += service.sumMonthly;
-				sumYearly += service.sumYearly;
-			}
-			
-			product.sumMonthly = sumMonthly;
-			product.sumYearly = sumYearly;
-		},
-		summaryService(service) {
-			let sumMonthly = 0;
-			let sumYearly = 0;
-			
-			for(let classification of service.classifications) {
-				sumMonthly += (classification.pricePerMonthly == undefined ? 0 : classification.pricePerMonthly);
-				sumYearly += (classification.pricePerYearly == undefined ? 0 : classification.pricePerYearly);
-			}
-			
-			service.sumMonthly = sumMonthly;
-			service.sumYearly = sumYearly;
 		}
 	}
 }
