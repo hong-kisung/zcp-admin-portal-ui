@@ -7,6 +7,7 @@ export default {
 		let batchTargetYn = payload.search.batchTargetYn;
 		let orderUserName = payload.search.orderUserName;
 		let clusterName = payload.search.clusterName;
+		let orderId = payload.search.orderId;
 
 		// set search
 		let orderStatusQ = 'orderStatus=' + orderStatus;
@@ -14,8 +15,9 @@ export default {
 		let orderUserNameQ = ',orderUserName=' + orderUserName;
 		let batchTargetYnQ = ',batchTargetYn=' + batchTargetYn;
 		let clusterNameQ = ',clusterName=' + clusterName;
+		let orderIdQ = ',orderId=' + orderId;
 
-		let q = encodeURIComponent(orderStatusQ + orderTypeQ + orderUserNameQ + batchTargetYnQ + clusterNameQ);
+		let q = encodeURIComponent(orderStatusQ + orderTypeQ + orderUserNameQ + batchTargetYnQ + clusterNameQ + orderIdQ);
 
 		// set page
 		let pageNo = payload.page.pageNo;

@@ -86,6 +86,11 @@
                       <b-form-input id="orderUserName" placeholder="클러스터명을 입력하세요." v-model="search.clusterName"></b-form-input>
                     </b-form-group>
                   </div>
+                  <div class="col-sm-4">
+                    <b-form-group id="input-group-2" label="주문번호" label-for="input-2">
+                      <b-form-input type="number" id="orderId" placeholder="주문번호를 입력하세요." v-model="search.orderId"></b-form-input>
+                    </b-form-group>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-sm-11"></div>
@@ -244,7 +249,8 @@ export default {
       orderStatus: ['REQUESTED','PROCEEDING','DONE','DENIED'],
       orderUserName: '',
       clusterName: '',
-      batchTargetYn: 'ALL'
+      batchTargetYn: 'ALL',
+      orderId: ''
     },
     page: {
       pageNo: 1,
