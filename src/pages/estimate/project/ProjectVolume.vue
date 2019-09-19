@@ -8,6 +8,7 @@
           <thead>
 	        <tr>
 	          <th class="text-center" rowspan="3">Environment</th>
+	          <th class="text-center" rowspan="3">Product</th>
 	          <th class="text-center" colspan="6">Application</th>
 	          <th class="text-center" colspan="4">Container</th>
 	          <th class="text-center" colspan="2">Total Size</th>
@@ -45,6 +46,7 @@
 		            </div>
 	          	  </td>
 				  <td class="text-left"></td>
+				  <td class="text-left"></td>
 				  <td class="text-center"></td>
 				  <td class="text-right"></td>
 				  <td class="text-right"></td>
@@ -68,6 +70,7 @@
 			              <label class="custom-control-label" :for="item.name">{{ item.name }}</label>
 			            </div>
 				      </td>
+				  	  <td class="text-left">{{ application.productName }}</td>
 					  <td class="text-left">{{ application.appName }}</td>
 					  <td class="text-center">{{ application.instanceNumber | formatNumber }}</td>
 					  <td class="text-right">{{ application.appCpuMin | formatNumber }}</td>
@@ -87,12 +90,18 @@
 		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(item, application, index)">
 					      <i class="fa fa-times fa-sm"></i>
 		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="moveUp(item.applications, index)">
+					      <i class="fa fa-arrow-up fa-sm"></i>
+		                </b-link>
+		                <b-link href="#" class="card-header-action" v-on:click="moveDown(item.applications, index)">
+					      <i class="fa fa-arrow-down fa-sm"></i>
+		                </b-link>
 					  </td>
 				    </tr>
 				  </template>
 				  
 				  <tr class="text-right">
-				      <td class="font-weight-bold" colspan="10" rowspan="2">Summary</td>
+				      <td class="font-weight-bold" colspan="11" rowspan="2">Summary</td>
 					  <td class="font-weight-bold">{{item.sumTotalCpu | formatNumber}} Millicore</td>
 					  <td class="font-weight-bold">{{item.sumTotalMemory | formatNumber}} MB</td>
 					  <td class="font-weight-bold">
@@ -107,7 +116,7 @@
 				</template>
 		    </template>
   			<tr class="text-right">
-		      <td class="font-weight-bold" colspan="11">합계</td>
+		      <td class="font-weight-bold" colspan="12">합계</td>
 			  <td class="font-weight-bold">{{volumes.sumCpu | formatNumber}} Core</td>
 			  <td class="font-weight-bold">{{volumes.sumMemory | formatNumber}} GB</td>
 			  <td class="font-weight-bold">
@@ -146,6 +155,14 @@
 		  
   <b-modal centered no-close-on-backdrop title="Application" v-model="appsDialog" @close="closeAppsDialog" @cancel="closeAppsDialog" @ok="saveAppsDialog">
     <b-form>
+      <b-form-group label="Product" label-for="productId" label-class="astertisk" :label-cols="7">
+        <b-form-select id="productId"
+          :plain="true"
+          v-model="editedAppsItem.productId"
+          @change="changeProduct">
+	        <option v-for="(item, index) in products" :value="item.id">{{ item.name }}</option>
+        </b-form-select>
+      </b-form-group>
       <b-form-group label="Application Kind" label-for="appName" label-class="astertisk" :label-cols="7" >
         <b-form-input id="appName" type="text" v-model="editedAppsItem.appName"></b-form-input>
       </b-form-group>
@@ -183,7 +200,10 @@
 </template>
 
 <script>
+import swapArray from '@/mixins/swap-array'
+
 export default {
+	mixins: [swapArray],
   	components: {
   	},
 	data: () => ({
@@ -209,6 +229,9 @@ export default {
 		environmentTypes : function() {
 			return this.$store.state.estimate.environmentTypes
 		},
+		products: function() {
+			return this.$store.state.estimate.products
+		},
 		userId : function() {
 			return this.$store.getters.getUserId
 		}
@@ -224,6 +247,7 @@ export default {
 			
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getEnvironmentTypes')
+			this.$store.dispatch('estimate/getProducts')
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
@@ -319,6 +343,11 @@ export default {
 			}, 300);
 		},
 		saveAppsDialog (e) {
+			if(!this.editedAppsItem.productId) {
+				alert('Product을 선택하세요.')
+				e.preventDefault()
+				return
+			}
 			if(!this.editedAppsItem.appName) {
 				alert('Application Kind를 입력하세요.')
 				e.preventDefault()
@@ -333,6 +362,9 @@ export default {
 			this.calcAppSum(this.editedAppsItem);
 			this.summary();
 			this.closeAppsDialog();
+		},
+		changeProduct() {
+			this.editedAppsItem.productName = this.products.find(product => product.id === this.editedAppsItem.productId).name
 		},
 		
 		summary() {
