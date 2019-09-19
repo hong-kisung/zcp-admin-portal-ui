@@ -12,7 +12,7 @@ import component from './components'
 import filter from './filter'
 import router from './router'
 import store from './store'
-import axios from './util/axios'
+import axios from './plugins/axios'
 
 
 Vue.config.productionTip = false

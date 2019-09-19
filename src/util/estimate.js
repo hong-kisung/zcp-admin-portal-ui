@@ -6,8 +6,7 @@ export function getEstimateByEstimateType(estimate, environmentIndex, estimateTy
 	}
 }
 
-export function updateReference(estimateItem, showUpdated, state) {//iksGeneral, vmVersion, storageVersion) {
-	//state.general, state.vm, state.storage
+export function updateReference(estimateItem, showUpdated, state) {
 	if(estimateItem.classificationType == 'VM') {
 		//상세spec 데이터가 없는 것
 		if(!estimateItem.iksVmName || estimateItem.iksVmName == '') {

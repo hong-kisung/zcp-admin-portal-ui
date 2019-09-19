@@ -62,10 +62,10 @@
                 <b-link href="#" class="card-header-action" v-on:click="deleteAppItem(serviceIndex, classification, index)">
 			      <i class="fa fa-times fa-sm"></i>
                 </b-link>
-                <b-link href="#" class="card-header-action" v-on:click="moveUpAppsItem(serviceIndex, classification, index)">
+                <b-link href="#" class="card-header-action" v-on:click="moveUp(item.classifications, index)">
 			      <i class="fa fa-arrow-up fa-sm"></i>
                 </b-link>
-                <b-link href="#" class="card-header-action" v-on:click="moveDownAppsItem(serviceIndex, classification, index)">
+                <b-link href="#" class="card-header-action" v-on:click="moveDown(item.classifications, index)">
 			      <i class="fa fa-arrow-down fa-sm"></i>
                 </b-link>
 			  </td>
@@ -95,8 +95,10 @@
 
 <script>
 import estimateItemTemplateDialog from './EstimateItemTemplateDialog'
+import swapArray from '@/mixins/swap-array'
 
 export default {
+	mixins: [swapArray],
   	components: {
     	estimateItemTemplateDialog
   	},
@@ -211,18 +213,6 @@ export default {
 		},
 		deleteAppItem(serviceIndex, appItem, appIndex) {
 			confirm('삭제하시겠습니까?') && this.services[serviceIndex].classifications.splice(appIndex, 1);
-		},
-		moveUpAppsItem(serviceIndex, appItem, appIndex) {
-			if(appIndex == 0) return
-			
-			const removed = this.services[serviceIndex].classifications.splice(appIndex, 1)
-			this.services[serviceIndex].classifications.splice(appIndex -1 , 0, removed[0])
-		},
-		moveDownAppsItem(serviceIndex, appItem, appIndex) {
-			if(appIndex == this.services[serviceIndex].classifications.length -1) return
-			
-			const removed = this.services[serviceIndex].classifications.splice(appIndex, 1)
-			this.services[serviceIndex].classifications.splice(appIndex +1, 0, removed[0])
 		}
 	}
 }

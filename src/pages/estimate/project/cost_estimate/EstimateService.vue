@@ -78,10 +78,10 @@
 		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(productIndex, serviceIndex, index, classification)">
 					      <i class="fa fa-times fa-sm"></i>
 		                </b-link>
-		                <b-link href="#" class="card-header-action" v-on:click="moveUpAppsItem(productIndex, serviceIndex, index, classification)">
+		                <b-link href="#" class="card-header-action" v-on:click="moveUp(service.classifications, index)">
 					      <i class="fa fa-arrow-up fa-sm"></i>
 		                </b-link>
-		                <b-link href="#" class="card-header-action" v-on:click="moveDownAppsItem(productIndex, serviceIndex, index, classification)">
+		                <b-link href="#" class="card-header-action" v-on:click="moveDown(service.classifications, index)">
 					      <i class="fa fa-arrow-down fa-sm"></i>
 		                </b-link>
 					  </td>
@@ -128,8 +128,10 @@
 <script>
 import estimateEnvironmentDialog from './EnvironmentDialog'
 import estimateItemDialog from './EstimateItemDialog'
+import swapArray from '@/mixins/swap-array'
 
 export default {
+	mixins: [swapArray],
   	components: {
     	estimateEnvironmentDialog, estimateItemDialog
   	},
@@ -271,18 +273,6 @@ export default {
 				}
 				this.$store.commit('estimate/deleteCostEstimateItem', data)
 			}
-		},
-		moveUpAppsItem(productIndex, serviceIndex, appIndex, appItem) {
-			if(appIndex == 0) return
-			
-			const removed = this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1)
-			this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex -1 , 0, removed[0])
-		},
-		moveDownAppsItem(productIndex, serviceIndex, appIndex, appItem) {
-			if(appIndex == this.estimate.products[productIndex].services[serviceIndex].classifications.length -1) return
-			
-			const removed = this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex, 1)
-			this.estimate.products[productIndex].services[serviceIndex].classifications.splice(appIndex +1, 0, removed[0])
 		},
 		closeAppsDialog () {
 			this.appsDialog = false
