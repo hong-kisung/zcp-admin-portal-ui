@@ -6,8 +6,11 @@
         <b-form>
           <div class="row">
             <div class="col-sm-6">
-              <b-form-group label="주문번호" :label-cols="3">
-                <b-form-input type="text" v-model="order.orderId" readonly></b-form-input>
+              <b-form-group v-if="order.orderType=='PURCHASE'" label="주문번호" :label-cols="3">
+                <b-form-input type="text" :value="order.orderId" readonly></b-form-input>
+              </b-form-group>
+              <b-form-group v-if="order.orderType=='DISPOSAL'" label="주문번호(구매)" :label-cols="3">
+                <b-form-input type="text" :value="order.orderId + ' (' + orderProduct.purchasedOrderId + ')'" readonly></b-form-input>
               </b-form-group>
             </div>
             <div class="col-sm-6">
