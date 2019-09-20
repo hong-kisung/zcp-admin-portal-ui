@@ -84,7 +84,7 @@
             </div>
             <div class="col-sm-6">
               <b-form-group label="설명" :label-cols="3">
-                <b-form-input type="text" v-model="orderProduct.description" readonly></b-form-input>
+                <b-form-input type="text" v-model="orderProduct.productDescription" readonly></b-form-input>
               </b-form-group>
             </div>
           </div>
