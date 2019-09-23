@@ -1,4 +1,4 @@
-import axios from '@/util/axios'
+import axios from '@/plugins/axios'
 
 export default {
 	getOrders: function(store, payload) {

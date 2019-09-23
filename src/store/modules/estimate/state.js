@@ -37,6 +37,7 @@ export default {
 	projectCostEstimateHistory: [],
 	projectCostEstimateHistoryDetailStatus: false,
 	projectCostEstimateHistoryDetail: {},
-	customers: []
+	customers: [],
+	costEstimateReferenceUpdateStatus: false
 	
 }

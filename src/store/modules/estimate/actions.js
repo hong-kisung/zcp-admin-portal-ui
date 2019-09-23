@@ -1,6 +1,33 @@
-import axios from '@/util/axios'
+import axios from '@/plugins/axios'
 
 export default {
+	//common code
+	getHardwareTypes: function (store, payload) {
+		axios.get('/api/estimate/code/hardware_type').then(response => {
+			store.commit('setHardwareTypes', response.data)
+		})
+	},
+	getFileStorageTypes: function (store, payload) {
+		axios.get('/api/estimate/code/file_storage_type').then(response => {
+			store.commit('setFileStorageTypes', response.data)
+		})
+	},
+	getEnduranceIops: function (store, payload) {
+		axios.get('/api/estimate/code/endurance_iops').then(response => {
+			store.commit('setEnduranceIops', response.data)
+		})
+	},
+	getClassificationTypes: function (store, payload) {
+		axios.get('/api/estimate/code/classification_type').then(response => {
+			store.commit('setClassificationTypes', response.data)
+		})
+	},
+	getEnvironmentTypes : function (store, payload) {
+		axios.get('/api/estimate/code/environment_type').then(response => {
+			store.commit('setEnvironmentTypes', response.data)
+		})
+	},
+	
 	//general
 	getGeneral: function (store, payload) {
 		axios.get('/api/estimate/general').then(response => {
@@ -193,7 +220,7 @@ export default {
 	getProjectCostEstimate: function (store, payload) {
 		axios.get('/api/estimate/project/' + payload.projectId + '/estimate').then(response => {
 			let estimate = response.data
-			store.commit('setProjectCostEstimate', response.data)
+			//store.commit('setProjectCostEstimate', response.data)
 			
 			store.dispatch('getGeneral')
 			store.dispatch('getVm')
@@ -211,6 +238,7 @@ export default {
 						target.cloudZService.products.length = 0;
 						target.storageService.disabled = true;
 						target.storageService.products.length = 0;
+						estimate.summary.environments.find(env => env.environmentId === target.environmentId).environmentName +=  " (Removed)"
 					}
 				}
 				
@@ -225,10 +253,17 @@ export default {
 			 			envData.storageService = {};
 			 			envData.storageService.products = new Array();
 			 			estimate.environments.push(envData);
+			 			
+			 			let envSum = {}
+			 			envSum.environmentId = item.id
+			 			envSum.environmentName = item.name
+			 			envSum.products = new Array()
+			 			estimate.summary.environments.push(envSum)
 					}	 		
 				}
 				
 				store.commit('setProjectCostEstimate', estimate)
+				store.commit('summaryCostEstimate', {})
 			})
 		}).catch(error => {
 			console.log('failed get getProjectCostEstimate')
@@ -294,31 +329,5 @@ export default {
 		})
 	},
 	
-	//common code
-	getHardwareTypes: function (store, payload) {
-		axios.get('/api/estimate/code/hardware_type').then(response => {
-			store.commit('setHardwareTypes', response.data)
-		})
-	},
-	getFileStorageTypes: function (store, payload) {
-		axios.get('/api/estimate/code/file_storage_type').then(response => {
-			store.commit('setFileStorageTypes', response.data)
-		})
-	},
-	getEnduranceIops: function (store, payload) {
-		axios.get('/api/estimate/code/endurance_iops').then(response => {
-			store.commit('setEnduranceIops', response.data)
-		})
-	},
-	getClassificationTypes: function (store, payload) {
-		axios.get('/api/estimate/code/classification_type').then(response => {
-			store.commit('setClassificationTypes', response.data)
-		})
-	},
-	getEnvironmentTypes : function (store, payload) {
-		axios.get('/api/estimate/code/environment_type').then(response => {
-			store.commit('setEnvironmentTypes', response.data)
-		})
-	}
 
 }

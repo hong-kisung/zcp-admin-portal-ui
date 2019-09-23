@@ -219,9 +219,9 @@ export default {
 			this.selectedProduct = this.productReferences.find(product => product.productId === this.editedItem.productId);
 			this.editedItem.productName = this.selectedProduct.productName;
 			
-			if(this.estimateType == 'cloudZService') {
+			if(this.estimateType == 'CloudZService') {
 				this.targetServices = this.selectedProduct.templates.cloudZService;
-			} else if(this.estimateType == 'storageService') {
+			} else if(this.estimateType == 'StorageService') {
 				this.targetServices = this.selectedProduct.templates.storageService;
 			}
 			
