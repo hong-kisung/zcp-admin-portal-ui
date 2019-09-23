@@ -18,3 +18,7 @@ spec:
         ports:
         - containerPort: 80
         - containerPort: 443  
+      hostAliases:
+      - hostnames:
+        - sre-iam.cloudzcp.io
+        ip: 10.174.2.237
