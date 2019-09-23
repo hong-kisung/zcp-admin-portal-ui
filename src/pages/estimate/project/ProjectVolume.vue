@@ -36,10 +36,10 @@
 	        </tr>
           </thead>
           <tbody>
-		    <template v-for="(item) in volumes.environments">
-			  <template v-if="item.applications.length == 0">
+		    <template v-for="(item, environmentIndex) in volumes.environments">
+			  <template v-if="item.products.length == 0">
 			  	<tr>
-	          	  <td class="text-left">
+	          	  <td class="text-left font-weight-bold">
 		            <div class="custom-control custom-checkbox custom-control-inline">
 		              <input type="checkbox" class="custom-control-input" :id="item.name" :value="item" v-model="selected" unchecked>
 		              <label class="custom-control-label" :for="item.name">{{ item.name }}</label>
@@ -62,15 +62,16 @@
 			    </tr>
 			  </template>
 			  <template v-else>
-				  <template v-for="(application, index) in item.applications">
+			    <template v-for="(product, productIndex) in item.products">
+				  <template v-for="(application, index) in product.applications">
 				  	<tr>
-				      <td class="text-left" v-if="index == 0" v-bind:rowspan="item.applications.length + 2">
+				      <td class="text-left font-weight-bold" v-if="productIndex == 0 && index == 0" v-bind:rowspan="getEnvironmentRowSpan(item)">
 			            <div class="custom-control custom-checkbox custom-control-inline">
 			              <input type="checkbox" class="custom-control-input" :id="item.name" :value="item" v-model="selected" unchecked>
 			              <label class="custom-control-label" :for="item.name">{{ item.name }}</label>
 			            </div>
 				      </td>
-				  	  <td class="text-left">{{ application.productName }}</td>
+				  	  <td class="text-left font-weight-bold" v-if="index == 0" v-bind:rowspan="product.applications.length + 2">{{ application.productName }}</td>
 					  <td class="text-left">{{ application.appName }}</td>
 					  <td class="text-center">{{ application.instanceNumber | formatNumber }}</td>
 					  <td class="text-right">{{ application.appCpuMin | formatNumber }}</td>
@@ -84,24 +85,33 @@
 					  <td class="text-right">{{ application.totalCpu | formatNumber }}</td>
 					  <td class="text-right">{{ application.totalMemory | formatNumber }}</td>
 					  <td class="text-center">
-					    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(item, application, index)">
+					    <b-link href="#" class="card-header-action" v-on:click="editAppsItem(item, application, index, environmentIndex, productIndex)">
 					      <i class="fa fa-pencil fa-sm"></i>
 		                </b-link>
-		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(item, application, index)">
+		                <b-link href="#" class="card-header-action" v-on:click="deleteAppsItem(item, application, index, environmentIndex, productIndex)">
 					      <i class="fa fa-times fa-sm"></i>
-		                </b-link>
-		                <b-link href="#" class="card-header-action" v-on:click="moveUp(item.applications, index)">
-					      <i class="fa fa-arrow-up fa-sm"></i>
-		                </b-link>
-		                <b-link href="#" class="card-header-action" v-on:click="moveDown(item.applications, index)">
-					      <i class="fa fa-arrow-down fa-sm"></i>
 		                </b-link>
 					  </td>
 				    </tr>
 				  </template>
 				  
 				  <tr class="text-right">
-				      <td class="font-weight-bold" colspan="11" rowspan="2">Summary</td>
+				      <td class="font-weight-bold" colspan="10" rowspan="2">Summary</td>
+					  <td class="font-weight-bold">{{product.sumTotalCpu | formatNumber}} Millicore</td>
+					  <td class="font-weight-bold">{{product.sumTotalMemory | formatNumber}} MB</td>
+					  <td class="font-weight-bold">
+					  </td>
+			      </tr>
+				  <tr class="text-right">
+					  <td class="font-weight-bold">{{product.sumCpu | formatNumber}} Core</td>
+					  <td class="font-weight-bold">{{product.sumMemory | formatNumber}} GB</td>
+					  <td class="font-weight-bold">
+					  </td>
+			      </tr>
+				</template>
+				
+				  <tr class="text-right">
+				      <td class="font-weight-bold" colspan="11" rowspan="2">{{item.name}} Summary</td>
 					  <td class="font-weight-bold">{{item.sumTotalCpu | formatNumber}} Millicore</td>
 					  <td class="font-weight-bold">{{item.sumTotalMemory | formatNumber}} MB</td>
 					  <td class="font-weight-bold">
@@ -113,7 +123,7 @@
 					  <td class="font-weight-bold">
 					  </td>
 			      </tr>
-				</template>
+			  </template>
 		    </template>
   			<tr class="text-right">
 		      <td class="font-weight-bold" colspan="12">합계</td>
@@ -200,10 +210,7 @@
 </template>
 
 <script>
-import swapArray from '@/mixins/swap-array'
-
 export default {
-	mixins: [swapArray],
   	components: {
   	},
 	data: () => ({
@@ -213,9 +220,10 @@ export default {
   		appsDialog: false,
   		
 	  	editedIndex: -1,
-	  	editedItem: {applications: []},
-	  	defaultItem: {applications: []},
+	  	editedItem: {products: []},
+	  	defaultItem: {products: []},
 	  	
+	  	editedProductIndex: -1,
       	editedAppsIndex: -1,
       	defaultAppsItem: {},
       	editedAppsItem: {}
@@ -248,6 +256,14 @@ export default {
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getEnvironmentTypes')
 			this.$store.dispatch('estimate/getProducts')
+		},
+		getEnvironmentRowSpan(env) {
+			let rowCount = 0
+			for(let product of env.products) {
+				rowCount += product.applications.length + 2
+			}
+			rowCount += 2
+			return rowCount
 		},
 		save() {
 			if(confirm('변경된 내용을 저장하시겠습니까?')) {
@@ -297,7 +313,7 @@ export default {
 			} else {
 				this.editedItem.created = this.userId
 				this.volumes.environments.push(this.editedItem);
-				this.volumes.environments[this.volumes.environments.length -1].applications = new Array();
+				this.volumes.environments[this.volumes.environments.length -1].products = new Array();
 			}
 			this.closeClusterDialog();
 		},
@@ -315,31 +331,33 @@ export default {
 		
 		openAppsDialog() {
 			if(this.selected.length == 1) {
-				this.editedIndex = this.volumes.environments.indexOf(this.selected[0]);
-				this.editedAppsIndex = -1;
-				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
-				this.appsDialog = true;
+				this.editedIndex = this.volumes.environments.indexOf(this.selected[0])
+				this.editedProductIndex = -1
+				this.editedAppsIndex = -1
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem)
+				this.appsDialog = true
 			}
 		},
-		editAppsItem(item, appItem, appIndex) {
-			this.editedIndex = this.volumes.environments.indexOf(item);
-			this.editedAppsIndex = appIndex;
-			this.editedAppsItem = Object.assign({}, appItem);
-			this.appsDialog = true;
+		editAppsItem(item, appItem, appIndex, environmentIndex, productIndex) {
+			this.editedIndex = environmentIndex
+			this.editedProductIndex = productIndex
+			this.editedAppsIndex = appIndex
+			this.editedAppsItem = Object.assign({}, appItem)
+			this.appsDialog = true
 		},
-		deleteAppsItem(item, appItem, appIndex) {
-			const index = this.volumes.environments.indexOf(item);
+		deleteAppsItem(item, appItem, appIndex, environmentIndex, productIndex) {
 			if(confirm('삭제하시겠습니까?')) {
-				this.volumes.environments[index].applications.splice(appIndex, 1);
-				this.summary();
+				this.volumes.environments[environmentIndex].productIndex[productIndex].applications.splice(appIndex, 1)
+				this.summary()
 			}
 		},
 		closeAppsDialog () {
-			this.appsDialog = false;
+			this.appsDialog = false
 			setTimeout(() => {
-				this.editedIndex = -1;
-				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
-				this.editedAppsIndex = -1;
+				this.editedIndex = -1
+				this.editedProductIndex = -1
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem)
+				this.editedAppsIndex = -1
 			}, 300);
 		},
 		saveAppsDialog (e) {
@@ -353,41 +371,68 @@ export default {
 				e.preventDefault()
 				return
 			}
+
+			this.editedProductIndex = this.volumes.environments[this.editedIndex].products.findIndex(product => product.productId === this.editedAppsItem.productId)
+			if(this.editedProductIndex === -1) {
+				let product = {}
+				product.productId = this.editedAppsItem.productId
+				product.productName = this.editedAppsItem.productName
+				product.applications = new Array()
+				this.editedProductIndex = this.volumes.environments[this.editedIndex].products.length
+				this.volumes.environments[this.editedIndex].products.push(product)
+			}
+			
 			if (this.editedAppsIndex > -1) {
-				this.$set(this.volumes.environments[this.editedIndex].applications, this.editedAppsIndex, this.editedAppsItem);
+				this.$set(this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications, this.editedAppsIndex, this.editedAppsItem)
 			} else {
 				this.editedAppsItem.created = this.userId
-				this.volumes.environments[this.editedIndex].applications.push(this.editedAppsItem);
+				this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications.push(this.editedAppsItem)
 			}
-			this.calcAppSum(this.editedAppsItem);
-			this.summary();
-			this.closeAppsDialog();
+			
+			this.calcAppSum(this.editedAppsItem)
+			this.summary()
+			this.closeAppsDialog()
 		},
 		changeProduct() {
 			this.editedAppsItem.productName = this.products.find(product => product.id === this.editedAppsItem.productId).name
 		},
 		
 		summary() {
-			this.volumes.sumMemory = 0;
-			this.volumes.sumCpu = 0;
-			for(let environment of this.volumes.environments) {
-				environment.sumMemory = 0;
-				environment.sumCpu = 0;
+			this.volumes.sumMemory = 0
+			this.volumes.sumCpu = 0
 			
-				let sumMemory = 0;
-				let sumCpu = 0;
-				for(let application of environment.applications) {
-					if(application.totalMemory) sumMemory += application.totalMemory;
-					if(application.totalCpu) sumCpu += application.totalCpu;
+			for(let environment of this.volumes.environments) {
+				environment.sumTotalCpu = 0
+				environment.sumTotalMemory = 0
+				environment.sumCpu = 0
+				environment.sumMemory = 0
+			
+				for(let product of environment.products) {
+					product.sumTotalCpu = 0
+					product.sumTotalMemory = 0
+					product.sumCpu = 0
+					product.sumMemory = 0
+					
+					let sumMemory = 0;
+					let sumCpu = 0;
+					for(let application of product.applications) {
+						if(application.totalMemory) sumMemory += application.totalMemory
+						if(application.totalCpu) sumCpu += application.totalCpu
+					}
+					
+					product.sumTotalCpu = sumCpu
+					product.sumTotalMemory = sumMemory
+					product.sumCpu = sumCpu/1000
+					product.sumMemory = Math.ceil(sumMemory/1024)
+					
+					environment.sumTotalCpu += product.sumTotalCpu
+					environment.sumTotalMemory += product.sumTotalMemory
+					environment.sumCpu += product.sumCpu
+					environment.sumMemory += product.sumMemory
+					
 				}
-				
-				environment.sumTotalCpu = sumCpu
-				environment.sumTotalMemory = sumMemory
-				environment.sumCpu = sumCpu/1000
-				environment.sumMemory = Math.ceil(sumMemory/1024)
-				
-				this.volumes.sumMemory += environment.sumMemory;
-				this.volumes.sumCpu += environment.sumCpu;
+				this.volumes.sumMemory += environment.sumMemory
+				this.volumes.sumCpu += environment.sumCpu
 			}
 		},
 		calcAppSum(application) {
