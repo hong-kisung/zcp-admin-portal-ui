@@ -347,7 +347,7 @@ export default {
 		},
 		deleteAppsItem(item, appItem, appIndex, environmentIndex, productIndex) {
 			if(confirm('삭제하시겠습니까?')) {
-				this.volumes.environments[environmentIndex].productIndex[productIndex].applications.splice(appIndex, 1)
+				this.volumes.environments[environmentIndex].products[productIndex].applications.splice(appIndex, 1)
 				this.summary()
 			}
 		},
@@ -371,7 +371,8 @@ export default {
 				e.preventDefault()
 				return
 			}
-
+			
+			let pIndex = this.editedProductIndex
 			this.editedProductIndex = this.volumes.environments[this.editedIndex].products.findIndex(product => product.productId === this.editedAppsItem.productId)
 			if(this.editedProductIndex === -1) {
 				let product = {}
@@ -383,7 +384,13 @@ export default {
 			}
 			
 			if (this.editedAppsIndex > -1) {
-				this.$set(this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications, this.editedAppsIndex, this.editedAppsItem)
+				if(this.volumes.environments[this.editedIndex].products[pIndex].applications[this.editedAppsIndex].productId != this.editedAppsItem.productId) {
+					this.volumes.environments[this.editedIndex].products[pIndex].applications.splice(this.editedAppsIndex, 1)
+					this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications.push(this.editedAppsItem)
+				} else {
+					this.$set(this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications, this.editedAppsIndex, this.editedAppsItem)
+				}
+				
 			} else {
 				this.editedAppsItem.created = this.userId
 				this.volumes.environments[this.editedIndex].products[this.editedProductIndex].applications.push(this.editedAppsItem)
