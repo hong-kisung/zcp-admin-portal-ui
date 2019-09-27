@@ -1,20 +1,326 @@
 // Here you can add other styles
+/* 선언 */
+/* color */
+$colorBlack: #343b41;
 
-thead {
-	background-color: #F5F5F6;
+/* font-size */
+$fontSize10: .625rem;
+$fontSize12: .75rem;
+$fontSize14: .875rem;
+$fontSize16: 1rem;
+$fontSize18: 1.125rem;
+
+/* font-weight */
+$fontWeightThin: 100;
+$fontWeightLight: 300;
+$fontWeightNormal: 400;
+$fontWeightMiddle: 500;
+$fontWeightBold: 700;
+
+/* basic */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-.table thead th {
-	vertical-align: middle;
+/* modal */
+.close {
+    color: #fff;
+    
+    &:not(:disabled){
+        &:not(.disabled){
+            &:hover {
+                color: #fff;
+            }
+            &:focus {
+                color: #fff;
+            }
+        }
+    }
+}
+.modal {
+    .table {
+        thead {
+            th {
+                font-size: $fontSize12;
+            }
+        }
+        tbody {
+            th {
+                font-weight: $fontWeightNormal;
+                font-size: $fontSize12;
+            }
+            td {
+                font-size: $fontSize12;
+            }
+        }
+    }
+}
+@media (min-width: 576px) {
+    /*.modal-xl {
+        .table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+        }
+    }*/
 }
 
-.modal-xl-custom {
-    max-width: 1280px;
+
+/* table */
+.table {
+    thead {
+        th {
+            font-size: $fontSize14;
+            text-align: center;
+            font-weight: $fontWeightNormal;
+            background-color: #2f353a;
+            vertical-align: middle;
+        }
+    }
+    tbody {
+        th {
+            word-break: break-all;
+        }
+        td {
+            font-weight: $fontWeightLight;
+            vertical-align: middle;
+        }
+    }
+    .switch {
+        vertical-align: middle;
+    }
+}
+.table-success {
+    > th {
+        color: $colorBlack;
+    }
+    > td {
+        color: $colorBlack;
+    }
+}
+.table-info {
+    @extend .table-success;
+}
+.table-danger {
+    @extend .table-success;
+}
+.table-striped {
+    tbody {
+        tr {
+            &:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, .1);
+            }
+        }
+    }
+}
+.table-hover {
+    tbody {
+        tr {
+            &:hover {
+                background-color: rgba(255, 255, 255, .1);
+            }
+        }
+    }
+}
+@media (max-width: 575.98px) {
+    .main {
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+    .table-responsive {
+        white-space: nowrap;
+    }
 }
 
-.astertisk:after {
-	content: '*';
-    padding-left: 5px;
-    color: #ea0530;
-    font-weight: bold;
+/* form */
+.col-form-label {
+    color: #a8acb1;
+}
+.switch {
+    vertical-align: middle;
+}
+
+/* layout */
+.sidebar {
+    .nav-link {
+        font-size: $fontSize12;
+    }
+}
+.breadcrumb {
+    .breadcrumb-item {
+        font-size: $fontSize12;
+    }
+}
+.app-footer {
+    font-size: $fontSize12;
+}
+.aside-menu {
+    .nav-tabs {
+        .nav-link {
+            padding-top: 0.65rem;
+            padding-bottom: 0.65rem;
+        }       
+    }
+}
+hr {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-top-color: rgba(255, 255, 255, .15);
+    
+    &.dashed {
+        margin-top: 1rem;
+        border-style: dashed;
+    }
+}
+
+/* create style */
+.spinner-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, .7);
+    z-index: 10000;
+    
+    .sk-wave {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -25px;
+        margin-top: -20px;
+        
+        .sk-rect {
+            margin: 0 2px;
+            background-color: #7e7f86;
+        }
+    }
+}
+.display-tit {
+    font-size: 2.125rem;
+    font-weight: $fontWeightThin;
+    letter-spacing: -3px;
+    
+    &.middle {
+        font-size: 1.375rem;
+        letter-spacing: -1px;
+    }
+    
+    .badge {
+        font-size: $fontSize12;
+        font-weight: $fontWeightNormal;
+        letter-spacing: 0;
+        vertical-align: middle;
+    }
+}
+.display-sub {
+    margin-top: 0.75rem;
+    font-size: $fontSize14;
+    font-weight: $fontWeightLight;
+}
+.card-tit {
+    font-size: 1.375rem;
+    font-weight: $fontWeightLight;
+    letter-spacing: -1px;
+}
+.required {
+    &:after {
+        content: "";
+        display: inline-block;
+        width: .25rem;
+        height: .25rem;
+        margin-left: .25rem;
+        border-radius: 50%;
+        background: #f86c6b;
+        vertical-align: top;
+    }
+}
+.scroll-area {
+    white-space: nowrap;
+}
+.local-aside-menu {
+    @extend .aside-menu;
+    
+    top: 55px;
+    
+    .nav-tabs {
+        .nav-link {
+            padding: 0;
+            
+            a {
+                display: block;
+                padding: 0.65rem 1rem;
+                
+                &:hover {
+                    color: inherit;
+                }
+            }
+        }        
+    }
+}
+html:not([dir="rtl"]) {
+    .local-aside-show {
+        .local-aside-menu {
+            top: 55px;
+            margin-right: 0;
+        }
+    }
+} 
+.local-aside-show {
+    .main {
+        margin-right: 250px;   
+    }
+    .local-aside-menu {
+        top: 55px;
+    }
+}
+.local-aside-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+@media (max-width: 575.98px) {
+    .display-tit {
+        [class*=float-] {
+            float: none !important;
+        }
+    }
+    .local-aside-show {
+        .main {
+            position: relative;
+            margin-right: 0;
+
+            &:before {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1018;
+                width: 100%;
+                height: 100%;
+                content: "";
+                background: rgba(0, 0, 0, 0.7);
+                -webkit-animation: opacity 0.25s;
+                animation: opacity 0.25s;
+            }   
+        }
+    }
+}
+
+/* plug in */
+.mini-toastr {
+    right: auto;
+    left: 50%;
+    margin-left: -150px;
+    text-align: center;
+}
+  
+.mini-toastr__notification {
+    &.-error {
+        background-color: #f86c6b !important;
+    }
+    &.-success {
+        background-color: #4dbd74 !important;
+    }
 }
