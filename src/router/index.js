@@ -15,9 +15,9 @@ const Projects = () => import('@/views/project/Projects')
 const OpsCostTransfer = () => import('@/views/project/OpsCostTransfer')
 
 // Product Management
-const Product = () => import('@/views/product/Product')
-const AddOnService = () => import('@/views/product/AddOnService') // Add-on Service 관리
-const ProductCostTemplate = () => import('@/views/product/ProductCostTemplate') // 원가견적서 템플릿 관리
+const ProductList = () => import('@/views/product/ProductList')
+const ProductAddOnService = () => import('@/views/product/AddOnService') // Add-on Service 관리
+const ProductCostEstimateTemplate = () => import('@/views/product/CostEstimateTemplate') // 원가견적서 템플릿 관리
 
 // Cluster Management
 const ClusterStatus = () => import('@/views/cluster/ClusterStatus')
@@ -25,9 +25,9 @@ const NodeStatus = () => import('@/views/cluster/NodeStatus')
 const AddOnServiceStatus = () => import('@/views/cluster/AddOnServiceStatus')
 
 // Estimate Management
-const Estimates = () => import('@/views/estimate/Estimates')
-const EstimatesVolume = () => import('@/views/estimate/EstimatesVolume') // Estimates 용량산정
-const EstimatesCost = () => import('@/views/estimate/EstimatesCost') // Estimates 원가견적
+const EstimateList = () => import('@/views/estimate/EstimateList')
+const ProjectVolume = () => import('@/views/estimate/ProjectVolume') // Estimates 용량산정
+const CostEstimate = () => import('@/views/estimate/CostEstimate') // Estimates 원가견적
 const StandardInfomation = () => import('@/views/estimate/StandardInfo')
 const VMCost = () => import('@/views/estimate/VmCost')
 const StorageCost = () => import('@/views/estimate/StorageCost')
@@ -67,7 +67,6 @@ export default new Router({
         {
           path: 'customer',
           redirect: '/customer/customer',
-          name: 'Customer Management',
           component: {
             render (c) { return c('router-view') }
           },
@@ -101,26 +100,30 @@ export default new Router({
         },
         {
           path: 'product',
-          redirect: '/product/product',
-          name: 'Product Management',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
-              path: '/product/product',
+              path: '',
               name: 'Product Management',
-              component: Product
+              component: ProductList
             },
             {
-              path: '/product/addonservice',
-              name: 'Add-on Service 관리',
-              component: AddOnService
+              path: '/product/:productId/addonservice',
+              name: 'ProductAddOnService',
+              component: ProductAddOnService,
+              meta: {
+                  label: 'Add-on Service 관리',
+                }
             },
             {
-              path: '/product/productcosttemplate',
-              name: '원가견적서 템플릿 관리',
-              component: ProductCostTemplate
+              path: '/product/:productId/cost',
+              name: 'ProductCostEstimateTemplate',
+              component: ProductCostEstimateTemplate,
+              meta: {
+                  label: '원가견적서 템플릿 관리',
+                }
             }
           ]
         },
@@ -151,26 +154,32 @@ export default new Router({
         },
         {
           path: 'estimate',
-          redirect: '/estimate/estimates',
+          redirect: '/estimate/project',
           name: 'Estimate Management',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
-              path: '/estimate/estimates',
-              name: 'Estimates',
-              component: Estimates
+              path: '/estimate/project',
+              name: 'EstimateList',
+              component: EstimateList
             },
             {
-              path: '/estimate/estvolume',
-              name: 'Estimates 용량산정',
-              component: EstimatesVolume
+              path: '/estimate/project/:projectId/volume',
+              name: 'ProjectVolume',
+              component: ProjectVolume,
+              meta: {
+                  label: 'Estimates 용량산정',
+                }
             },
             {
-              path: '/estimate/estcost',
-              name: 'Estimates 원가견적',
-              component: EstimatesCost
+              path: '/estimate/project/:projectId/cost',
+              name: 'CostEstimate',
+              component: CostEstimate,
+              meta: {
+                  label: 'Estimates 원가견적',
+                }
             },
             {
               path: '/estimate/standardinfomation',

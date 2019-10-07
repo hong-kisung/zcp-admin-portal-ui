@@ -12,12 +12,6 @@ const store = new Vuex.Store({
 		user: {
 			userId: '',
 			userName: ''
-		},
-		asideToggleStatus: false,
-		okMessage: {
-			show: false,
-			title: '',
-			content: ''
 		}
 	},
 	getters: {
@@ -26,8 +20,7 @@ const store = new Vuex.Store({
 		},
 		getUserName: state => {
 			return state.user.userName
-		},
-		asideToggleStatus: state => () => state.asideToggleStatus
+		}
 	},
 	mutations: {
 		setUserInfo: function(state, payload) {
@@ -39,15 +32,6 @@ const store = new Vuex.Store({
 				userId: '',
 				userName: ''
 			}
-		},
-		setAsideToggleStatus: function(state, payload) {
-			state.asideToggleStatus = payload.status
-		},
-		showOkMessage: function(state, payload) {
-			if(payload.show == undefined) {
-				payload.show = true
-			}
-			state.okMessage = payload
 		}
 	},
 	actions: {

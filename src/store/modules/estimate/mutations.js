@@ -127,7 +127,7 @@ export default {
 			state.projectCostEstimate.mspCostVersionId = state.productMspCost.id
 			state.projectCostEstimate.mspCostVersionVersion = state.productMspCost.version
 
-			alert("견적서 Update가 완료되었습니다.");
+			this._vm.$zadmin.alert("견적서 Update가 완료되었습니다.");
 		}
 	},
 	summaryCostEstimate: function(state, data) {

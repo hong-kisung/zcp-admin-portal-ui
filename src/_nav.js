@@ -33,7 +33,7 @@ export default {
     },
     {
       name: 'Product Mgmt',
-      url: '/product/product',
+      url: '/product',
       icon: 'icon-present'
     },
     {
@@ -65,7 +65,7 @@ export default {
       children: [
         {
           name: 'Estimates',
-          url: '/estimate/estimates',
+          url: '/estimate/project',
           icon: 'icon-pencil'
         },
         {

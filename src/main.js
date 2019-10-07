@@ -11,10 +11,14 @@ import router from './router'
 import store from './store'
 import axios from './plugins/axios'
 
+//custom plugins
+import ZAdmin from './plugins/z-admin/index.js'
+
 // todo
 // cssVars()
 
 Vue.use(BootstrapVue)
+Vue.use(ZAdmin)
 
 /* eslint-disable no-new */
 new Vue({
