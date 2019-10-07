@@ -25,9 +25,9 @@ const NodeStatus = () => import('@/views/cluster/NodeStatus')
 const AddOnServiceStatus = () => import('@/views/cluster/AddOnServiceStatus')
 
 // Estimate Management
-const EstimateList = () => import('@/views/estimate/EstimateList')
-const ProjectVolume = () => import('@/views/estimate/ProjectVolume') // Estimates 용량산정
-const CostEstimate = () => import('@/views/estimate/CostEstimate') // Estimates 원가견적
+const ProjectEstimateList = () => import('@/views/estimate/ProjectList')
+const ProjectVolume = () => import('@/views/estimate/project/ProjectVolume') // Estimates 용량산정
+const ProjectCostEstimate = () => import('@/views/estimate/project/CostEstimate') // Estimates 원가견적
 const StandardInfomation = () => import('@/views/estimate/StandardInfo')
 const VMCost = () => import('@/views/estimate/VmCost')
 const StorageCost = () => import('@/views/estimate/StorageCost')
@@ -162,8 +162,8 @@ export default new Router({
           children: [
             {
               path: '/estimate/project',
-              name: 'EstimateList',
-              component: EstimateList
+              name: 'ProjectEstimateList',
+              component: ProjectEstimateList
             },
             {
               path: '/estimate/project/:projectId/volume',
@@ -175,8 +175,8 @@ export default new Router({
             },
             {
               path: '/estimate/project/:projectId/cost',
-              name: 'CostEstimate',
-              component: CostEstimate,
+              name: 'ProjectCostEstimate',
+              component: ProjectCostEstimate,
               meta: {
                   label: 'Estimates 원가견적',
                 }

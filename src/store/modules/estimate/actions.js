@@ -222,6 +222,8 @@ export default {
 			let estimate = response.data
 			//store.commit('setProjectCostEstimate', response.data)
 			
+			store.commit('setProjectCostEstimateHistoryDetailStatus', false)
+			
 			store.dispatch('getGeneral')
 			store.dispatch('getVm')
 			store.dispatch('getStorage')
