@@ -146,16 +146,10 @@ export default {
             }
         }
     },
-	created () {
-		this.initialize();
-    },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)
         },
-		initialize () {
-			this.$store.dispatch('estimate/getGeneral')
-		},
 		editItem (item) {
 			this.editedIndex = this.storageData.fileStorages.indexOf(item);
 			this.editedItem = Object.assign({}, item);

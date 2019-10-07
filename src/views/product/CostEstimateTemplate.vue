@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import CostEstimateType from './CostEstimateType'
+import CostEstimateType from './costestimate/CostEstimateType'
 
 export default {
     components: {

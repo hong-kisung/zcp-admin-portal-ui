@@ -1,0 +1,65 @@
+<template>
+    <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>Environment</th>
+                    <th>Product</th>
+                    <th>Cloud 사용료(₩)</th>
+                    <th>인건비(₩)</th>
+                    <th>월 비용 합계(₩)</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr class="bg-secondary">
+                    <th colspan="2" class="text-right">계</th>
+                    <td class="text-right font-weight">{{ estimate.summary.sumCloudCost | formatNumber | toKRW }}</td>
+                    <td class="text-right font-weight">{{ estimate.summary.sumLaborCost | formatNumber | toKRW }}</td>
+                    <td class="text-right font-weight">{{ estimate.summary.sumTotalCost | formatNumber | toKRW }}</td>
+                </tr>
+            </tfoot>
+            <tbody>
+            	<template v-for="(item) in estimate.summary.environments">
+            		<template v-for="(product, productIndex) in item.products">
+                <tr>
+                    <th class="bg-dark" v-if="productIndex == 0" :rowspan="item.products.length">{{ item.environmentName }}</th>
+                    <th>{{ product.estimateType == 'CloudZService' ? product.productName : product.productName + ' Storage' }}</th>
+                    <td class="text-right">{{ product.cloudCost | formatNumber | toKRW }}</td>
+                    <td class="text-right">{{ product.laborCost | formatNumber | toKRW }}</td>
+                    <td class="text-right">{{ product.totalCost | formatNumber | toKRW }}</td>
+                </tr>
+                	</template>
+                </template>
+            </tbody>
+        </table>
+    </VuePerfectScrollbar>
+</template>
+
+<script>
+import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+
+export default {
+    components: {
+        VuePerfectScrollbar
+    },
+    computed: {
+        psSettings: () => {
+            return {
+                maxScrollbarLength: 200,
+                minScrollbarLength: 40,
+                suppressScrollY: true,
+                wheelPropagation: true,
+                useBothWheelAxes: true
+            }
+        },
+		estimate: function() {
+			return this.$store.state.estimate.projectCostEstimate
+		},
+    },
+    methods: {
+        scrollHandle (evt) {
+            // console.log(evt)
+        }
+    }
+}
+</script>

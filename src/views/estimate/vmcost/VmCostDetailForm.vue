@@ -170,16 +170,10 @@ export default {
     		}
     	}
     },
-	created () {
-		this.initialize();
-    },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)
         },
- 		initialize () {
-			this.$store.dispatch('estimate/getGeneral')
-		},
 		editItem (item) {
 			this.editedIndex = this.vmData.vms.indexOf(item);
 			this.editedItem = Object.assign({}, item);
