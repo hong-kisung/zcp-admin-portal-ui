@@ -221,8 +221,10 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import changeRoute from '@/mixins/change-route'
 
 export default {
+	mixins: [changeRoute],
     components: {
         VuePerfectScrollbar
     },
@@ -275,6 +277,8 @@ export default {
 			if(this.$route.params.projectId) {
 				this.projectId = this.$route.params.projectId;
 			}
+			
+			this.changeRouteLabel(this.$route.params.projectName)
 			
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getEnvironmentTypes')

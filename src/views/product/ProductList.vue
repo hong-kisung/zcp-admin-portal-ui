@@ -10,8 +10,8 @@
                     </h2>
                     <small class="text-muted"><i class="icon-calendar"></i> {{ product.createdDt }}</small>
                     <div class="mt-2">
-                        <b-button variant="outline-success" block size="sm" :to="{ name: 'ProductAddOnService', params: { productId: product.id } }"><i class="icon-book-open mr-1"></i> Add-on Service 관리</b-button>
-                        <b-button variant="outline-warning" block size="sm" :to="{ name: 'ProductCostEstimateTemplate', params: { productId: product.id } }"><i class="icon-book-open mr-1"></i> 원가견적서 템플릿 관리</b-button>
+                        <b-button variant="outline-success" block size="sm" :to="{ name: 'ProductAddOnService', params: { productId: product.id, productName: product.name } }"><i class="icon-book-open mr-1"></i> Add-on Service 관리</b-button>
+                        <b-button variant="outline-warning" block size="sm" :to="{ name: 'ProductCostEstimateTemplate', params: { productId: product.id, productName: product.name } }"><i class="icon-book-open mr-1"></i> 원가견적서 템플릿 관리</b-button>
                     </div>
                 </b-card>
             </b-col>

@@ -100,31 +100,42 @@ export default new Router({
         },
         {
           path: 'product',
+          redirect: '/product/products',
+          name: 'Product Management',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
-              path: '',
-              name: 'Product Management',
-              component: ProductList
+              path: 'products',
+              redirect: '/product/products',
+              name: 'Products',
+              component: {
+                  render (c) { return c('router-view') }
+              },
+              children: [
+                  {
+                      path: '',
+                      component: ProductList
+                   },
+                   {
+                       path: ':productId/addonservice',
+                       name: 'ProductAddOnService',
+                       component: ProductAddOnService,
+                       meta: {
+                           label: 'Add-on Service 관리',
+                         }
+                     },
+                     {
+                       path: ':productId/cost',
+                       name: 'ProductCostEstimateTemplate',
+                       component: ProductCostEstimateTemplate,
+                       meta: {
+                           label: '원가견적서 템플릿 관리',
+                         }
+                     }
+                ]
             },
-            {
-              path: '/product/:productId/addonservice',
-              name: 'ProductAddOnService',
-              component: ProductAddOnService,
-              meta: {
-                  label: 'Add-on Service 관리',
-                }
-            },
-            {
-              path: '/product/:productId/cost',
-              name: 'ProductCostEstimateTemplate',
-              component: ProductCostEstimateTemplate,
-              meta: {
-                  label: '원가견적서 템플릿 관리',
-                }
-            }
           ]
         },
         {
@@ -161,43 +172,52 @@ export default new Router({
           },
           children: [
             {
-              path: '/estimate/project',
-              name: 'ProjectEstimateList',
-              component: ProjectEstimateList
+              path: 'project',
+              redirect: '/estimate/project',
+              name: 'Estimates',
+              component: {
+                  render (c) { return c('router-view') }
+              },
+              children: [
+                  {
+                      path: '',
+                      component: ProjectEstimateList
+                    },
+                    {
+                        path: ':projectId/volume',
+                        name: 'ProjectVolume',
+                        component: ProjectVolume,
+                        meta: {
+                            label: 'Estimates 용량산정'
+                          }
+                      },
+                    {
+                      path: ':projectId/cost',
+                      name: 'ProjectCostEstimate',
+                      component: ProjectCostEstimate,
+                      meta: {
+                          label: 'Estimates 원가견적',
+                        }
+                    },
+                ]
             },
             {
-              path: '/estimate/project/:projectId/volume',
-              name: 'ProjectVolume',
-              component: ProjectVolume,
-              meta: {
-                  label: 'Estimates 용량산정',
-                }
-            },
-            {
-              path: '/estimate/project/:projectId/cost',
-              name: 'ProjectCostEstimate',
-              component: ProjectCostEstimate,
-              meta: {
-                  label: 'Estimates 원가견적',
-                }
-            },
-            {
-              path: '/estimate/standardinfomation',
+              path: 'standardinfomation',
               name: 'Standard Infomation',
               component: StandardInfomation
             },
             {
-              path: '/estimate/vmcost',
+              path: 'vmcost',
               name: 'VM Cost',
               component: VMCost
             },
             {
-              path: '/estimate/storagecost',
+              path: 'storagecost',
               name: 'Storage Cost',
               component: StorageCost
             },
             {
-              path: '/estimate/mspcost',
+              path: 'mspcost',
               name: 'MSP Cost',
               component: MSPCost
             }

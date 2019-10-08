@@ -109,6 +109,9 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
+  },
+  created() {
+  	this.$store.dispatch('getUserInfo')
   }
 }
 </script>
