@@ -14,12 +14,12 @@
                         <b-button variant="outline-info" size="sm" @click="viewProject(data.item)"><i class="icon-info"></i> 기본정보</b-button>
                     </template>
                     <template slot="button_volume" slot-scope="data">
-                        <router-link :to="{ name: 'ProjectVolume', params: { projectId: data.item.id, projectName: data.item.name } }">
+                        <router-link :to="{ name: 'ProjectVolume', params: { projectId: data.item.id } }">
                             <b-button variant="outline-success" size="sm"><i class="icon-info"></i> 용량산정</b-button>
                         </router-link>
                     </template>
                     <template slot="button_cost" slot-scope="data">
-                        <router-link :to="{ name: 'ProjectCostEstimate', params: { projectId: data.item.id, projectName: data.item.name, editable: true } }">
+                        <router-link :to="{ name: 'ProjectCostEstimate', params: { projectId: data.item.id, editable: true } }">
                             <b-button variant="outline-warning" size="sm"><i class="icon-info"></i> 원가견적</b-button>
                         </router-link>
                     </template>

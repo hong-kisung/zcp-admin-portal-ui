@@ -1,7 +1,6 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit">MSP Cost</h1>
-        <h2 class="display-sub mb-3">MSP 비용의 최신 버전을 조회 및 수정합니다.</h2>
+        <h1 class="display-tit mb-3"">MSP Cost</h1>
         
         <msp-cost-detail v-bind:editable="true" />
         <msp-cost-history />

@@ -31,10 +31,8 @@
 import CostEstimateHistory from './costestimate/CostEstimateHistory'
 import CostEstimateSummaryTab from './costestimate/CostEstimateSummaryTab'
 import CostEstimateEnvironmentTab from './costestimate/CostEstimateEnvironmentTab'
-import changeRoute from '@/mixins/change-route'
 
 export default {
-	mixins: [changeRoute],
     components: {
         CostEstimateHistory, CostEstimateSummaryTab, CostEstimateEnvironmentTab
     },
@@ -108,8 +106,6 @@ export default {
 				return;
 			}
 
-			this.changeRouteLabel(this.$route.params.projectName)
-			
 			this.$store.dispatch('estimate/getProjectCostEstimate', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getProjectCostEstimateHistory', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
