@@ -6,7 +6,7 @@
 npm install
 
 # run localhost:8080
-npm run dev
+npm run serve
 ```
 
 ### build
