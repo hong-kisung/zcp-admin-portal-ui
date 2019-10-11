@@ -1,6 +1,6 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">원가 견적서 템플릿 관리</h1>
+        <h1 class="display-tit mb-3">{{ estimateTemplate.name }}</h1>
         <b-tabs class="mb-4">
             <b-tab active>
                 <template slot="title">

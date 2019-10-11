@@ -1,6 +1,6 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">Add-on Service 관리</h1>
+        <h1 class="display-tit mb-3">{{ addonService.name }} </h1>
         <b-card>
             <b-form-group>
                 <b-button variant="success" size="sm" class="mr-2" @click="openServiceDialog"><i class="icon-plus"></i> Add-on Service 추가</b-button>
@@ -199,10 +199,10 @@ export default {
     },
     watch: {
 		serviceDialog (val) {
-			val || this.closeServiceDialog();
+			val || this.closeServiceDialog()
 		},
 		applicationDialog (val) {
-			val || this.closeAppsDialog();
+			val || this.closeAppsDialog()
 		}
     },
 	created () {
@@ -214,31 +214,33 @@ export default {
         },
 		initialize() {
 			if(this.$route.params.productId) {
-				this.productId = this.$route.params.productId;
+				this.productId = this.$route.params.productId
 			}
 
 			this.$http.get('/api/estimate/code/storage_type').then(response => {
-				this.storageTypeItems = response.data;
+				this.storageTypeItems = response.data
 			})
 			this.$http.get('/api/estimate/code/backup_yn').then(response => {
-				this.backupYnItems = response.data;
+				this.backupYnItems = response.data
 			})
 			if(this.productId > 0) {
-				this.getAddonService();
+				this.getAddonService()
 			}
 		},
 		getAddonService() {
 			this.$http.get('/api/estimate/platform/product/'+ this.productId + '/service').then(response => {
-				this.addonService.services = response.data;
-				this.summary();
+				this.addonService = response.data
+				this.summary()
 			})
 		},
 		saveService() {
 			this.$zadmin.confirm('저장하시겠습니까?', (result) => {
 				if(result) {
-					this.$http.put('/api/estimate/platform/product/'+ this.productId +'/service', this.addonService.services).then(response => {
-						this.$zadmin.alert("저장되었습니다.");
-						this.selected = [];
+					this.$http.put('/api/estimate/platform/product/'+ this.productId +'/service', this.addonService).then(response => {
+						this.$zadmin.alert("저장되었습니다.")
+						this.selected = []
+						
+						this.getAddonService()
 					})
 				}
 			})
@@ -248,115 +250,115 @@ export default {
 		},
 		
 		openServiceDialog() {
-			this.selected = [];
-			this.editedServIndex = -1;
-			this.editedServItem = Object.assign({}, this.defaultServItem);
-			this.serviceDialog = true;
+			this.selected = []
+			this.editedServIndex = -1
+			this.editedServItem = Object.assign({}, this.defaultServItem)
+			this.serviceDialog = true
 		},
 		closeServiceDialog() {
-			this.serviceDialog = false;
+			this.serviceDialog = false
 			setTimeout(() => {
-				this.editedServItem = Object.assign({}, this.defaultServItem);
-			}, 300);
+				this.editedServItem = Object.assign({}, this.defaultServItem)
+			}, 300)
 		},
 		saveServiceDialog(e) {
 			if(!this.editedServItem.serviceName) {
-				this.$zadmin.alert('Service를 입력하세요');
+				this.$zadmin.alert('Service를 입력하세요')
 				e.preventDefault()
-				return;
+				return
 			}
 			
 			for(let service of this.addonService.services) {
 				if(service.serviceName == this.editedServItem.serviceName) {
-					this.$zadmin.alert('존재하는Service입니다. 다시 입력하세요.');
+					this.$zadmin.alert('존재하는Service입니다. 다시 입력하세요.')
 					e.preventDefault()
-					return;
+					return
 				}
 			}
-			this.addonService.services.push(this.editedServItem);
-			this.addonService.services[this.addonService.services.length -1].applications = new Array();
-			this.closeServiceDialog();
+			this.addonService.services.push(this.editedServItem)
+			this.addonService.services[this.addonService.services.length -1].applications = new Array()
+			this.closeServiceDialog()
 		},
 		deleteService() {
 			this.$zadmin.confirm('삭제하시겠습니까?', (result) => {
 				if(result) {
 					for(let item of this.selected) {
-						const index = this.addonService.services.indexOf(item);
-						this.addonService.services.splice(index, 1);
+						const index = this.addonService.services.indexOf(item)
+						this.addonService.services.splice(index, 1)
 					}
 					
-					this.selected = [];
-					this.summary();
+					this.selected = []
+					this.summary()
 				}
 			})
 		},
 		
 		openAppsDialog() {
 			if(this.selected.length == 1) {
-				this.editedServIndex = this.addonService.services.indexOf(this.selected[0]);
-				this.editedAppsIndex = -1;
-				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
-				this.applicationDialog = true;
+				this.editedServIndex = this.addonService.services.indexOf(this.selected[0])
+				this.editedAppsIndex = -1
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem)
+				this.applicationDialog = true
 			}
 		},
 		closeAppsDialog() {
-			this.applicationDialog = false;
+			this.applicationDialog = false
 			setTimeout(() => {
-				this.editedAppsItem = Object.assign({}, this.defaultAppsItem);
-				this.editedServIndex = -1;
-				this.editedAppsIndex = -1;
-			}, 300);
+				this.editedAppsItem = Object.assign({}, this.defaultAppsItem)
+				this.editedServIndex = -1
+				this.editedAppsIndex = -1
+			}, 300)
 		},
 		editAppsItem (servItem, appItem, appIndex) {
-			this.editedServIndex = this.addonService.services.indexOf(servItem);
-			this.editedAppsIndex = appIndex;
-			this.editedAppsItem = Object.assign({}, appItem);
-			this.applicationDialog = true;
+			this.editedServIndex = this.addonService.services.indexOf(servItem)
+			this.editedAppsIndex = appIndex
+			this.editedAppsItem = Object.assign({}, appItem)
+			this.applicationDialog = true
 		},
 		saveAppsDialog (e) {
 			if (!this.editedAppsItem.applicationName) {
-				this.$zadmin.alert('Application을 입력하세요');
+				this.$zadmin.alert('Application을 입력하세요')
 				e.preventDefault()
-				return;
+				return
 			}
 			
 			if (this.editedAppsIndex > -1) {
-				this.$set(this.addonService.services[this.editedServIndex].applications, this.editedAppsIndex, this.editedAppsItem);
+				this.$set(this.addonService.services[this.editedServIndex].applications, this.editedAppsIndex, this.editedAppsItem)
 			} else {
 				this.editedAppsItem.created = this.userId
-				this.addonService.services[this.editedServIndex].applications.push(this.editedAppsItem);
+				this.addonService.services[this.editedServIndex].applications.push(this.editedAppsItem)
 			}
-			this.closeAppsDialog();
-			this.summary();
+			this.closeAppsDialog()
+			this.summary()
 		},
 		deleteAppItem(servItem, appItem, appIndex) {
-			const servIndex = this.addonService.services.indexOf(servItem);
+			const servIndex = this.addonService.services.indexOf(servItem)
 			this.$zadmin.confirm('삭제하시겠습니까?', (result) => {
 				if(result) {
-					this.addonService.services[servIndex].applications.splice(appIndex, 1);
-					this.summary();
+					this.addonService.services[servIndex].applications.splice(appIndex, 1)
+					this.summary()
 				}
 			})
 		},
 		summary() {
-			this.addonService.totalCpu = 0;
-			this.addonService.totalMemory = 0;
-			this.addonService.totalDisk = 0;
+			this.addonService.totalCpu = 0
+			this.addonService.totalMemory = 0
+			this.addonService.totalDisk = 0
 			
 			for(let service of this.addonService.services) {
-				service.sumCpu = 0;
-				service.sumMemory = 0;
-				service.sumDisk = 0;
+				service.sumCpu = 0
+				service.sumMemory = 0
+				service.sumDisk = 0
 				
 				for(let application of service.applications) {
-					if(application.cpu != undefined) service.sumCpu += application.cpu;
-					if(application.memory != undefined) service.sumMemory += application.memory;
-					if(application.disk != undefined) service.sumDisk += application.disk;
+					if(application.cpu != undefined) service.sumCpu += application.cpu
+					if(application.memory != undefined) service.sumMemory += application.memory
+					if(application.disk != undefined) service.sumDisk += application.disk
 				}
 				
-				this.addonService.totalCpu += service.sumCpu;
-				this.addonService.totalMemory += service.sumMemory;
-				this.addonService.totalDisk += service.sumDisk;
+				this.addonService.totalCpu += service.sumCpu
+				this.addonService.totalMemory += service.sumMemory
+				this.addonService.totalDisk += service.sumDisk
 			}
 		}
     }

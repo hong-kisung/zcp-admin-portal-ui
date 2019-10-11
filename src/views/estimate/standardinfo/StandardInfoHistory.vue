@@ -37,8 +37,6 @@ export default {
                 },
                 { key: 'description', label: '설명' },
                 { key: 'createdDt', label: '생성일시', tdClass: 'text-center' }
-            ],
-            items: [
             ]
         }
     },

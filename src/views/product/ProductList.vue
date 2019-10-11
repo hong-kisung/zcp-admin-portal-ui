@@ -16,23 +16,6 @@
                 </b-card>
             </b-col>
         </b-row>
-        
-        <!-- modal : Product 기본정보 
-        <b-modal id="product-info-modal" title="Product 기본정보" centered>
-            <b-form>
-                <b-form-group label="Product명" label-for="name" :label-cols="3">
-                    <b-form-input type="text" id="name" placeholder="Product명을 입력해주세요." value="Cloud Z CP" readonly></b-form-input>
-                </b-form-group>
-                <b-form-group label="설명" label-for="description" :label-cols="3">
-                    <b-form-input type="text" id="description" placeholder="설명을 입력해주세요."></b-form-input>
-                </b-form-group>
-            </b-form>
-            <template v-slot:modal-footer="{ ok, cancel }">
-                <b-button variant="secondary" @click="cancel()">취소</b-button>
-                <b-button variant="primary" @click="ok()"><i class="icon-check"></i> 저장</b-button>
-            </template>
-        </b-modal>
-        // modal : Product 기본정보 -->
     </div>
 </template>
 

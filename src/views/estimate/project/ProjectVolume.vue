@@ -1,6 +1,6 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">Estimates 용량산정</h1>
+        <h1 class="display-tit mb-3">{{ volumes.projectName }}</h1>
         <b-card>
             <b-form-group>
                 <b-button variant="success" size="sm" class="mr-2" @click="openClusterDialog"><i class="icon-plus"></i> Environment 추가</b-button>

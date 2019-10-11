@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-            Estimates 원가 견적서
+            {{ estimate.projectName }}
             <div class="float-right">
                 <b-button variant="secondary" id="historyShowBtn" class="mr-2" @click="showHistory()"><i class="icon-clock"></i> History 조회</b-button>
                 <b-button variant="primary" @click="updateEstimate" v-if="editable && showEstimateUpdate"><i class="icon-refresh"></i> 견적서 Update</b-button>
