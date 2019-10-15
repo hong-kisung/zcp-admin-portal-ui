@@ -284,7 +284,7 @@ export default {
 					product.templates = response.data
 				});
 				axios.get('/api/estimate/platform/product/' + product.productId + '/service').then(response => {
-					product.services = response.data
+					product.services = response.data.services
 				});
 			}
 			
