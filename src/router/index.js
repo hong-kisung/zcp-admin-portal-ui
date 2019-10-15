@@ -34,7 +34,7 @@ const StorageCost = () => import('@/views/estimate/StorageCost')
 const MSPCost = () => import('@/views/estimate/MspCost')
 
 // Order Management
-const Order = () => import('@/views/order/Order')
+const Order = () => import('@/views/order/OrderList')
 
 // Backup Management
 const Backup = () => import('@/views/backup/Backup')

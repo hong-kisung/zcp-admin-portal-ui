@@ -6,7 +6,6 @@ export default {
     orderProduct: {},
     orderPackageCategories: [],
     orderStatusLogs: [],
-    orderCluster: {}
-  },
-  clusters: []
+    orderClusters: []
+  }
 }
