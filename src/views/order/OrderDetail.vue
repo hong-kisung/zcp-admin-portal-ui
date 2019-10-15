@@ -256,6 +256,7 @@ export default {
         updateOrderClusters(cluster) {
             axios.put('/api/admin-order/orders/' + this.order.id + '/cluster/' + cluster.id).then(response => {
                 this.autocomplete.clusterName = '';
+                this.refresh();
                 this.$emit('list-reload');
             }).catch(error => {
                 console.log(error);
