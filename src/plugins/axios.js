@@ -21,6 +21,7 @@ axios.interceptors.response.use(
 		return response
 	}, 
 	(error) => {
+		console.log(this)
 		if(error.response && error.response.data.redirect_url) {
 			console.log(error.response.data)
 
@@ -31,11 +32,9 @@ axios.interceptors.response.use(
 			window.location.href = error.response.data.redirect_url
 			
 		} else if (error.response.data && error.response.data.message) {
-			store.commit('showOkMessage', {title: error.response.data.error, content: error.response.data.message}, {root:true})
 			return Promise.reject(error)
 			
 		} else if (error.response.statusText) {
-			store.commit('showOkMessage', {title: 'Error', content: error.response.statusText}, {root:true})
 			return Promise.reject(error)
 			
 		} else {

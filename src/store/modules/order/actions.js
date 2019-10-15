@@ -38,11 +38,11 @@ export default {
 			console.log('failed get order')
 		})
 	},
-	getClusters: function(store, payload) {
-		axios.get('/api/admin-cluster/clusters').then(response => {
-			store.commit('setClusters', response.data)
+	getOrderStatusLogs: function (store, payload) {
+		axios.get('/api/admin-order/orders/' + payload.id + '/status').then(response => {
+			store.commit('setOrderStatusLogs', response.data)
 		}).catch(error => {
-			console.log('failed get getClusters')
+			console.log('failed get getOrderStatusLogs')
 		})
 	}
 }

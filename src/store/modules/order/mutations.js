@@ -10,20 +10,23 @@ export default {
 		state.orderDetail.orderStatusLogs = data.orderStatusLogs;
 
 		if (data.cluster) {
-			state.orderDetail.orderCluster = {
+			let orderCluster = {
 				clusterModDate: data.clusterModDate,
 				clusterModId: data.clusterModId,
 				clusterId: data.cluster.clusterId,
 				clusterName: data.cluster.clusterName,
 			}
+
+			state.orderDetail.orderClusters = [];
+			state.orderDetail.orderClusters.push(orderCluster);
 		} else {
-			state.orderDetail.orderCluster = null;
+			state.orderDetail.orderClusters = [];
 		}
+	},
+	setOrderStatusLogs: function(state, data) {
+		state.orderDetail.orderStatusLogs = data;
 	},
 	setOrderClusters: function(state, data) {
 		state.orderDetail.orderClusters = data;
-	},
-	setClusters: function(state, data) {
-		state.clusters = data;
 	}
 }
