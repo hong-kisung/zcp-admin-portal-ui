@@ -67,6 +67,12 @@ export default {
 	},
 	
 	//project
+	setProjectListCurrentPage: function(state, data) {
+		state.projectListCondition.currentPage = data
+	},
+	setProjectListPerPage: function(state, data) {
+		state.projectListCondition.perPage = data
+	},
 	setProjects: function(state, data) {
 		state.projects = data
 	},

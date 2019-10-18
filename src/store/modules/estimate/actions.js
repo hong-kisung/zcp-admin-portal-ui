@@ -330,6 +330,18 @@ export default {
 			console.log('failed get getCustomers')
 		})
 	},
-	
+	downloadExcel: function (store, payload) {
+		axios.get('/api/estimate/project/' + payload.projectId + '/download?type=excel', {responseType: 'blob'}).then(response => {
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute('download', payload.projectName + '_원가견적_v' + payload.version + '.xlsx')
+			document.body.appendChild(link)
+			link.click()
+		}).catch(error => {
+			this._vm.$zadmin.alert('엑셀 파일을 다운로드 하는 동안 에러가 발생했습니다.')
+			console.log(error)
+		})
+	}
 
 }

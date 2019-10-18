@@ -26,6 +26,10 @@ export default {
 	costEstimateTemplate: {},
 	
 	//프로젝트 원가견적
+	projectListCondition: {
+		currentPage: 1,
+		perPage: 10
+	},
 	projects: [],
 	project: {},
 	projectVolume: {},
