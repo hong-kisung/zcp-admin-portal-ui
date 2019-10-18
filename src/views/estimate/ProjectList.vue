@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-        	Estimates
+        	Estimates<b-button variant="success" size="sm" class="ml-2" v-b-modal.project-info-modal><i class="icon-plus"></i> Project 추가</b-button>
             <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
         </h1>
         <div>
@@ -9,38 +9,38 @@
                 <b-card>
                     <b-form class="row">
                         <b-col lg="4">
-				            <b-form-group label="Customer" label-for="customerId" :label-cols="3">
-						        <b-form-select id="customerId" :plain="true">
-						        </b-form-select>
-				            </b-form-group>
+                            <b-form-group>
+                                <label for="customer">Customer</label>
+                                <b-form-select id="customer" :plain="true" :options="['선택', 'SKI', 'SKN', 'SK E&S', 'FSK', 'SK C&C']" value="선택"></b-form-select>
+                            </b-form-group>
                         </b-col>
                         <b-col lg="4">
-				            <b-form-group label="Status" label-for="status" :label-cols="3">
-						        <b-form-select id="status" :plain="true">
-						        </b-form-select>
-				            </b-form-group>
+                            <b-form-group>
+                                <label for="status">Status</label>
+                                <b-form-select id="status" :plain="true" :options="['선택', 'Running', 'Proposal', 'Development']" value="선택"></b-form-select>
+                            </b-form-group>
                         </b-col>
                         <b-col lg="4">
-				            <b-form-group label="Cloud" label-for="cloudId" :label-cols="3">
-						        <b-form-select id="cloudId" :plain="true">
-						        </b-form-select>
-				            </b-form-group>
+                            <b-form-group>
+                                <label for="cloud">Cloud</label>
+                                <b-form-select id="cloud" :plain="true" :options="['선택', 'IBM', 'Azure', 'AWS']" value="선택"></b-form-select>
+                            </b-form-group>
                         </b-col>
                         <b-col lg="12">
                             <b-form-group>
-                                <label for="estimateStatus">Estimate Status</label>
+                                <label for="estimateStatusActive">Estimate Status</label>
                                 <div>
                                     <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" id="estimateStatus" checked>
-                                        <label class="custom-control-label" for="orderRequest">active</label>
+                                        <input type="checkbox" class="custom-control-input" id="estimateStatusActive" checked>
+                                        <label class="custom-control-label" for="estimateStatusActive">Active</label>
                                     </div>
                                     <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" id="estimateStatus" checked>
-                                        <label class="custom-control-label" for="orderProgress">inactive</label>
+                                        <input type="checkbox" class="custom-control-input" id="estimateStatusInactive" checked>
+                                        <label class="custom-control-label" for="estimateStatusInactive">Inactive</label>
                                     </div>
                                     <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" id="estimateStatus" checked>
-                                        <label class="custom-control-label" for="orderComplete">all</label>
+                                        <input type="checkbox" class="custom-control-input" id="estimateStatusAll" checked>
+                                        <label class="custom-control-label" for="estimateStatusAll">All</label>
                                     </div>
                                 </div>
                             </b-form-group>
@@ -53,14 +53,11 @@
             </b-collapse>
         </div>
         <b-card>
-            <b-form-group>
-                <b-button variant="success" size="sm" @click="addProject"><i class="icon-plus"></i> Project 추가</b-button>
-            </b-form-group>
             <div class="mb-3">
                 <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                    <b-form-select v-model="perPage" id="perPageSelect" :options="pageOptions" class="w-auto"></b-form-select>
+                    <b-form-select :value="perPage" id="perPageSelect" :options="pageOptions" @change="changePerPage" class="w-auto"></b-form-select>
                 </b-form-group>
-                <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="right" class="my-0"></b-pagination>
+                <b-pagination :value="currentPage" :total-rows="totalRows" :per-page="perPage" @change="changeCurrentPage" align="right" class="my-0"></b-pagination>
             </div>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
                 <b-table striped hover small bordered :fields="fields" :items="projects" :current-page="currentPage" :per-page="perPage">
@@ -116,8 +113,6 @@ export default {
                 { key: 'button_cost', label: '원가견적', tdClass: 'text-center' },
                 { key: 'button_activate', label: 'Activate', tdClass: 'text-center' }
             ],
-            currentPage: 1,
-            perPage: 10,
             pageOptions: [10, 20, 30, 50, 100]
         }
     },
@@ -136,6 +131,12 @@ export default {
 		},
 		totalRows: function() {
 			return this.$store.state.estimate.projects.length
+		},
+		currentPage: function() {
+			return this.$store.state.estimate.projectListCondition.currentPage
+		}, 
+		perPage: function() {
+			return this.$store.state.estimate.projectListCondition.perPage
 		}
     },
  	created () {
@@ -152,6 +153,13 @@ export default {
 		viewProject(project) {
 			this.$store.dispatch('estimate/getProject', {projectId: project.id})
 			this.projectDetailDialog = true;
+		},
+		changeCurrentPage(value) {
+			this.$store.commit('estimate/setProjectListCurrentPage', value)
+		},
+		changePerPage(value) {
+			this.$store.commit('estimate/setProjectListCurrentPage', 1)
+			this.$store.commit('estimate/setProjectListPerPage', value)
 		}
     }
 }

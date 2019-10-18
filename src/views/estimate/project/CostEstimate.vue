@@ -3,7 +3,9 @@
         <h1 class="display-tit mb-3">
             {{ estimate.projectName }}
             <div class="float-right">
-                <b-button variant="secondary" id="historyShowBtn" class="mr-2" @click="showHistory()"><i class="icon-clock"></i> History 조회</b-button>
+                <b-button variant="secondary" class="mr-2" @click="goProjectVolume()"><i class="icon-arrow-left-circle"></i> 용량산정 이동</b-button>
+                <b-button variant="secondary" class="mr-2" @click="downloadExcel()"><i class="icon-arrow-down-circle"></i> Excel Download</b-button>
+                <b-button variant="secondary" class="mr-2" @click="showHistory()"><i class="icon-clock"></i> History 조회</b-button>
                 <b-button variant="primary" @click="updateEstimate" v-if="editable && showEstimateUpdate"><i class="icon-refresh"></i> 견적서 Update</b-button>
             </div>
         </h1>
@@ -94,6 +96,12 @@ export default {
 		this.initialize();
 	},
     methods: {
+    	goProjectVolume() {
+    		this.$router.push({name: 'ProjectVolume', params: {projectId: this.projectId }})
+    	},
+    	downloadExcel() {
+    		this.$store.dispatch('estimate/downloadExcel', {projectId: this.projectId, projectName: this.estimate.projectName, version: this.estimate.version})
+    	},
         showHistory () {
             document.body.classList.toggle("local-aside-show")
         },
@@ -120,9 +128,6 @@ export default {
 			this.$zadmin.confirm('최신 버전으로 다시 계산하시겠습니까?', (result) => {
 				result && this.$store.commit('estimate/updateCostEstimateReference', true)
 			})
-		},
-		cancel() {
-			history.go(-1);
 		},
 		save() {
 			if(this.estimate.id > 0) {

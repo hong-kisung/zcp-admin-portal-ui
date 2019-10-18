@@ -1,6 +1,11 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">{{ volumes.projectName }}</h1>
+        <h1 class="display-tit mb-3">
+        	{{ volumes.projectName }}
+            <div class="float-right">
+                <b-button variant="secondary" @click="goCostEstimate()"><i class="icon-arrow-left-circle"></i> 원가견적 이동</b-button>
+            </div>
+        </h1>
         <b-card>
             <b-form-group>
                 <b-button variant="success" size="sm" class="mr-2" @click="openClusterDialog"><i class="icon-plus"></i> Environment 추가</b-button>
@@ -212,7 +217,7 @@
         </b-card>
         <div class="mb-4">
             <router-link :to="{ path: '/estimate/' }">
-                <b-button variant="warning" @click="cancel"><i class="icon-list"></i> 목록</b-button>
+                <b-button variant="warning"><i class="icon-list"></i> 목록</b-button>
             </router-link>
             <b-button variant="primary" class="float-right" @click="save"><i class="icon-check"></i> 저장</b-button>
         </div>
@@ -268,6 +273,9 @@ export default {
 		this.initialize()
 	},
     methods: {
+    	goCostEstimate() {
+    		this.$router.push({name: 'ProjectCostEstimate', params: { projectId: this.projectId, editable: true }})
+    	},
         scrollHandle (evt) {
             // console.log(evt)
         },
@@ -295,9 +303,6 @@ export default {
 					this.selected = [];
 				}
 			})
-		},
-		cancel() {
-			history.go(-1);
 		},
 		openClusterDialog() {
 			this.selected = [];
