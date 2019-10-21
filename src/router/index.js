@@ -8,7 +8,8 @@ const DefaultContainer = () => import('@/containers/DefaultContainer')
 const Dashboard = () => import('@/views/Dashboard')
 
 // Customer Management
-const Customer = () => import('@/views/customer/Customer')
+const CustomerList = () => import('@/views/customer/CustomerList')
+const CustomerDetail = () => import('@/views/customer/CustomerDetail')
 
 // Project Management
 const Projects = () => import('@/views/project/Projects')
@@ -49,236 +50,261 @@ const Page500 = () => import('@/views/pages/Page500')
 Vue.use(Router)
 
 export default new Router({
-  mode: 'hash', // https://router.vuejs.org/api/#mode
-  linkActiveClass: 'open active',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: [
-    {
-      path: '/',
-      redirect: '/dashboard',
-      name: 'Home',
-      component: DefaultContainer,
-      children: [
-        {
-          path: 'dashboard',
-          name: 'Dashboard',
-          component: Dashboard
-        },
-        {
-          path: 'customer',
-          redirect: '/customer/customer',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: '/customer/customer',
-              name: 'Customer Management',
-              component: Customer
-            }
-          ]
-        },
-        {
-          path: 'project',
-          redirect: '/project/projects',
-          name: 'Project Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: '/project/projects',
-              name: 'Projects',
-              component: Projects
-            },
-            {
-              path: '/project/opscosttransfer',
-              name: 'Ops. Cost Transfer Status',
-              component: OpsCostTransfer
-            }
-          ]
-        },
-        {
-          path: 'product',
-          redirect: '/product/products',
-          name: 'Product Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'products',
-              redirect: '/product/products',
-              name: 'Products',
-              component: {
-                  render (c) { return c('router-view') }
-              },
-              children: [
-                  {
-                      path: '',
-                      component: ProductList
-                   },
-                   {
-                       path: ':productId/addonservice',
-                       name: 'ProductAddOnService',
-                       component: ProductAddOnService,
-                       meta: {
-                           label: 'Add-on Service 관리',
-                         }
-                     },
-                     {
-                       path: ':productId/cost',
-                       name: 'ProductCostEstimateTemplate',
-                       component: ProductCostEstimateTemplate,
-                       meta: {
-                           label: '원가견적서 템플릿 관리',
-                         }
-                     }
-                ]
-            },
-          ]
-        },
-        {
-          path: 'cluster',
-          redirect: '/cluster/clusterstate',
-          name: 'Cluster Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: '/cluster/clusterstate',
-              name: 'Cluster Status',
-              component: ClusterStatus
-            },
-            {
-              path: '/cluster/nodestatus',
-              name: 'Node Status',
-              component: NodeStatus
-            },
-            {
-              path: '/cluster/addonservicestatus',
-              name: 'Add-on Service Status',
-              component: AddOnServiceStatus
-            }
-          ]
-        },
-        {
-          path: 'estimate',
-          redirect: '/estimate/project',
-          name: 'Estimate Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'project',
-              redirect: '/estimate/project',
-              name: 'Estimates',
-              component: {
-                  render (c) { return c('router-view') }
-              },
-              children: [
-                  {
-                      path: '',
-                      component: ProjectEstimateList
-                    },
-                    {
-                        path: ':projectId/volume',
-                        name: 'ProjectVolume',
-                        component: ProjectVolume,
-                        meta: {
-                            label: 'Estimates 용량산정'
-                          }
-                      },
-                    {
-                      path: ':projectId/cost',
-                      name: 'ProjectCostEstimate',
-                      component: ProjectCostEstimate,
-                      meta: {
-                          label: 'Estimates 원가견적',
+    mode: 'hash', // https://router.vuejs.org/api/#mode
+    linkActiveClass: 'open active',
+    scrollBehavior: () => ({
+        y: 0
+    }),
+    routes: [{
+            path: '/',
+            redirect: '/dashboard',
+            name: 'Home',
+            component: DefaultContainer,
+            children: [{
+                    path: 'dashboard',
+                    name: 'Dashboard',
+                    component: Dashboard
+                },
+                {
+                    path: 'customer',
+                    redirect: '/customer/customer',
+                    name: 'Customers Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
                         }
                     },
-                ]
-            },
-            {
-              path: 'standardinfomation',
-              name: 'Standard Infomation',
-              component: StandardInfomation
-            },
-            {
-              path: 'vmcost',
-              name: 'VM Cost',
-              component: VMCost
-            },
-            {
-              path: 'storagecost',
-              name: 'Storage Cost',
-              component: StorageCost
-            },
-            {
-              path: 'mspcost',
-              name: 'MSP Cost',
-              component: MSPCost
-            }
-          ]
+                    children: [
+                        {
+                            path: 'customer',
+                            redirect: '/customer/customer',
+                            name: 'Customers',
+                            component: {
+                                render (c) { return c('router-view') }
+                            },
+                            children: [
+                                {
+                                    path: '',
+                                    component: CustomerList
+                                },
+                                {
+                                    path: ':id',
+                                    name: 'CustomerDetail',
+                                    component: CustomerDetail,
+                                    meta: {
+                                        label: 'Customer 상세'
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                },
+                {
+                    path: 'project',
+                    redirect: '/project/projects',
+                    name: 'Project Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                            path: '/project/projects',
+                            name: 'Projects',
+                            component: Projects
+                        },
+                        {
+                            path: '/project/opscosttransfer',
+                            name: 'Ops. Cost Transfer Status',
+                            component: OpsCostTransfer
+                        }
+                    ]
+                },
+                {
+                    path: 'product',
+                    redirect: '/product/products',
+                    name: 'Product Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                        path: 'products',
+                        redirect: '/product/products',
+                        name: 'Products',
+                        component: {
+                            render(c) {
+                                return c('router-view')
+                            }
+                        },
+                        children: [{
+                                path: '',
+                                component: ProductList
+                            },
+                            {
+                                path: ':productId/addonservice',
+                                name: 'ProductAddOnService',
+                                component: ProductAddOnService,
+                                meta: {
+                                    label: 'Add-on Service 관리',
+                                }
+                            },
+                            {
+                                path: ':productId/cost',
+                                name: 'ProductCostEstimateTemplate',
+                                component: ProductCostEstimateTemplate,
+                                meta: {
+                                    label: '원가견적서 템플릿 관리',
+                                }
+                            }
+                        ]
+                    }, ]
+                },
+                {
+                    path: 'cluster',
+                    redirect: '/cluster/clusterstate',
+                    name: 'Cluster Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                            path: '/cluster/clusterstate',
+                            name: 'Cluster Status',
+                            component: ClusterStatus
+                        },
+                        {
+                            path: '/cluster/nodestatus',
+                            name: 'Node Status',
+                            component: NodeStatus
+                        },
+                        {
+                            path: '/cluster/addonservicestatus',
+                            name: 'Add-on Service Status',
+                            component: AddOnServiceStatus
+                        }
+                    ]
+                },
+                {
+                    path: 'estimate',
+                    redirect: '/estimate/project',
+                    name: 'Estimate Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                            path: 'project',
+                            redirect: '/estimate/project',
+                            name: 'Estimates',
+                            component: {
+                                render(c) {
+                                    return c('router-view')
+                                }
+                            },
+                            children: [{
+                                    path: '',
+                                    component: ProjectEstimateList
+                                },
+                                {
+                                    path: ':projectId/volume',
+                                    name: 'ProjectVolume',
+                                    component: ProjectVolume,
+                                    meta: {
+                                        label: 'Estimates 용량산정'
+                                    }
+                                },
+                                {
+                                    path: ':projectId/cost',
+                                    name: 'ProjectCostEstimate',
+                                    component: ProjectCostEstimate,
+                                    meta: {
+                                        label: 'Estimates 원가견적',
+                                    }
+                                },
+                            ]
+                        },
+                        {
+                            path: 'standardinfomation',
+                            name: 'Standard Infomation',
+                            component: StandardInfomation
+                        },
+                        {
+                            path: 'vmcost',
+                            name: 'VM Cost',
+                            component: VMCost
+                        },
+                        {
+                            path: 'storagecost',
+                            name: 'Storage Cost',
+                            component: StorageCost
+                        },
+                        {
+                            path: 'mspcost',
+                            name: 'MSP Cost',
+                            component: MSPCost
+                        }
+                    ]
+                },
+                {
+                    path: 'order',
+                    redirect: '/order/order',
+                    name: 'Order Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                        path: 'order',
+                        name: 'Order',
+                        component: Order
+                    }]
+                },
+                {
+                    path: 'backup',
+                    redirect: '/backup/backup',
+                    name: 'Backup Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                        path: 'backup',
+                        name: 'Backup',
+                        component: Backup
+                    }]
+                },
+                {
+                    path: 'notification',
+                    redirect: '/notification/notification',
+                    name: 'Notification Management',
+                    component: {
+                        render(c) {
+                            return c('router-view')
+                        }
+                    },
+                    children: [{
+                        path: 'notification',
+                        name: 'Notification',
+                        component: Notification
+                    }]
+                }
+            ]
         },
         {
-          path: 'order',
-          redirect: '/order/order',
-          name: 'Order Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'order',
-              name: 'Order',
-              component: Order
-            }
-          ]
+            path: '*',
+            name: 'Page404',
+            component: Page404
         },
         {
-          path: 'backup',
-          redirect: '/backup/backup',
-          name: 'Backup Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'backup',
-              name: 'Backup',
-              component: Backup
-            }
-          ]
-        },
-        {
-          path: 'notification',
-          redirect: '/notification/notification',
-          name: 'Notification Management',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'notification',
-              name: 'Notification',
-              component: Notification
-            }
-          ]
+            path: '',
+            name: 'Page500',
+            component: Page500
         }
-      ]
-    },
-    {
-      path: '*',
-      name: 'Page404',
-      component: Page404
-    },
-    {
-      path: '',
-      name: 'Page500',
-      component: Page500
-    }
-  ]
+    ]
 })
