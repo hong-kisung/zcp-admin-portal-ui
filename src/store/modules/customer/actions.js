@@ -2,11 +2,11 @@ import axios from '@/plugins/axios'
 
 export default {
 	getCustomers: function(store, payload) {
-		let q = '';
-		let pageNo = payload.page.pageNo || 1;
-		let pageSize = payload.page.pageSize || 10;
-		let sort = 'createdDt';
-		let orderBy = 'desc';
+		let q = ''
+		let pageNo = payload.pageNo
+		let pageSize = payload.pageSize
+		let sort = 'createdDt'
+		let orderBy = 'desc'
 
 		axios.get('/api/admin-customer/customers?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setCustomers', response.data)

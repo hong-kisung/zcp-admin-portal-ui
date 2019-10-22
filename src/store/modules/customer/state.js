@@ -1,5 +1,8 @@
 export default {
   customers: [],
-  customersPage: {},
+  customersPage: {
+      pageNo: 1,
+      pageSize: 10
+  },
   customer: {}
 }

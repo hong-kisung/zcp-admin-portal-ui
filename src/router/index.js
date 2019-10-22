@@ -92,7 +92,7 @@ export default new Router({
                                     name: 'CustomerDetail',
                                     component: CustomerDetail,
                                     meta: {
-                                        label: 'Customer 상세'
+                                        label: 'Customer Details'
                                     }
                                 },
                             ]

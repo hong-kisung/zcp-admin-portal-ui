@@ -77,7 +77,6 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
-import axios from 'axios'
 
 export default {
     components: {
@@ -128,7 +127,7 @@ export default {
             }
         },
         customer: function() {
-            return this.$store.state.customer.customer;
+            return this.$store.state.customer.customer
         }
     },
     created () {
@@ -140,13 +139,22 @@ export default {
         },
         initialize() {
             if (this.$route.params.id) {
-                this.id = this.$route.params.id;
+                this.id = this.$route.params.id
             }
 
-            this.$store.dispatch('customer/getCustomer', {id: this.id})
+            this.$store.dispatch('customer/getCustomer', {id: this.$route.params.id})
         },
         updateCustomer() {
-            // todo validate
+            if (!this.customer.nameEn) {
+                this.$zadmin.alert('Customer Name(EN)을 입력하세요.')
+                e.preventDefault()
+                return
+            }
+            if (!this.customer.nameKr) {
+                this.$zadmin.alert('Customer Name(KR)을 입력하세요.')
+                e.preventDefault()
+                return
+            }
 
             let customer = {
                 "nameEn": this.customer.nameEn,
