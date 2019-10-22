@@ -118,10 +118,11 @@
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import ProductDialog from './ProductDialog'
 import ClassificationDialog from './ClassificationDialog'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 import swapArray from '@/mixins/swap-array'
 
 export default {
-	mixins: [swapArray],
+	mixins: [perfectScrollbar, swapArray],
     components: {
         VuePerfectScrollbar, ProductDialog, ClassificationDialog
     },
@@ -157,16 +158,7 @@ export default {
 		'editable'
 	],
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
-		productReferences: function() {
+        productReferences: function() {
 			return this.$store.state.estimate.productReferences
 		},
 		projectVolumes: function() {
@@ -193,10 +185,7 @@ export default {
 		}
     },
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
-		getCheckboxId(productName) {
+        getCheckboxId(productName) {
 			return this.estimateEnvironment + '-' + this.estimateType + '-' + productName
 		},
 		getRowspan(colIndex, items, item) {

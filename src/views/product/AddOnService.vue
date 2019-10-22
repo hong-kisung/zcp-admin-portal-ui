@@ -160,8 +160,10 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 
 export default {
+	mixins: [perfectScrollbar],
     components: {
         VuePerfectScrollbar
     },
@@ -184,15 +186,6 @@ export default {
       	editedAppsItem: {}
 	}),
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
 		userId : function() {
 			return this.$store.getters.getUserId
 		}
@@ -209,9 +202,6 @@ export default {
 		this.initialize()
 	},
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
 		initialize() {
 			if(this.$route.params.productId) {
 				this.productId = this.$route.params.productId

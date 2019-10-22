@@ -226,8 +226,10 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 
 export default {
+	mixins: [perfectScrollbar],
     components: {
         VuePerfectScrollbar
     },
@@ -247,16 +249,7 @@ export default {
       	editedAppsItem: {}
 	}),
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
-		volumes: function() {
+        volumes: function() {
 			return this.$store.state.estimate.projectVolume
 		},
 		environmentTypes : function() {
@@ -276,10 +269,7 @@ export default {
     	goCostEstimate() {
     		this.$router.push({name: 'ProjectCostEstimate', params: { projectId: this.projectId, editable: true }})
     	},
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
-		initialize() {
+        initialize() {
 			if(this.$route.params.projectId) {
 				this.projectId = this.$route.params.projectId;
 			}

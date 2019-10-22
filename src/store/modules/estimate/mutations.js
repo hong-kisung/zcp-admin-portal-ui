@@ -76,9 +76,6 @@ export default {
 	setProjects: function(state, data) {
 		state.projects = data
 	},
-	setProject: function (state, data) {
-		state.project = data
-	},
 	setProjectVolume: function (state, data) {
 		state.projectVolume = data
 	},

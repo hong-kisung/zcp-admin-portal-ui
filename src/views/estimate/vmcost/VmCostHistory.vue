@@ -27,9 +27,14 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 import VmCostDetail from './VmCostDetail'
 
 export default {
+	mixins: [perfectScrollbar],
+    components: {
+    	VuePerfectScrollbar, VmCostDetail
+    },
     data()  {
         return {
         	versionId: 0,
@@ -43,30 +48,15 @@ export default {
             ]
         }
     },
-    components: {
-        VuePerfectScrollbar, VmCostDetail
-    },
     computed: {
 		historyList: function() {
 			return this.$store.state.estimate.vmHistory;
-		},
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
         }
     },
 	created () {
 		this.$store.dispatch('estimate/getVmHistory')
     },
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
 		clickHistoryDetail (item) {
 			this.versionId = item.id;
 			this.detailDialog = true

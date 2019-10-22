@@ -31,7 +31,6 @@ export default {
 		perPage: 10
 	},
 	projects: [],
-	project: {},
 	projectVolume: {},
 	projectCostEstimate: {	//편집중인 원가견적
   		environments: [],

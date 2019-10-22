@@ -103,10 +103,11 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import ClassificationDialog from './ClassificationDialog'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 import swapArray from '@/mixins/swap-array'
 
 export default {
-	mixins: [swapArray],
+	mixins: [swapArray, perfectScrollbar],
     components: {
         VuePerfectScrollbar, ClassificationDialog
     },
@@ -128,15 +129,6 @@ export default {
 		'services'
 	],
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
 		userId : function() {
 			return this.$store.getters.getUserId
 		}
@@ -153,10 +145,7 @@ export default {
 		this.initialize()
 	},
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
-		initialize() {
+        initialize() {
 		},
 		openServiceDialog() {
 			this.selected = [];
