@@ -21,19 +21,19 @@
                     {{ (customersPage.totalCount - customersPage.beginOfPage) - data.index }}
                 </template>
                 <template slot="cloud_account" slot-scope="data">
-                    <b-link>
+                    <b-link v-if="data.item.customerCloudAccounts[0] != null">
                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1"
                             v-if="data.item.customerCloudAccounts[0].cspCode == 'AWS' && (data.item.customerCloudAccounts[0].cspId != '' || data.item.customerCloudAccounts[0].accountAlias != '')">
                     </b-link>
-                    <b-link>
+                    <b-link v-if="data.item.customerCloudAccounts[1] != null">
                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1"
                             v-if="data.item.customerCloudAccounts[1].cspCode == 'AZURE' && (data.item.customerCloudAccounts[1].cspId != '' || data.item.customerCloudAccounts[1].accountAlias != '')">
                     </b-link>
-                    <b-link>
+                    <b-link v-if="data.item.customerCloudAccounts[2] != null">
                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1"
                             v-if="data.item.customerCloudAccounts[2].cspCode == 'GCP' && (data.item.customerCloudAccounts[2].cspId != '' || data.item.customerCloudAccounts[2].accountAlias != '')">
                     </b-link>
-                    <b-link>
+                    <b-link v-if="data.item.customerCloudAccounts[3] != null">
                         <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1"
                             v-if="data.item.customerCloudAccounts[3].cspCode == 'IBM' && (data.item.customerCloudAccounts[3].cspId != '' || data.item.customerCloudAccounts[3].accountAlias != '')">
                     </b-link>
