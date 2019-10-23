@@ -184,22 +184,9 @@ export default {
 			console.log('failed get getProjects')
 		})
 	},
-	getProject: function (store, payload) {
-		axios.get('/api/estimate/project/'+ payload.projectId).then(response => {
-			store.commit('setProject', response.data)
-		}).catch(error => {
-			console.log('failed get getProject')
-		})
-	},
 	addProject: function (store, payload) {
 		payload.project.created = store.rootGetters.getUserId
 		axios.post('/api/estimate/project', payload.project).then(response => {
-			this._vm.$zadmin.alert('저장되었습니다.')
-			store.dispatch('getProjects')
-		})
-	},
-	saveProject: function (store, payload) {
-		axios.put('/api/estimate/project/'+ payload.project.id, payload.project).then(response => {
 			this._vm.$zadmin.alert('저장되었습니다.')
 			store.dispatch('getProjects')
 		})

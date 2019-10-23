@@ -37,29 +37,17 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 
 export default {
+	mixins: [perfectScrollbar],
     components: {
         VuePerfectScrollbar
     },
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
-		estimate: function() {
+        estimate: function() {
 			return this.$store.state.estimate.projectCostEstimate
 		},
-    },
-    methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        }
     }
 }
 </script>

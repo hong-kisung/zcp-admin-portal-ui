@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-        	Estimates<b-button variant="success" size="sm" class="ml-2" v-b-modal.project-info-modal><i class="icon-plus"></i> Project 추가</b-button>
+        	Estimates<b-button variant="success" size="sm" class="ml-2" @click="addProject"><i class="icon-plus"></i> Project 추가</b-button>
             <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
         </h1>
         <div>
@@ -61,9 +61,6 @@
             </div>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
                 <b-table striped hover small bordered :fields="fields" :items="projects" :current-page="currentPage" :per-page="perPage">
-                    <template slot="button_basic" slot-scope="data">
-                        <b-button variant="outline-info" size="sm" @click="viewProject(data.item)"><i class="icon-info"></i> 기본정보</b-button>
-                    </template>
                     <template slot="button_volume" slot-scope="data">
                         <router-link :to="{ name: 'ProjectVolume', params: { projectId: data.item.id } }">
                             <b-button variant="outline-success" size="sm"><i class="icon-info"></i> 용량산정</b-button>
@@ -82,7 +79,7 @@
             
 		    <projectDetail
 		    	v-bind:dialogVisible="projectDetailDialog"
-		    	v-on:fire-dialog-closed="projectDetailDialog = false"
+		    	v-on:fire-dialog-closed="closeProjectDetailDialog"
 		    />
         </b-card>
     </div>
@@ -91,9 +88,11 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 import projectDetail from './project/ProjectDetail'
 
 export default {
+	mixins: [perfectScrollbar],
     components: {
         VuePerfectScrollbar, cSwitch, projectDetail
     },
@@ -117,15 +116,6 @@ export default {
         }
     },
     computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        },
 		projects: function() {
 			return this.$store.state.estimate.projects
 		},
@@ -143,15 +133,7 @@ export default {
 		this.$store.dispatch('estimate/getProjects')
 	},
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
 		addProject() {
-			this.$store.commit('estimate/setProject', {})
-			this.projectDetailDialog = true;
-		},
-		viewProject(project) {
-			this.$store.dispatch('estimate/getProject', {projectId: project.id})
 			this.projectDetailDialog = true;
 		},
 		changeCurrentPage(value) {
@@ -160,6 +142,10 @@ export default {
 		changePerPage(value) {
 			this.$store.commit('estimate/setProjectListCurrentPage', 1)
 			this.$store.commit('estimate/setProjectListPerPage', value)
+		},
+		closeProjectDetailDialog() {
+			this.projectDetailDialog = false
+			this.$store.dispatch('estimate/getProjects')
 		}
     }
 }

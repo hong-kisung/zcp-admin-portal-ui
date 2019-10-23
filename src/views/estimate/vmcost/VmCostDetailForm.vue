@@ -123,8 +123,13 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 
 export default {
+ 	mixins: [perfectScrollbar],
+    components: {
+    	VuePerfectScrollbar
+    },
     data()  {
         return {
 	 		dialog: false,
@@ -133,9 +138,6 @@ export default {
 			defaultItem: {}
         }
     },
-    components: {
-        VuePerfectScrollbar
-    },
 	props: [
 		'vmData',
 		'editable'
@@ -143,15 +145,6 @@ export default {
     computed: {
 		iksGeneral: function() {
 			return this.$store.state.estimate.general;
-		},
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
         }
     },
     filters: {
@@ -171,9 +164,6 @@ export default {
     	}
     },
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
 		editItem (item) {
 			this.editedIndex = this.vmData.vms.indexOf(item);
 			this.editedItem = Object.assign({}, item);

@@ -84,6 +84,11 @@ body {
         td {
             font-weight: $fontWeightLight;
             vertical-align: middle;
+            
+            .list-group-item {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
         }
     }
     .switch {
@@ -173,6 +178,14 @@ hr {
         margin-top: 1rem;
         border-style: dashed;
     }
+    
+    &.thin {
+        margin-top: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+}
+.detail-cnt {
+    margin-bottom: 6rem;
 }
 
 /* create style */
@@ -199,9 +212,9 @@ hr {
     }
 }
 .display-tit {
-    font-size: 2.125rem;
+    font-size: 1.5rem;
     font-weight: $fontWeightThin;
-    letter-spacing: -3px;
+    letter-spacing: -2px;
     
     &.middle {
         font-size: 1.375rem;
@@ -281,6 +294,125 @@ html:not([dir="rtl"]) {
     right: 0;
     top: 0;
 }
+.tab-bottom-btn {
+    position: relative;
+    
+    button {
+        position: absolute;
+        top: 2.5rem;
+    }
+}
+
+/* DB Dashborad */
+.db-container {
+    display: flex;
+    margin-left: -20px;
+    white-space: nowrap;
+    
+    .db-item-container {
+        flex: 0 0 410px;
+        padding-left: 20px;
+        
+        .db-item-box {
+            height: calc(100vh - 195px);
+            
+            .item-tit {
+                padding-bottom: 0.75rem;
+                margin-bottom: 0.75rem;
+                border-bottom: 1px solid rgba(255, 255, 255, .1);
+                font-size: $fontSize18;
+                font-weight: $fontWeightLight;
+                letter-spacing: -2px;
+                
+                .badge {
+                    position: relative;
+                    top: -2px;
+                    font-size: $fontSize12;
+                    font-weight: $fontWeightNormal;
+                    letter-spacing: 0;
+                }
+                .dropdown-menu {
+                    li {
+                        border-bottom: 1px solid rgb(35, 40, 44);
+                        
+                        &:last-child {
+                            border-bottom: 0 none;
+                        }
+                        .dropdown-item {
+                            font-weight: $fontWeightNormal;
+                            letter-spacing: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@media (max-width: 767.98px) {
+    .db-container {
+        display: block;
+        margin-left: 0;
+        white-space: normal;
+
+        .db-item-container {
+            padding-left: 0;
+
+            .db-item-box {
+                height: auto;
+            }
+
+        }
+    }
+}
+.cl-box {
+    .cl-header {
+        .tit {
+            font-weight: $fontWeightLight; 
+            word-break: break-all; 
+            white-space: normal;
+        }
+        .sub {
+            font-size: $fontSize12;
+            font-weight: $fontWeightNormal;
+            color: #c4ced8;
+        }
+    }
+    .left {
+        img {
+            width: 60px;
+        }
+    }
+}
+.btn-icon {
+    display: inline-block; 
+    position: relative; 
+    color: inherit;
+    
+    &:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .badge {
+        position: absolute; 
+        left: 50%; 
+        top: 50%; 
+        margin-top: -16px; 
+        margin-left: 0;
+    }
+}
+.btn-icon-block {
+    width: 30px; 
+    height: 30px; 
+    border-radius: 5px; 
+    text-align: center; 
+    vertical-align: middle; 
+    line-height: 30px;
+}
+.badge-group {
+    white-space: normal;
+}
+
 @media (max-width: 575.98px) {
     .display-tit {
         [class*=float-] {

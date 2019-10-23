@@ -102,8 +102,13 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import perfectScrollbar from '@/mixins/perfect-scrollbar'
 
 export default {
+ 	mixins: [perfectScrollbar],
+    components: {
+    	VuePerfectScrollbar
+    },
     data()  {
         return {
 			selected: [],
@@ -114,28 +119,11 @@ export default {
 			mspCostDialog: false
         }
     },
-    components: {
-        VuePerfectScrollbar
-    },
 	props: [
 		'productMspCostVersion',
 		'editable'
 	],
-    computed: {
-        psSettings: () => {
-            return {
-                maxScrollbarLength: 200,
-                minScrollbarLength: 40,
-                suppressScrollY: true,
-                wheelPropagation: true,
-                useBothWheelAxes: true
-            }
-        }
-    },
     methods: {
-        scrollHandle (evt) {
-            // console.log(evt)
-        },
 		openDialog() {
 			if(this.selected.length == 1) {
 				this.editedProductIndex = this.productMspCostVersion.products.indexOf(this.selected[0]);

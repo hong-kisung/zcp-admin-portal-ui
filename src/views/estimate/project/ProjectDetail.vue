@@ -31,15 +31,13 @@
 <script>
 export default {
 	data: () => ({
-      	show: false
+      	show: false,
+      	project: {}
 	}),
   	props: [
 		'dialogVisible'
 	],
 	computed: {
-		project: function() {
-			return this.$store.state.estimate.project
-		},
 		customers: function() {
 			return this.$store.state.estimate.customers
 		}
@@ -67,15 +65,13 @@ export default {
 			
 			this.$zadmin.confirm('저장하시겠습니까?', (result) => {
 				if(result) {
-					if(this.project.id) {
-						this.$store.dispatch('estimate/saveProject', {project: this.project})
-					} else {
-						this.$store.dispatch('estimate/addProject', {project: this.project})
-					}
+					this.project.created = this.$store.getters.getUserId
+					this.$http.post('/api/estimate/project', this.project).then(response => {
+						this.$zadmin.alert('저장되었습니다.')
+						this.cancel()
+					})
 				}
 			})
-			
-			this.cancel()
 		},
 		cancel() {
 			this.$emit('fire-dialog-closed');
