@@ -2,6 +2,7 @@
 <div class="animated fadeIn">
     <h1 class="display-tit mb-3">
         Customer <b-badge class="m-1" variant="danger">{{ customersPage.totalCount }}</b-badge>
+        <b-button variant="success" size="sm" class="ml-2" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
     </h1>
     <b-card>
         <div class="mb-3">
@@ -24,6 +25,10 @@
                     <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS')">
                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1"
                             v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').accountAlias != ''">
+                    </b-link>
+                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AZURE')">
+                        <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1"
+                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AZURE').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').accountAlias != ''">
                     </b-link>
                     <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ')">
                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1"
@@ -58,10 +63,7 @@
                 </template>
             </b-table>
         </VuePerfectScrollbar>
-        <b-form-group>
-            <b-button variant="success" size="sm" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
-        </b-form-group>
-
+        
         <customerAdd v-bind:dialogVisible="customerAddDialog" v-on:fire-dialog-closed="customerAddDialog = false" />
     </b-card>
 </div>

@@ -26,6 +26,11 @@
                             <b-form-input type="text" id="awsAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.awsAccountAlias"></b-form-input>
                         </div>
                         <div class="d-flex align-items-center justify-content-between mt-2">
+                            <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1">
+                            <b-form-input type="text" id="azureCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.azureCspId"></b-form-input>
+                            <b-form-input type="text" id="azureAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.azureAccountAlias"></b-form-input>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
                             <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1">
                             <b-form-input type="text" id="cloudzCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.cloudzCspId"></b-form-input>
                             <b-form-input type="text" id="cloudzAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.cloudzAccountAlias"></b-form-input>
@@ -42,8 +47,11 @@
                         </div>
                     </b-form-group>
                 </b-form>
-                <div class="tab-bottom-btn text-center">
-                    <b-button variant="primary" @click="updateCustomer()"><i class="icon-check"></i> 저장</b-button>
+                <div class="tab-bottom-btn">
+                    <router-link :to="{ path: '/customer/' }">
+                        <b-button variant="warning" class="left"><i class="icon-list"></i> 목록</b-button>
+                    </router-link>
+                    <b-button variant="primary" class="right" @click="updateCustomer()"><i class="icon-check"></i> 저장</b-button>
                 </div>
             </b-tab>
             <b-tab>
@@ -57,6 +65,11 @@
                         </template>
                     </b-table>
                 </VuePerfectScrollbar>
+                <div class="tab-bottom-btn text-center">
+                    <router-link :to="{ path: '/customer/' }">
+                        <b-button variant="warning"><i class="icon-list"></i> 목록</b-button>
+                    </router-link>
+                </div>
             </b-tab>
             <b-tab>
                 <template slot="title">
@@ -69,6 +82,11 @@
                         </template>
                     </b-table>
                 </VuePerfectScrollbar>
+                <div class="tab-bottom-btn text-center">
+                    <router-link :to="{ path: '/customer/' }">
+                        <b-button variant="warning"><i class="icon-list"></i> 목록</b-button>
+                    </router-link>
+                </div>
             </b-tab>
         </b-tabs>
     </div>
@@ -156,7 +174,7 @@ export default {
                 return
             }
 
-            let customer = {
+            const customer = {
                 "nameEn": this.customer.nameEn,
                 "nameKr": this.customer.nameKr,
                 "customerCloudAccounts": [
@@ -164,6 +182,11 @@ export default {
                         "cspCode": "AWS",
                         "cspId": this.customer.awsCspId || '',
                         "accountAlias": this.customer.awsAccountAlias || ''
+                    },
+                    {
+                        "cspCode": "AZURE",
+                        "cspId": this.customer.azureCspId || '',
+                        "accountAlias": this.customer.azureAccountAlias || ''
                     },
                     {
                         "cspCode": "CLOUDZ",
