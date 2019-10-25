@@ -21,21 +21,21 @@
                     {{ (customersPage.totalCount - customersPage.beginOfPage) - data.index }}
                 </template>
                 <template slot="cloud_account" slot-scope="data">
-                    <b-link v-if="data.item.customerCloudAccounts[0] != null">
+                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS')">
                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts[0].cspCode == 'AWS' && (data.item.customerCloudAccounts[0].cspId != '' || data.item.customerCloudAccounts[0].accountAlias != '')">
+                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').accountAlias != ''">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts[1] != null">
+                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ')">
                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts[1].cspCode == 'AZURE' && (data.item.customerCloudAccounts[1].cspId != '' || data.item.customerCloudAccounts[1].accountAlias != '')">
+                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ').accountAlias != ''">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts[2] != null">
+                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP')">
                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts[2].cspCode == 'GCP' && (data.item.customerCloudAccounts[2].cspId != '' || data.item.customerCloudAccounts[2].accountAlias != '')">
+                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP').accountAlias != ''">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts[3] != null">
+                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM')">
                         <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts[3].cspCode == 'IBM' && (data.item.customerCloudAccounts[3].cspId != '' || data.item.customerCloudAccounts[3].accountAlias != '')">
+                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM').accountAlias != ''">
                     </b-link>
                 </template>
                 <template slot="projects" slot-scope="data">

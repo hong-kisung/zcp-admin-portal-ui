@@ -21,8 +21,8 @@
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1">
-                    <b-form-input type="text" id="azureCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.azureCspId"></b-form-input>
-                    <b-form-input type="text" id="azureAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.azureAccountAlias"></b-form-input>
+                    <b-form-input type="text" id="cloudzCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.cloudzCspId"></b-form-input>
+                    <b-form-input type="text" id="cloudzAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.cloudzAccountAlias"></b-form-input>
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1">
@@ -90,9 +90,9 @@ export default {
                         "accountAlias": this.customer.awsAccountAlias || ''
                     },
                     {
-                        "cspCode": "AZURE",
-                        "cspId": this.customer.azureCspId || '',
-                        "accountAlias": this.customer.azureAccountAlias || ''
+                        "cspCode": "CLOUDZ",
+                        "cspId": this.customer.cloudzCspId || '',
+                        "accountAlias": this.customer.cloudzAccountAlias || ''
                     },
                     {
                         "cspCode": "GCP",
