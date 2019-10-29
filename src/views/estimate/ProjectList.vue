@@ -1,8 +1,11 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-        	Estimates<b-button variant="success" size="sm" class="ml-2" @click="addProject"><i class="icon-plus"></i> Project 추가</b-button>
-            <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
+        	Estimates
+        	<div class="float-right">
+        		<b-button variant="success" class="mr-2" @click="addProject"><i class="icon-plus"></i> Project 추가</b-button>
+            	<b-button v-b-toggle.collapse1 variant="secondary"><i class="fa fa-filter"></i> 검색상세</b-button>
+            </div>
         </h1>
         <div>
             <b-collapse id="collapse1">

@@ -10,10 +10,11 @@
                         <i class="fa fa-history"></i> 원가견적 History
                     </b-list-group-item>
                     <b-list-group-item href="#" class="list-group-item-accent-secondary list-group-item-divider" @click="viewEstimate(item)" v-for="(item, index) in history" :key="item.id">
-                        <div>Version : {{ item.version }}</div>
+                        <div>Version : {{ item.version + (item.label ? ' - ' + item.label : '') }}</div>
                         <small class="text-muted">
                             <i class="icon-calendar"></i>&nbsp;&nbsp;{{ item.createdDt }}
                         </small>
+                        <div class="text-muted">{{ item.description }}</div>
                     </b-list-group-item>
                 </b-list-group>
             </b-tab>
