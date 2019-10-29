@@ -23,7 +23,7 @@ export default {
 		})
 	},
 	getEnvironmentTypes : function (store, payload) {
-		axios.get('/api/estimate/code/environment_type').then(response => {
+		axios.get('/api/estimate/code/project_environment').then(response => {
 			store.commit('setEnvironmentTypes', response.data)
 		})
 	},
