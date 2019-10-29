@@ -100,7 +100,7 @@ export default {
     		this.$router.push({name: 'ProjectVolume', params: {projectId: this.projectId }})
     	},
     	downloadExcel() {
-    		this.$store.dispatch('estimate/downloadExcel', {projectId: this.projectId, projectName: this.estimate.projectName, version: this.estimate.version})
+    		this.$store.dispatch('estimate/downloadExcel', {projectId: this.projectId, projectName: this.estimate.projectName, estimateId: this.estimate.id, version: this.estimate.version})
     	},
         showHistory () {
             document.body.classList.toggle("local-aside-show")

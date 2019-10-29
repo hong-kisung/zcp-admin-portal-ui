@@ -318,7 +318,7 @@ export default {
 		})
 	},
 	downloadExcel: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/download?type=excel', {responseType: 'blob'}).then(response => {
+		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId + '/download?type=excel', {responseType: 'blob'}).then(response => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
