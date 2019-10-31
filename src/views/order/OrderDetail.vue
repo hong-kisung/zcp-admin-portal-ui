@@ -247,7 +247,7 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch('cluster/getClusters');
+        
     },
     methods: {
         scrollHandle(evt) {

@@ -1,11 +1,14 @@
 export default {
-  orders: [],
-  ordersPage: {},
-  orderDetail: {
-    order: {},
-    orderProduct: {},
-    orderPackageCategories: [],
-    orderStatusLogs: [],
-    orderClusters: []
-  }
+    orders: [],
+    ordersPage: {
+        pageNo: 1,
+        pageSize: 10
+    },
+    orderDetail: {
+        order: {},
+        orderProduct: {},
+        orderPackageCategories: [],
+        orderStatusLogs: [],
+        orderClusters: []
+    }
 }
