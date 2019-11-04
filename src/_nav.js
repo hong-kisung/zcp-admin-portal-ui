@@ -42,7 +42,7 @@ export default {
       icon: 'icon-layers',
       children: [
         {
-          name: 'Cluster Status',
+          name: 'Cluster',
           url: '/cluster/clusterstate',
           icon: 'icon-puzzle'
         },
