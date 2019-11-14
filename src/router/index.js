@@ -12,8 +12,8 @@ const CustomerList = () => import('@/views/customer/CustomerList')
 const CustomerDetail = () => import('@/views/customer/CustomerDetail')
 
 // Project Management
-const Projects = () => import('@/views/project/Projects')
-const ProjectsDetail = () => import('@/views/project/ProjectsDetail') // Project 상세
+const ProjectList = () => import('@/views/project/ProjectList')
+const ProjectDetail = () => import('@/views/project/ProjectDetail')
 const OpsCostTransfer = () => import('@/views/project/OpsCostTransfer')
 
 // Product Management
@@ -117,12 +117,12 @@ export default new Router({
                         {
                             path: '/project/projects',
                             name: 'Projects',
-                            component: Projects
+                            component: ProjectList
                         },
                         {
-                            path: '/project/projectsdetail',
-                            name: 'Projects Details',
-                            component: ProjectsDetail
+                            path: '/project/:id',
+                            name: 'ProjectDetail',
+                            component: ProjectDetail
                         },
                         {
                             path: '/project/opscosttransfer',

@@ -63,7 +63,7 @@
                 </template>
             </b-table>
         </VuePerfectScrollbar>
-        
+
         <customerAdd v-bind:dialogVisible="customerAddDialog" v-on:fire-dialog-closed="customerAddDialog = false" />
     </b-card>
 </div>
@@ -146,7 +146,7 @@ export default {
         },
         customersPage: function() {
             return this.$store.state.customer.customersPage
-        },
+        }
     },
     created() {
         this.getCustomers()

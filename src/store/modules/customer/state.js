@@ -4,5 +4,6 @@ export default {
         pageNo: 1,
         pageSize: 10
     },
-    customer: {}
+    customer: {},
+    customersAll: []
 }

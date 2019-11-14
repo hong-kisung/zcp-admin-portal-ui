@@ -27,5 +27,8 @@ export default {
         } else {
             state.customer = {}
         }
+    },
+    setCustomersAll: function(state, data) {
+        state.customersAll = data;
     }
 }

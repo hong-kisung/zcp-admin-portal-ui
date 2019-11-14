@@ -1,6 +1,6 @@
 <template>
     <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">Customer Details</h1>
+        <h1 class="display-tit mb-3">{{ customer.nameEn }}</h1>
         <b-tabs class="detail-cnt">
             <b-tab active>
                 <template slot="title">
