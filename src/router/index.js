@@ -12,7 +12,8 @@ const CustomerList = () => import('@/views/customer/CustomerList')
 const CustomerDetail = () => import('@/views/customer/CustomerDetail')
 
 // Project Management
-const Projects = () => import('@/views/project/Projects')
+const ProjectList = () => import('@/views/project/ProjectList')
+const ProjectDetail = () => import('@/views/project/ProjectDetail')
 const OpsCostTransfer = () => import('@/views/project/OpsCostTransfer')
 
 // Product Management
@@ -22,6 +23,7 @@ const ProductCostEstimateTemplate = () => import('@/views/product/CostEstimateTe
 
 // Cluster Management
 const ClusterStatus = () => import('@/views/cluster/ClusterStatus')
+const ClusterDetail = () => import('@/views/cluster/ClusterStatusDetail') // Cluster 상세
 const NodeStatus = () => import('@/views/cluster/NodeStatus')
 const AddOnServiceStatus = () => import('@/views/cluster/AddOnServiceStatus')
 
@@ -55,12 +57,14 @@ export default new Router({
     scrollBehavior: () => ({
         y: 0
     }),
-    routes: [{
+    routes: [
+        {
             path: '/',
             redirect: '/dashboard',
             name: 'Home',
             component: DefaultContainer,
-            children: [{
+            children: [
+                {
                     path: 'dashboard',
                     name: 'Dashboard',
                     component: Dashboard
@@ -76,28 +80,29 @@ export default new Router({
                     },
                     children: [
                         {
-                            path: 'customer',
-                            redirect: '/customer/customer',
-                            name: 'Customers',
-                            component: {
-                                render (c) { return c('router-view') }
+                        path: 'customer',
+                        redirect: '/customer/customer',
+                        name: 'Customers',
+                        component: {
+                            render(c) {
+                                return c('router-view')
+                            }
+                        },
+                        children: [
+                            {
+                                path: '',
+                                component: CustomerList
                             },
-                            children: [
-                                {
-                                    path: '',
-                                    component: CustomerList
-                                },
-                                {
-                                    path: ':id',
-                                    name: 'CustomerDetail',
-                                    component: CustomerDetail,
-                                    meta: {
-                                        label: 'Customer Details'
-                                    }
-                                },
-                            ]
-                        }
-                    ]
+                            {
+                                path: ':id',
+                                name: 'CustomerDetail',
+                                component: CustomerDetail,
+                                meta: {
+                                    label: 'Customer Details'
+                                }
+                            },
+                        ]
+                    }]
                 },
                 {
                     path: 'project',
@@ -108,10 +113,16 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
+                    children: [
+                        {
                             path: '/project/projects',
                             name: 'Projects',
-                            component: Projects
+                            component: ProjectList
+                        },
+                        {
+                            path: '/project/:id',
+                            name: 'ProjectDetail',
+                            component: ProjectDetail
                         },
                         {
                             path: '/project/opscosttransfer',
@@ -129,37 +140,40 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
-                        path: 'products',
-                        redirect: '/product/products',
-                        name: 'Products',
-                        component: {
-                            render(c) {
-                                return c('router-view')
-                            }
+                    children: [
+                        {
+                            path: 'products',
+                            redirect: '/product/products',
+                            name: 'Products',
+                            component: {
+                                render(c) {
+                                    return c('router-view')
+                                }
+                            },
+                            children: [
+                                {
+                                    path: '',
+                                    component: ProductList
+                                },
+                                {
+                                    path: ':productId/addonservice',
+                                    name: 'ProductAddOnService',
+                                    component: ProductAddOnService,
+                                    meta: {
+                                        label: 'Add-on Service 관리',
+                                    }
+                                },
+                                {
+                                    path: ':productId/cost',
+                                    name: 'ProductCostEstimateTemplate',
+                                    component: ProductCostEstimateTemplate,
+                                    meta: {
+                                        label: '원가견적서 템플릿 관리',
+                                    }
+                                }
+                            ]
                         },
-                        children: [{
-                                path: '',
-                                component: ProductList
-                            },
-                            {
-                                path: ':productId/addonservice',
-                                name: 'ProductAddOnService',
-                                component: ProductAddOnService,
-                                meta: {
-                                    label: 'Add-on Service 관리',
-                                }
-                            },
-                            {
-                                path: ':productId/cost',
-                                name: 'ProductCostEstimateTemplate',
-                                component: ProductCostEstimateTemplate,
-                                meta: {
-                                    label: '원가견적서 템플릿 관리',
-                                }
-                            }
-                        ]
-                    }, ]
+                    ]
                 },
                 {
                     path: 'cluster',
@@ -170,10 +184,16 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
+                    children: [
+                        {
                             path: '/cluster/clusterstate',
-                            name: 'Cluster Status',
+                            name: 'Cluster',
                             component: ClusterStatus
+                        },
+                        {
+                            path: '/cluster/clusterdetail',
+                            name: 'Cluster Details',
+                            component: ClusterDetail
                         },
                         {
                             path: '/cluster/nodestatus',
@@ -196,7 +216,8 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
+                    children: [
+                        {
                             path: 'project',
                             redirect: '/estimate/project',
                             name: 'Estimates',
@@ -205,7 +226,8 @@ export default new Router({
                                     return c('router-view')
                                 }
                             },
-                            children: [{
+                            children: [
+                                {
                                     path: '',
                                     component: ProjectEstimateList
                                 },
@@ -258,11 +280,13 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
-                        path: 'order',
-                        name: 'Order',
-                        component: Order
-                    }]
+                    children: [
+                        {
+                            path: 'order',
+                            name: 'Order',
+                            component: Order
+                        }
+                    ]
                 },
                 {
                     path: 'backup',
@@ -273,11 +297,13 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
-                        path: 'backup',
-                        name: 'Backup',
-                        component: Backup
-                    }]
+                    children: [
+                        {
+                            path: 'backup',
+                            name: 'Backup',
+                            component: Backup
+                        }
+                    ]
                 },
                 {
                     path: 'notification',
@@ -288,11 +314,13 @@ export default new Router({
                             return c('router-view')
                         }
                     },
-                    children: [{
-                        path: 'notification',
-                        name: 'Notification',
-                        component: Notification
-                    }]
+                    children: [
+                        {
+                            path: 'notification',
+                            name: 'Notification',
+                            component: Notification
+                        }
+                    ]
                 }
             ]
         },
