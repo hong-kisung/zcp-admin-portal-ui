@@ -3,6 +3,9 @@ export default {
 		state.orders = data.content.resources;
 		state.ordersPage = data.page;
 	},
+	setOrdersPageNo: function(state, data) {
+        state.ordersPage.pageNo = data
+    },
 	setOrder: function(state, data) {
 		state.orderDetail.order = data;
 		state.orderDetail.orderProduct = data.orderProduct;

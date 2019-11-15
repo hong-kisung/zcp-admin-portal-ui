@@ -93,13 +93,16 @@
     <b-card>
         <div class="mb-3">
             <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                <b-form-select v-model="page.pageSize" id="perPageSelect" :options="pageOptions" @change="getOrdersByPage(1)" class="w-auto"></b-form-select>
+                <b-form-select v-model="ordersPage.pageSize" id="perPageSelect" :options="pageOptions" @change="getOrdersByPage(1)" class="w-auto"></b-form-select>
             </b-form-group>
-            <b-pagination v-model="page.pageNo" :total-rows="ordersPage.totalCount" :per-page="page.pageSize" @input="getOrdersByPage(page.pageNo)" align="right" class="my-0">
+            <b-pagination v-model="ordersPage.pageNo" :total-rows="ordersPage.totalCount" :per-page="ordersPage.pageSize" @input="getOrdersByPage(ordersPage.pageNo)" align="right" class="my-0">
             </b-pagination>
         </div>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <b-table striped small hover bordered :fields="fields" :items="orders">
+                <template slot="no" slot-scope="data">
+                    {{ (ordersPage.totalCount - ordersPage.beginOfPage) - data.index }}
+                </template>
                 <template slot="orderType" slot-scope="data">
                     {{ data.item.orderType | toOrderTypeText }}
                 </template>
@@ -133,11 +136,7 @@
         </VuePerfectScrollbar>
 
         <!-- order detail modal -->
-        <order-detail
-            v-bind:dialogVisible="orderDetailDialog"
-            v-on:fire-dialog-closed="orderDetailDialog = false"
-            v-on:list-reload="getOrders"
-        />
+        <order-detail v-bind:dialogVisible="orderDetailDialog" v-on:fire-dialog-closed="orderDetailDialog = false" v-on:list-reload="getOrders" />
     </b-card>
 
     <!-- local-aside : history -->
@@ -172,7 +171,9 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import {  Switch as cSwitch } from '@coreui/vue'
+import {
+    Switch as cSwitch
+} from '@coreui/vue'
 import axios from 'axios'
 import orderDetail from './OrderDetail'
 
@@ -180,6 +181,11 @@ export default {
     data() {
         return {
             fields: [
+                {
+                    key: 'no',
+                    label: 'No',
+                    tdClass: 'text-center'
+                },
                 {
                     key: 'orderType',
                     label: '주문타입',
@@ -244,10 +250,6 @@ export default {
                 clusterName: '',
                 orderId: ''
             },
-            page: {
-                pageNo: 1,
-                pageSize: 10
-            },
             orderDetailDialog: false,
         }
     },
@@ -283,30 +285,22 @@ export default {
         scrollHandle(evt) {
             // console.log(evt)
         },
-        getOrdersByPage(pageNo) {
-          let listParams = this.getOrdersParams();
-          listParams.page.pageNo = pageNo;
-
-          this.$store.dispatch('order/getOrders', listParams)
-        },
-        getOrdersParams() {
-            let search = this.search;
-            let page = this.page;
-            page.pageNo = this.ordersPage.pageNo == undefined ? 1 : this.ordersPage.pageNo;
-
-            let listParams = {
-                search: search,
-                page: page
-            }
-
-            return listParams;
-        },
         getOrders() {
-            let pars = this.getOrdersParams();
-            this.$store.dispatch('order/getOrders', pars)
+            const ordersParams = {
+                search: this.search,
+                page: this.ordersPage
+            }
+            this.$store.dispatch('order/getOrders', ordersParams)
+        },
+        getOrdersByPage(pageNo) {
+            this.$store.commit('order/setOrdersPageNo', pageNo)
+
+            this.getOrders();
         },
         getOrder(id) {
             this.orderDetailDialog = true;
+
+            this.$store.dispatch('cluster/getClusters');
             this.$store.dispatch('order/getOrder', {id: id})
         },
         updateOrderStatus(item, orderStatus) {
@@ -351,7 +345,9 @@ export default {
         getOrderStatusLogs(id) {
             document.body.classList.toggle("local-aside-show");
 
-            this.$store.dispatch('order/getOrderStatusLogs', {id: id});
+            this.$store.dispatch('order/getOrderStatusLogs', {
+                id: id
+            });
         },
         closeOrderStatusLog() {
             document.body.classList.toggle("local-aside-show");
