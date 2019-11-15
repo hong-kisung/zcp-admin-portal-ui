@@ -116,6 +116,11 @@ export default {
                     tdClass: 'text-center'
                 },
                 {
+                    key: 'createdDt',
+                    label: 'Created Date',
+                    tdClass: 'text-center'
+                },
+                {
                     key: 'activation',
                     label: 'Activation',
                     tdClass: 'text-center'

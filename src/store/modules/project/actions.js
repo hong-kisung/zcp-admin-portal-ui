@@ -45,6 +45,7 @@ export default {
 		axios.post('/api/admin-project/projects', payload.project).then(response => {
 			if (response.status === 201) {
 				store.dispatch('getProjectsReload')
+				store.dispatch('getProjectsAll', {sort: 'name', orderBy: 'asc'})
 				this._vm.$zadmin.alert('저장 되었습니다.')
 			} else {
 				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')

@@ -142,6 +142,7 @@ export default {
                 { key: 'status', label: 'Status', tdClass: 'text-center' },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center' },
+                { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center' },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
                 { key: 'projects_clusters', label: 'Clusters' },
