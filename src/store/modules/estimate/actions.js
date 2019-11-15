@@ -27,6 +27,16 @@ export default {
 			store.commit('setEnvironmentTypes', response.data)
 		})
 	},
+	getProjectStatus : function (store, payload) {
+		axios.get('/api/estimate/code/project_status').then(response => {
+			store.commit('setProjectStatusTypes', response.data)
+		})
+	},
+	getCspTypes : function (store, payload) {
+		axios.get('/api/estimate/code/csp_type').then(response => {
+			store.commit('setCspTypes', response.data)
+		})
+	},
 	
 	//general
 	getGeneral: function (store, payload) {

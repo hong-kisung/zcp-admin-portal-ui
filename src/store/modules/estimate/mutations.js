@@ -17,6 +17,12 @@ export default {
 	setEnvironmentTypes: function (state, data) {
 		state.environmentTypes = data
 	},
+	setProjectStatusTypes: function (state, data) {
+		state.projectStatusTypes = data
+	},
+	setCspTypes: function (state, data) {
+		state.cspTypes = data
+	},
 
 	//
 	setGeneral: function (state, data) {
@@ -67,11 +73,8 @@ export default {
 	},
 	
 	//project
-	setProjectListCurrentPage: function(state, data) {
-		state.projectListCondition.currentPage = data
-	},
-	setProjectListPerPage: function(state, data) {
-		state.projectListCondition.perPage = data
+	setProjectListCondition: function(state, data) {
+		state.projectListCondition = data
 	},
 	setProjects: function(state, data) {
 		state.projects = data
