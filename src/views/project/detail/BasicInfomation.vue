@@ -40,6 +40,9 @@
             <b-form-group label="Launching Date" label-for="launchDt" :label-cols="3">
                 <b-form-input type="date" id="launchDt" v-model="project.launchDt"></b-form-input>
             </b-form-group>
+            <b-form-group label="Description" label-for="description" :label-cols="3">
+                <b-form-input type="text" id="description" placeholder="description을 입력하세요." v-model="project.description"></b-form-input>
+            </b-form-group>
             <b-form-group label="원가견적 여부" label-for="estimatedYn" :label-cols="3">
                 <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn">
                     <b-form-radio value="Y">Yes</b-form-radio>

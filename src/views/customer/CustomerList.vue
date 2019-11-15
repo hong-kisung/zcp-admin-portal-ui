@@ -191,11 +191,16 @@ export default {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
                 }).catch(error => {
-                    console.log(error);
-                    this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-                })
+                    let response = error.response
+                    if (response.data) {
+                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
 
-            });
+                        this.$zadmin.alert(errorMsg)
+                    } else {
+                        this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                    }
+                })
+            })
         }
     }
 }
