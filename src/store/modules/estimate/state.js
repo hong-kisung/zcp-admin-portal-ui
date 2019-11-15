@@ -5,6 +5,8 @@ export default {
 	enduranceIops: [],
 	classificationTypes: [],
 	environmentTypes: [],
+	projectStatusTypes: [],
+	cspTypes: [],
 	
 	//원가견적 기준정보
 	general: {},		//기준정보 상세
@@ -28,7 +30,15 @@ export default {
 	//프로젝트 원가견적
 	projectListCondition: {
 		currentPage: 1,
-		perPage: 10
+		perPage: 50,
+    	filter: {
+    		customerId: null,
+    		status: null,
+    		cspCode: null,
+    		activation: null
+    	},
+    	sortBy: 'updatedDt',
+    	sortDesc: true
 	},
 	projects: [],
 	projectVolume: {},
