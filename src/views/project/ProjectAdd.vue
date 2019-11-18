@@ -38,7 +38,7 @@
                 <b-form-input type="date" id="launchDt" v-model="project.launchDt"></b-form-input>
             </b-form-group>
             <b-form-group label="Description" label-for="description" :label-cols="3">
-                <b-form-input type="text" id="description" placeholder="description을 입력하세요." v-model="project.description"></b-form-input>
+                <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description"></b-form-input>
             </b-form-group>
             <b-form-group label="원가견적 여부" label-for="estimatedYn" :label-cols="3">
                 <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn">
@@ -47,7 +47,7 @@
                 </b-form-radio-group>
             </b-form-group>
             <template v-if="project.estimatedYn === 'N'">
-                <b-form-group label="원가견적 상위 프로젝트" label-for="parentId" :label-cols="3">
+                <b-form-group label="원가견적 상위 프로젝트" label-for="parentId" :label-cols="3" label-class="required">
                     <b-form-select id="parentId" :plain="true" v-model="project.parentId">
                         <option value="">선택</option>
                         <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
@@ -83,7 +83,11 @@ export default {
             return this.$store.state.project.project
         },
         customersAll: function() {
-            return this.$store.state.customer.customersAll
+            var customers =  this.$store.state.customer.customersAll.filter(function(customer) {
+                return customer.activation == 1
+            })
+
+            return customers
         },
         projectsAll: function() {
             return this.$store.state.project.projectsAll
@@ -94,7 +98,7 @@ export default {
     },
     methods: {
         getProjectsAll() {
-            this.$store.dispatch('project/getProjectsAll', {sort: 'name', orderBy: 'asc'})
+            this.$store.dispatch('project/getProjectsAll')
         },
         saveProject(e) {
             if (!this.project.customerId) {
@@ -109,6 +113,11 @@ export default {
             }
             if (!this.project.status) {
                 this.$zadmin.alert('Status를 선택하세요.')
+                e.preventDefault()
+                return false
+            }
+            if (this.project.estimatedYn === 'N' && !this.project.parentId) {
+                this.$zadmin.alert('원가견적 상위 프로젝트를 선택하세요.')
                 e.preventDefault()
                 return false
             }
