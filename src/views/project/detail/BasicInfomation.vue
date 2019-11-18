@@ -115,8 +115,8 @@ export default {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
             }
-            this.$store.dispatch('project/getProjectsAll', {sort: 'name', orderBy: 'asc'})
-            this.$store.dispatch('customer/getCustomersAll', {sort: 'nameKr', orderBy: 'asc'})
+            this.$store.dispatch('project/getProjectsAll')
+            this.$store.dispatch('customer/getCustomersAll', {activation: 'Y'})
             this.$store.dispatch('project/getProject', {id: this.$route.params.id})
         },
         updateProject(e) {

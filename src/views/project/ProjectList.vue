@@ -230,11 +230,10 @@ export default {
                     console.log(error)
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 })
-
             })
         },
         getCustomersAll() {
-            this.$store.dispatch('customer/getCustomersAll', {sort: 'nameKr', orderBy: 'asc'})
+            this.$store.dispatch('customer/getCustomersAll', {activation: ''})
         },
         toCustomerLabel(val) {
             let project = this.$store.state.customer.customersAll.find(o => o.id == val)

@@ -83,7 +83,11 @@ export default {
             return this.$store.state.project.project
         },
         customersAll: function() {
-            return this.$store.state.customer.customersAll
+            var customers =  this.$store.state.customer.customersAll.filter(function(customer) {
+                return customer.activation == 1
+            })
+
+            return customers
         },
         projectsAll: function() {
             return this.$store.state.project.projectsAll
@@ -94,7 +98,7 @@ export default {
     },
     methods: {
         getProjectsAll() {
-            this.$store.dispatch('project/getProjectsAll', {sort: 'name', orderBy: 'asc'})
+            this.$store.dispatch('project/getProjectsAll')
         },
         saveProject(e) {
             if (!this.project.customerId) {

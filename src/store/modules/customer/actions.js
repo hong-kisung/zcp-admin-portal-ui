@@ -14,17 +14,6 @@ export default {
 			console.log('failed get getCustomersReload')
 		})
 	},
-	getCustomersAll: function(store, payload) {
-		let q = ''
-		let sort = payload.sort
-		let orderBy = payload.orderBy
-
-		axios.get('/api/admin-customer/customers/all?q=' + q + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
-			store.commit('setCustomersAll', response.data)
-		}).catch(error => {
-			console.log('failed get getCustomersAll')
-		})
-	},
 	getCustomersReload: function(store, payload) {
 		axios.get('/api/admin-customer/customers').then(response => {
 			store.commit('setCustomers', response.data)
@@ -56,6 +45,13 @@ export default {
 			} else {
 				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
 			}
+		})
+	},
+	getCustomersAll: function(store, payload) {
+		axios.get('/api/admin-customer/customers/all?activation=' + payload.activation).then(response => {
+			store.commit('setCustomersAll', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomersAll')
 		})
 	}
 }
