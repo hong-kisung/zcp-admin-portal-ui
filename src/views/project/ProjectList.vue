@@ -92,7 +92,7 @@
                         </router-link>
                     </template>
                     <template slot="period" slot-scope="data">
-                        {{data.item.devStartDt}} ~ {{data.item.devEndDt}}
+                        {{data.item.devStartDt | toDevPeriod}} ~ {{data.item.devEndDt | toDevPeriod}}
                     </template>
                     <template slot="projects_clusters" slot-scope="data">
                         <b-link>{{data.item.projects_clusters}}</b-link>
@@ -178,6 +178,15 @@ export default {
             return this.$store.state.customer.customersAll
         }
     },
+    filters: {
+        toDevPeriod(val) {
+            if (val) {
+                return val
+            } else {
+                return ''
+            }
+        }
+    },
     created() {
         this.getProjects()
         this.getCustomersAll()
@@ -227,8 +236,14 @@ export default {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
                 }).catch(error => {
-                    console.log(error)
-                    this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                    let response = error.response
+                    if (response.data) {
+                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
+
+                        this.$zadmin.alert(errorMsg)
+                    } else {
+                        this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                    }
                 })
             })
         },
