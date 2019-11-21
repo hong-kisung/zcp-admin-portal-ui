@@ -42,8 +42,8 @@ export default {
       icon: 'icon-layers',
       children: [
         {
-          name: 'Cluster',
-          url: '/cluster/clusterstate',
+          name: 'Clusters',
+          url: '/cluster/clusters',
           icon: 'icon-puzzle'
         },
         {

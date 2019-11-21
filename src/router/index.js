@@ -22,10 +22,8 @@ const ProductAddOnService = () => import('@/views/product/AddOnService') // Add-
 const ProductCostEstimateTemplate = () => import('@/views/product/CostEstimateTemplate') // 원가견적서 템플릿 관리
 
 // Cluster Management
-const ClusterStatus = () => import('@/views/cluster/ClusterStatus')
-const ClusterDetail = () => import('@/views/cluster/ClusterStatusDetail') // Cluster 상세
-const NodeStatus = () => import('@/views/cluster/NodeStatus')
-const AddOnServiceStatus = () => import('@/views/cluster/AddOnServiceStatus')
+const ClusterList = () => import('@/views/cluster/ClusterList')
+const ClusterDetail = () => import('@/views/cluster/ClusterDetail')
 
 // Estimate Management
 const ProjectEstimateList = () => import('@/views/estimate/ProjectList')
@@ -177,7 +175,7 @@ export default new Router({
                 },
                 {
                     path: 'cluster',
-                    redirect: '/cluster/clusterstate',
+                    redirect: '/cluster/clusters',
                     name: 'Cluster Management',
                     component: {
                         render(c) {
@@ -186,25 +184,15 @@ export default new Router({
                     },
                     children: [
                         {
-                            path: '/cluster/clusterstate',
-                            name: 'Cluster',
-                            component: ClusterStatus
+                            path: '/cluster/clusters',
+                            name: 'Clusters',
+                            component: ClusterList
                         },
                         {
-                            path: '/cluster/clusterdetail',
-                            name: 'Cluster Details',
+                            path: '/cluster/:id',
+                            name: 'ClusterDetail',
                             component: ClusterDetail
                         },
-                        {
-                            path: '/cluster/nodestatus',
-                            name: 'Node Status',
-                            component: NodeStatus
-                        },
-                        {
-                            path: '/cluster/addonservicestatus',
-                            name: 'Add-on Service Status',
-                            component: AddOnServiceStatus
-                        }
                     ]
                 },
                 {
