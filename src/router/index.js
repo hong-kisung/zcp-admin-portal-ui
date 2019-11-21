@@ -118,7 +118,7 @@ export default new Router({
                             component: ProjectList
                         },
                         {
-                            path: '/project/:id',
+                            path: '/project/:id/detail',
                             name: 'ProjectDetail',
                             component: ProjectDetail
                         },
@@ -189,7 +189,7 @@ export default new Router({
                             component: ClusterList
                         },
                         {
-                            path: '/cluster/:id',
+                            path: '/cluster/:id/detail',
                             name: 'ClusterDetail',
                             component: ClusterDetail
                         },

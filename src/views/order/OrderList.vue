@@ -300,7 +300,7 @@ export default {
         getOrder(id) {
             this.orderDetailDialog = true;
 
-            this.$store.dispatch('cluster/getClusters');
+            this.$store.dispatch('cluster/getClustersAll');
             this.$store.dispatch('order/getOrder', {id: id})
         },
         updateOrderStatus(item, orderStatus) {
