@@ -118,7 +118,7 @@
             <b-form-input type="text" id="md-clusterName" v-model="autocomplete.clusterName" placeholder="클러스터명을 입력하세요."></b-form-input>
         </b-form-group>
         <b-list-group class="mb-3" v-if="autocomplete.clusterName">
-            <b-list-group-item href="#" v-for="(item, idx) in clusters.filter(c => c.clusterName.indexOf(autocomplete.clusterName) != -1)" :key="idx" @click="updateOrderClusters(item)">
+            <b-list-group-item href="#" v-for="(item, idx) in clustersAll.filter(c => c.clusterName.indexOf(autocomplete.clusterName) != -1)" :key="idx" @click="updateOrderClusters(item)">
                 {{ item.clusterName }}
             </b-list-group-item>
         </b-list-group>
@@ -242,12 +242,12 @@ export default {
         orderClusters: function() {
             return this.$store.state.order.orderDetail.orderClusters;
         },
-        clusters: function() {
-            return this.$store.state.cluster.clusters;
+        clustersAll: function() {
+            return this.$store.state.cluster.clustersAll;
         }
     },
     created() {
-        
+
     },
     methods: {
         scrollHandle(evt) {
