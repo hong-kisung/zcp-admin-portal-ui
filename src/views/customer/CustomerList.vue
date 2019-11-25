@@ -19,7 +19,7 @@
                 </template>
 
                 <template slot="no" slot-scope="data">
-                    {{ (customersPage.totalCount - customersPage.beginOfPage) - data.index }}
+                    {{ (customersPage.totalCount - ((customersPage.pageNo - 1) * customersPage.pageSize)) - data.index }}
                 </template>
                 <template slot="cloud_account" slot-scope="data">
                     <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS')">
