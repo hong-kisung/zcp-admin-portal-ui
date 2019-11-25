@@ -40,7 +40,7 @@
                                 <label for="activation">원가견적 여부</label>
                                 <div>
                                     <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsSearch.estimatedYn">
-                                        <b-form-radio value="ALL">전체</b-form-radio>
+                                        <b-form-radio value="">전체</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
                                     </b-form-radio-group>
@@ -52,7 +52,7 @@
                                 <label for="activation">Activation</label>
                                 <div>
                                     <b-form-radio-group id="activation" name="activation" v-model="projectsSearch.activation">
-                                        <b-form-radio value="ALL">전체</b-form-radio>
+                                        <b-form-radio value="">전체</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
                                     </b-form-radio-group>
@@ -81,7 +81,7 @@
                     </template>
 
                     <template slot="no" slot-scope="data">
-                        {{ (projectsPage.totalCount - projectsPage.beginOfPage) - data.index }}
+                        {{ (projectsPage.totalCount - ((projectsPage.pageNo - 1) * projectsPage.pageSize)) - data.index }}
                     </template>
                     <template slot="customer" slot-scope="data">
                         {{toCustomerLabel(data.item.customerId)}}

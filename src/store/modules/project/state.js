@@ -8,8 +8,8 @@ export default {
         customerId: '',
         name: '',
         status: '',
-        estimatedYn: 'ALL',
-        activation: 'ALL'
+        estimatedYn: '',
+        activation: ''
     },
     project: {},
     projectsAll: []
