@@ -3,12 +3,8 @@
         <h1 class="display-tit mb-3">{{ title }}</h1>
         <b-tabs class="detail-cnt">
             <basic-infomation />
+            <clusters />
 
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-list mr-1"></i> Clusters
-                </template>
-            </b-tab>
             <b-tab>
                 <template slot="title">
                     <i class="icon-people mr-1"></i> Stakeholders
@@ -30,6 +26,7 @@
 
 <script>
 import BasicInfomation from './detail/BasicInfomation'
+import Clusters from './detail/Clusters'
 
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
@@ -38,7 +35,8 @@ export default {
     components: {
         VuePerfectScrollbar,
         cSwitch,
-        BasicInfomation
+        BasicInfomation,
+        Clusters
     },
     data()  {
         return {
