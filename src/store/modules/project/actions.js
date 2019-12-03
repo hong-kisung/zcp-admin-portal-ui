@@ -1,6 +1,7 @@
 import axios from '@/plugins/axios'
 
 export default {
+	// project
 	getProjects: function(store, payload) {
 		// set search
 		let customerId = 'customerId=' + payload.search.customerId
@@ -62,6 +63,31 @@ export default {
 			store.commit('settProjectsAll', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectsAll')
+		})
+	},
+
+	// project cluster
+	getProjectClusters: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/clusters').then(response => {
+			store.commit('setProjectClusters', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectClusters')
+		})
+	},
+	getProjectCluster: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/clusters/' + payload.projectClusterId).then(response => {
+			store.commit('setProjectCluster', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectCluster')
+		})
+	},
+
+	// product
+	getProducts: function(store, payload) {
+		axios.get('/api/admin-project/products').then(response => {
+			store.commit('setProducts', response.data)
+		}).catch(error => {
+			console.log('failed get getProducts')
 		})
 	}
 }

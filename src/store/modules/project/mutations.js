@@ -1,4 +1,5 @@
 export default {
+    // project
     setProjects: function(state, data) {
         state.projects = data.content.resources
         state.projectsPage = data.page
@@ -11,5 +12,18 @@ export default {
     },
     setProject: function(state, data) {
         state.project = data
+    },
+
+    // project cluster
+    setProjectClusters: function(state, data) {
+        state.projectClusters = data.content.resources
+    },
+    setProjectCluster: function(state, data) {
+        state.projectCluster = data
+    },
+
+    // product
+    setProducts: function(state, data) {
+        state.products = data
     }
 }

@@ -45,6 +45,6 @@ export default {
     },
     created () {
 		this.title = this.$route.params.name
-	},
+	}
 }
 </script>

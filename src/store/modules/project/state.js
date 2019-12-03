@@ -1,4 +1,5 @@
 export default {
+    // project
     projects: [],
     projectsPage: {
         pageNo: 1,
@@ -12,5 +13,14 @@ export default {
         activation: ''
     },
     project: {},
-    projectsAll: []
+    projectsAll: [],
+
+    // project clusters
+    projectClusters: [],
+    projectCluster: {
+        projectClusterProducts: []
+    },
+
+    // product
+    products: []
 }
