@@ -101,7 +101,7 @@
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <b-table striped small hover bordered :fields="fields" :items="orders">
                 <template slot="no" slot-scope="data">
-                    {{ (ordersPage.totalCount - ordersPage.beginOfPage) - data.index }}
+                    {{ (ordersPage.totalCount - ((ordersPage.pageNo - 1) * ordersPage.pageSize)) - data.index }}
                 </template>
                 <template slot="orderType" slot-scope="data">
                     {{ data.item.orderType | toOrderTypeText }}
