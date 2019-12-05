@@ -41,6 +41,7 @@ export default {
 	updateCustomer: function (store, payload) {
 		axios.put('/api/admin-customer/customers/' + payload.id, payload.customer).then(response => {
 			if (response.status === 200) {
+				store.dispatch('getCustomer', {id: payload.id})
 				this._vm.$zadmin.alert('저장 되었습니다.')
 			} else {
 				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
@@ -52,6 +53,20 @@ export default {
 			store.commit('setCustomersAll', response.data)
 		}).catch(error => {
 			console.log('failed get getCustomersAll')
+		})
+	},
+	getCustomerCloudAccounts: function(store, payload) {
+		axios.get('/api/admin-customer/customers/' + payload.id + '/cloud-accounts').then(response => {
+			store.commit('setCustomerCloudAccounts', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomerCloudAccounts')
+		})
+	},
+	getCustomerCloudAccount: function(store, payload) {
+		axios.get('/api/admin-customer/customers/' + payload.id + '/cloud-accounts/' + payload.customerCloudAccountId).then(response => {
+			store.commit('setCustomerCloudAccount', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomerCloudAccount')
 		})
 	}
 }

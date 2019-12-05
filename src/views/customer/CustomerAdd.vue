@@ -13,33 +13,6 @@
                     Customer Name(KR)을 입력해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
-            <b-form-group label="Cloud Service Provider" label-for="cloudServiceProviderGoogle" :label-cols="3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1">
-                    <b-form-input type="text" id="awsCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.awsCspId"></b-form-input>
-                    <b-form-input type="text" id="awsAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.awsAccountAlias"></b-form-input>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mt-2">
-                    <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1">
-                    <b-form-input type="text" id="azureCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.azureCspId"></b-form-input>
-                    <b-form-input type="text" id="azureAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.azureAccountAlias"></b-form-input>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mt-2">
-                    <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1">
-                    <b-form-input type="text" id="cloudzCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.cloudzCspId"></b-form-input>
-                    <b-form-input type="text" id="cloudzAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.cloudzAccountAlias"></b-form-input>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mt-2">
-                    <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1">
-                    <b-form-input type="text" id="gcpCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.gcpCspId"></b-form-input>
-                    <b-form-input type="text" id="gcpAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.gcpAccountAlias"></b-form-input>
-                </div>
-                <div class="d-flex align-items-center justify-content-between mt-2">
-                    <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1">
-                    <b-form-input type="text" id="ibmCspId" placeholder="Account ID" class="mx-1" style="width: 40%;" v-model="customer.ibmCspId"></b-form-input>
-                    <b-form-input type="text" id="ibmAccountAlias" placeholder="Alias" style="width: 60%;" v-model="customer.ibmAccountAlias"></b-form-input>
-                </div>
-            </b-form-group>
         </b-form>
         <template v-slot:modal-footer="{ ok, cancel }">
             <b-button variant="secondary" @click="cancel">취소</b-button>
@@ -85,42 +58,10 @@ export default {
 				return false
             }
 
-            let customer = {
-                "nameEn": this.customer.nameEn,
-                "nameKr": this.customer.nameKr,
-                "customerCloudAccounts": [
-                    {
-                        "cspCode": "AWS",
-                        "cspId": this.customer.awsCspId || '',
-                        "accountAlias": this.customer.awsAccountAlias || ''
-                    },
-                    {
-                        "cspCode": "AZURE",
-                        "cspId": this.customer.azureCspId || '',
-                        "accountAlias": this.customer.azureAccountAlias || ''
-                    },
-                    {
-                        "cspCode": "CLOUDZ",
-                        "cspId": this.customer.cloudzCspId || '',
-                        "accountAlias": this.customer.cloudzAccountAlias || ''
-                    },
-                    {
-                        "cspCode": "GCP",
-                        "cspId": this.customer.gcpCspId || '',
-                        "accountAlias": this.customer.gcpAccountAlias || ''
-                    },
-                    {
-                        "cspCode": "IBM",
-                        "cspId": this.customer.ibmCspId || '',
-                        "accountAlias": this.customer.ibmAccountAlias || ''
-                    }
-                ]
-            }
-
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {
                 if (!result) return false
 
-                this.$store.dispatch('customer/saveCustomer', {customer: customer, reload: this.$emit('fire-dialog-closed')})
+                this.$store.dispatch('customer/saveCustomer', {customer: this.customer, reload: this.$emit('fire-dialog-closed')})
             });
         },
         cancel() {

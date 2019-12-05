@@ -5,5 +5,7 @@ export default {
         pageSize: 10
     },
     customer: {},
-    customersAll: []
+    customersAll: [],
+    customerCloudAccounts: [],
+    customerCloudAccount: {}
 }

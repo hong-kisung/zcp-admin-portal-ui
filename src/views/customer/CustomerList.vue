@@ -2,7 +2,7 @@
 <div class="animated fadeIn">
     <h1 class="display-tit mb-3">
         Customer <b-badge class="m-1" variant="danger">{{ customersPage.totalCount }}</b-badge>
-        <b-button variant="success" size="sm" class="ml-2" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
+        <b-button variant="success" class="float-right" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
     </h1>
     <b-card>
         <div class="mb-3">
@@ -15,32 +15,37 @@
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <b-table striped hover small bordered :fields="fields" :items="customers">
                 <template v-slot:table-colgroup="scope">
-                    <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'number' ? '5%' : '' }">
+                    <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'no' ? '5%' : '' }">
                 </template>
 
                 <template slot="no" slot-scope="data">
                     {{ (customersPage.totalCount - ((customersPage.pageNo - 1) * customersPage.pageSize)) - data.index }}
                 </template>
-                <template slot="cloud_account" slot-scope="data">
-                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS')">
+                <template slot="nameKr" slot-scope="data">
+                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr } }">
+                        {{data.item.nameKr}}
+                    </router-link>
+                </template>
+                <template slot="cloudAccounts" slot-scope="data">
+                    <b-link v-if="data.item.cloudAccounts.find(o => o.cspCode == 'AWS')">
                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').accountAlias != ''">
+                            v-if="data.item.cloudAccounts.find(o => o.cspCode == 'AWS').cspCnt > 0 ">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AZURE')">
+                    <b-link v-if="data.item.cloudAccounts.find(o => o.cspCode == 'AZURE')">
                         <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'AZURE').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'AWS').accountAlias != ''">
+                            v-if="data.item.cloudAccounts.find(o => o.cspCode == 'AZURE').cspCnt > 0 ">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ')">
+                    <b-link v-if="data.item.cloudAccounts.find(o => o.cspCode == 'CLOUDZ')">
                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'CLOUDZ').accountAlias != ''">
+                            v-if="data.item.cloudAccounts.find(o => o.cspCode == 'CLOUDZ').cspCnt > 0 ">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP')">
+                    <b-link v-if="data.item.cloudAccounts.find(o => o.cspCode == 'GCP')">
                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'GCP').accountAlias != ''">
+                            v-if="data.item.cloudAccounts.find(o => o.cspCode == 'GCP').cspCnt > 0 ">
                     </b-link>
-                    <b-link v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM')">
+                    <b-link v-if="data.item.cloudAccounts.find(o => o.cspCode == 'IBM')">
                         <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1"
-                            v-if="data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM').cspId != '' || data.item.customerCloudAccounts.find(o => o.cspCode == 'IBM').accountAlias != ''">
+                            v-if="data.item.cloudAccounts.find(o => o.cspCode == 'IBM').cspCnt > 0 ">
                     </b-link>
                 </template>
                 <template slot="projects" slot-scope="data">
@@ -56,9 +61,6 @@
                     </label>
                 </template>
                 <template slot="actions" slot-scope="data">
-                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id } }">
-                        <b-button variant="secondary" size="sm" class="mr-1"><i class="fa fa-pencil"></i></b-button>
-                    </router-link>
                     <b-button variant="danger" size="sm" @click="removeCustomer(data.item.id, data.item.nameEn)"><i class="fa fa-close"></i></b-button>
                 </template>
             </b-table>
@@ -101,17 +103,17 @@ export default {
                     tdClass: 'text-left'
                 },
                 {
-                    key: 'cloud_account',
+                    key: 'cloudAccounts',
                     label: 'Cloud Account',
                     tdClass: 'text-left'
                 },
                 {
-                    key: 'projects',
+                    key: 'projectCnt',
                     label: 'Projecs',
                     tdClass: 'text-center'
                 },
                 {
-                    key: 'clusters',
+                    key: 'clusterCnt',
                     label: 'Clusters',
                     tdClass: 'text-center'
                 },
