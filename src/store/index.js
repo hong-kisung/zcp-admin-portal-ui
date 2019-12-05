@@ -12,14 +12,21 @@ const store = new Vuex.Store({
 		user: {
 			userId: '',
 			userName: ''
-		}
+		},
+		menu: []
 	},
 	getters: {
+		getUser: state => {
+			return state.user
+		},
 		getUserId: state => {
 			return state.user.userId
 		},
 		getUserName: state => {
 			return state.user.userName
+		},
+		getMenu: state => {
+			return state.menu
 		}
 	},
 	mutations: {
@@ -32,6 +39,9 @@ const store = new Vuex.Store({
 				userId: '',
 				userName: ''
 			}
+		},
+		setMenu: function(state, payload) {
+			state.menu = payload
 		}
 	},
 	actions: {
@@ -41,7 +51,16 @@ const store = new Vuex.Store({
 			}).catch(error => {
 				console.log('failed getUserInfo')
 			})
+		  	store.dispatch('getMenu')
 		},
+		getMenu: function(store, payload) {
+			//사용자별 접근 가능한 메뉴 데이터 조회
+			axios.get('/api/gateway/user/menu').then(response => {
+				store.commit('setMenu', response.data)
+			}).catch(error => {
+				console.log('failed getMenu')
+			})
+		}
 	},
 	modules: modules.default
 })

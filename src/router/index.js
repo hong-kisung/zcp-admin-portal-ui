@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
+import store from '@/store'
 
 // Containers
 const DefaultContainer = () => import('@/containers/DefaultContainer')
@@ -47,16 +48,15 @@ const Notification = () => import('@/views/notification/Notification')
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+const router = new VueRouter({
     mode: 'hash', // https://router.vuejs.org/api/#mode
     linkActiveClass: 'open active',
     scrollBehavior: () => ({
         y: 0
     }),
-    routes: [
-        {
+    routes: [{
             path: '/',
             redirect: '/dashboard',
             name: 'Home',
@@ -324,3 +324,5 @@ export default new Router({
         }
     ]
 })
+
+export default router
