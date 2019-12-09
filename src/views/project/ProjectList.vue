@@ -2,8 +2,10 @@
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
             Projects <b-badge class="m-1" variant="danger">{{ projectsPage.totalCount }}</b-badge>
-            <b-button variant="success" size="sm" class="ml-2" @click="projectAdd"><i class="icon-plus"></i> Project 추가</b-button>
-            <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
+            <div class="float-right">
+                <b-button variant="success" class="mr-2" @click="projectAdd"><i class="icon-plus"></i> Project 추가</b-button>
+                <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
+            </div>
         </h1>
         <div>
             <b-collapse id="collapse1">
@@ -13,7 +15,7 @@
                             <b-form-group>
                                 <label for="customer">Customer</label>
                                 <b-form-select id="customerId" :plain="true" v-model="projectsSearch.customerId" >
-                                    <option value="">전체</option>
+                                    <option value="">All</option>
                                     <option v-for="(item, index) in customersAll" :value="item.id">{{ item.nameEn }}</option>
                                 </b-form-select>
                             </b-form-group>
@@ -28,7 +30,7 @@
                             <b-form-group>
                                 <label for="status">Status</label>
                                 <b-form-select id="status" :plain="true" value="선택" v-model="projectsSearch.status">
-                                    <option value="">전체</option>
+                                    <option value="">All</option>
                                     <option value="Proposal">Proposal</option>
                                     <option value="Development">Development</option>
                                     <option value="Operation">Operation</option>
@@ -37,10 +39,10 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="activation">원가견적 여부</label>
+                                <label for="activation">estimated YN</label>
                                 <div>
                                     <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsSearch.estimatedYn">
-                                        <b-form-radio value="">전체</b-form-radio>
+                                        <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
                                     </b-form-radio-group>
@@ -52,7 +54,7 @@
                                 <label for="activation">Activation</label>
                                 <div>
                                     <b-form-radio-group id="activation" name="activation" v-model="projectsSearch.activation">
-                                        <b-form-radio value="">전체</b-form-radio>
+                                        <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
                                     </b-form-radio-group>
@@ -95,7 +97,7 @@
                         {{data.item.devStartDt | toDevPeriod}} ~ {{data.item.devEndDt | toDevPeriod}}
                     </template>
                     <template slot="projects_clusters" slot-scope="data">
-                        <b-link>{{data.item.projects_clusters}}</b-link>
+                        <b-link><img src="img/img_k8s.png" alt="kubernetes" width="22"></b-link>
                     </template>
                     <template slot="projects_stakeholder" slot-scope="data">
                         <b-button variant="primary" size="sm"><i class="icon-people"></i></b-button>
@@ -145,14 +147,15 @@ export default {
                 { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center' },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
-                { key: 'projects_clusters', label: 'Clusters' },
+                { key: 'projects_clusters', label: 'Clusters', tdClass: 'text-center' },
                 { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
             pageOptions: [10, 20, 30, 50, 100],
             projectAddDialog: false,
-            projectId: 0
+            projectId: 0,
+            customersAll: []
         }
     },
     computed: {
@@ -173,9 +176,6 @@ export default {
         },
         projectsSearch: function() {
             return this.$store.state.project.projectsSearch
-        },
-        customersAll: function() {
-            return this.$store.state.customer.customersAll
         }
     },
     filters: {
@@ -195,6 +195,11 @@ export default {
         scrollHandle (evt) {
             // console.log(evt)
         },
+        getCustomersAll() {
+            axios.get('/api/admin-customer/customers/all').then(response => {
+                this.customersAll = response.data.content.resources
+            })
+        },
         getProjects() {
             const params = {
                 search: this.projectsSearch,
@@ -213,7 +218,20 @@ export default {
             this.$store.dispatch('project/getProjects', params)
         },
         projectAdd() {
-            this.$store.commit('project/setProject', {customerId: '', status: '', estimatedYn: 'Y', parentId: ''})
+            const project = {
+                content: {
+                    resource: {
+                        customerId: '',
+                        status: '',
+                        estimatedYn: 'Y',
+                        parentId: '',
+                        customerCloudAccountCspCode: '',
+                        customerCloudAccountId: ''
+                    }
+                }
+            }
+
+            this.$store.commit('project/setProject', project)
             this.projectAddDialog = true
         },
         updateProjectActivation(id, activation) {
@@ -247,11 +265,8 @@ export default {
                 })
             })
         },
-        getCustomersAll() {
-            this.$store.dispatch('customer/getCustomersAll', {activation: ''})
-        },
         toCustomerLabel(val) {
-            let project = this.$store.state.customer.customersAll.find(o => o.id == val)
+            let project = this.customersAll.find(o => o.id == val)
             if (project != null) {
                 return project.nameKr
             }

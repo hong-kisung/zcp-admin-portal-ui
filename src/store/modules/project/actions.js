@@ -31,17 +31,6 @@ export default {
 			console.log('failed get getProjectsReload')
 		})
 	},
-	saveProject: function (store, payload) {
-		axios.post('/api/admin-project/projects', payload.project).then(response => {
-			if (response.status === 201) {
-				store.dispatch('getProjectsReload')
-				store.dispatch('getProjectsAll', {sort: 'name', orderBy: 'asc'})
-				this._vm.$zadmin.alert('저장 되었습니다.')
-			} else {
-				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-			}
-		})
-	},
 	getProject: function(store, payload) {
 		axios.get('/api/admin-project/projects/' + payload.id).then(response => {
 			store.commit('setProject', response.data)
@@ -49,18 +38,9 @@ export default {
 			console.log('failed get getProjects')
 		})
 	},
-	updateProject: function (store, payload) {
-		axios.put('/api/admin-project/projects/' + payload.id, payload.project).then(response => {
-			if (response.status === 200) {
-				this._vm.$zadmin.alert('저장 되었습니다.')
-			} else {
-				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-			}
-		})
-	},
 	getProjectsAll: function(store, payload) {
 		axios.get('/api/admin-project/projects/all').then(response => {
-			store.commit('settProjectsAll', response.data)
+			store.commit('setProjectsAll', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectsAll')
 		})

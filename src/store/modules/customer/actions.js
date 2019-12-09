@@ -1,6 +1,7 @@
 import axios from '@/plugins/axios'
 
 export default {
+	// customer
 	getCustomers: function(store, payload) {
 		let q = ''
 		let pageNo = payload.pageNo
@@ -48,13 +49,8 @@ export default {
 			}
 		})
 	},
-	getCustomersAll: function(store, payload) {
-		axios.get('/api/admin-customer/customers/all?activation=' + payload.activation).then(response => {
-			store.commit('setCustomersAll', response.data)
-		}).catch(error => {
-			console.log('failed get getCustomersAll')
-		})
-	},
+	
+	// customer cloud account
 	getCustomerCloudAccounts: function(store, payload) {
 		axios.get('/api/admin-customer/customers/' + payload.id + '/cloud-accounts').then(response => {
 			store.commit('setCustomerCloudAccounts', response.data)

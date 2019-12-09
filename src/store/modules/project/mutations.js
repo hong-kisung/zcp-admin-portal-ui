@@ -7,13 +7,17 @@ export default {
     setProjectsPageNo: function(state, data) {
         state.projectsPage.pageNo = data
     },
-    settProjectsAll: function(state, data) {
+    setProject: function(state, data) {
+        if (data.content) {
+            state.project = data.content.resource
+        } else {
+            state.project = {}
+        }
+    },
+    setProjectsAll: function(state, data) {
         state.projectsAll = data
     },
-    setProject: function(state, data) {
-        state.project = data
-    },
-
+    
     // project cluster
     setProjectClusters: function(state, data) {
         state.projectClusters = data.content.resources

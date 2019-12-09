@@ -1,4 +1,5 @@
 export default {
+    // customer
     setCustomers: function(state, data) {
         state.customers = data.content.resources
         state.customersPage = data.page
@@ -13,9 +14,8 @@ export default {
             state.customer = {}
         }
     },
-    setCustomersAll: function(state, data) {
-        state.customersAll = data.content.resources;
-    },
+
+    // customer cloud account
     setCustomerCloudAccounts: function(state, data) {
         state.customerCloudAccounts = data.content.resources;
     },

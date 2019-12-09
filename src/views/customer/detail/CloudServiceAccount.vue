@@ -201,7 +201,6 @@ export default {
                 axios.delete('/api/admin-customer/customers/' + this.id + '/cloud-accounts/' + customerCloudAccountId).then(response => {
                     if (response && response.status === 204) {
                         this.$store.dispatch('customer/getCustomerCloudAccounts', {id: this.id})
-                        this.closeprojectClusterDialog()
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
@@ -218,7 +217,7 @@ export default {
             })
         },
         getCustomerServiceAccount(customerCloudAccountId) {
-            this.$store.commit('project/setCustomerCloudAccount', {})
+            this.$store.commit('customer/setCustomerCloudAccount', {})
             this.$store.dispatch('customer/getCustomerCloudAccount', {id: this.id, customerCloudAccountId: customerCloudAccountId})
 
             this.customerCloudAccountId = customerCloudAccountId
