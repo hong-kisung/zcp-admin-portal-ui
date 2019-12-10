@@ -227,9 +227,9 @@ export default {
                 this.id = this.$route.params.id
             }
 
-            this.$store.dispatch('project/getProjectClusters', {id: this.id})
-            this.$store.dispatch('cluster/getClustersAll')
-            this.$store.dispatch('project/getProducts')
+            //this.$store.dispatch('project/getProjectClusters', {id: this.id})
+            //this.$store.dispatch('cluster/getClustersAll')
+            //this.$store.dispatch('project/getProducts')
         },
         projectClusterAdd() {
             const projectCluster = {

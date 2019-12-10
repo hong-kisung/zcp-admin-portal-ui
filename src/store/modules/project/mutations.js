@@ -33,5 +33,20 @@ export default {
     // product
     setProducts: function(state, data) {
         state.products = data.content.resources
+    },
+
+    // project stakeholders
+    setProjectStakeholders: function(state, data) {
+        state.projectStakeholders = data.content.resources
+    },
+    setProjectStakeholder: function(state, data) {
+        if (data.content) {
+            state.projectStakeholder = data.content.resource
+        } else {
+            state.projectStakeholder = {}
+        }
+    },
+    setProjectMngUsers: function(state, data) {
+        state.projectMngUsers = data.content.resources
     }
 }

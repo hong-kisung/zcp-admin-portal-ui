@@ -69,5 +69,28 @@ export default {
 		}).catch(error => {
 			console.log('failed get getProducts')
 		})
+	},
+
+	// project stakeholders
+	getProjectStakeholders: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/stakeholders').then(response => {
+			store.commit('setProjectStakeholders', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectStakeholders')
+		})
+	},
+	getProjectStakeholder: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/stakeholders/' + payload.projectStakeholderId).then(response => {
+			store.commit('setProjectStakeholder', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectStakeholder')
+		})
+	},
+	getProjectMngUsers: function(store, payload) {
+		axios.get('/api/admin-project/projects/mng/users').then(response => {
+			store.commit('setProjectMngUsers', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectMngUsers')
+		})
 	}
 }

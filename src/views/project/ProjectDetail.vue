@@ -4,12 +4,8 @@
         <b-tabs class="detail-cnt">
             <basic-infomation />
             <clusters />
+            <stakeholders />
 
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-people mr-1"></i> Stakeholders
-                </template>
-            </b-tab>
             <b-tab>
                 <template slot="title">
                     <i class="icon-calculator mr-1"></i> Estimate Sheet
@@ -27,6 +23,7 @@
 <script>
 import BasicInfomation from './detail/BasicInfomation'
 import Clusters from './detail/Clusters'
+import Stakeholders from './detail/Stakeholders'
 
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
@@ -36,7 +33,8 @@ export default {
         VuePerfectScrollbar,
         cSwitch,
         BasicInfomation,
-        Clusters
+        Clusters,
+        Stakeholders
     },
     data()  {
         return {

@@ -20,7 +20,11 @@ export default {
     projectCluster: {
         projectClusterProducts: []
     },
+    products: [],
 
-    // product
-    products: []
+    // project stakeholders
+    projectStakeholders: [],
+    projectStakeholder: {},
+    projectMngUsers: []
+
 }
