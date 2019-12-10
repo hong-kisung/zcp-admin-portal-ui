@@ -32,31 +32,29 @@
                     <template v-for="(item, idx) in projectClusters">
                         <template v-if="item.projectClusterProducts.length == 0">
                             <tr>
-                                <td class="text-left" v-if="index == 0" :rowspan="item.projectClusterProducts.length">
+                                <th class="bg-dark">
                                     <b-link @click="getProjectCluster(item.id)">{{ item.clusterName }}</b-link>
-                                </td>
-                                <td class="text-left" v-if="index == 0" :rowspan="item.projectClusterProducts.length">{{ item.enviromentType }}</td>
-                                <td class="text-center"></td>
-                                <td class="text-right"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
+                                </th>
+                                <td class="text-left">{{ item.enviromentType }}</td>
+                                <td class="text-center">&nbsp;</td>
+                                <td class="text-right">&nbsp;</td>
+                                <td class="text-center">&nbsp;</td>
+                                <td class="text-center">&nbsp;</td>
+                                <td class="text-center">&nbsp;</td>
                             </tr>
                         </template>
                         <template v-else>
-                            <template v-for="(projectClusterProduct, index) in item.projectClusterProducts">
-                                <tr>
-                                    <td class="text-left" v-if="index == 0" :rowspan="item.projectClusterProducts.length">
-                                        <b-link @click="getProjectCluster(item.id)">{{ item.clusterName }}</b-link>
-                                    </td>
-                                    <td class="text-left" v-if="index == 0" :rowspan="item.projectClusterProducts.length">{{ item.enviromentType }}</td>
-                                    <td class="text-center">{{ projectClusterProduct.productName }}</td>
-                                    <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
-                                    <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
-                                    <td class="text-center">{{ projectClusterProduct.billingStartDt }}</td>
-                                    <td class="text-center">{{ projectClusterProduct.createdDt }}</td>
-                                </tr>
-                            </template>
+                            <tr v-for="(projectClusterProduct, clusterProductIndex) in item.projectClusterProducts">
+                                <th class="bg-dark" v-if="clusterProductIndex == 0" :rowspan="item.projectClusterProducts.length">
+                                    <b-link @click="getProjectCluster(item.id)">{{ item.clusterName }}</b-link>
+                                </th>
+                                <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="item.projectClusterProducts.length">{{ item.enviromentType }}</td>
+                                <td class="text-center">{{ projectClusterProduct.productName }}</td>
+                                <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
+                                <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
+                                <td class="text-center">{{ projectClusterProduct.billingStartDt }}</td>
+                                <td class="text-center">{{ projectClusterProduct.createdDt }}</td>
+                            </tr>
                         </template>
                     </template>
                 </tbody>
@@ -64,61 +62,89 @@
         </VuePerfectScrollbar>
 
         <!-- modal : Cluster Add -->
-        <b-modal id="cluster-modal" size="lg" title="Cluster" centered no-close-on-backdrop v-model="projectClusterDialog" @close="closeprojectClusterDialog">
+        <b-modal id="cluster-add-modal" size="lg" title="Cluster" centered no-close-on-backdrop v-model="projectClusterDialog" @close="closeprojectClusterDialog">
             <b-form>
-                <b-form-group label="Environment Type" label-for="environment" :label-cols="4" label-class="required">
-                    <b-form-select id="environment" :plain="true" v-model="projectCluster.enviromentType" required>
+                <b-form-group label="Environment Type" label-for="environmentType" :label-cols="3" label-class="required">
+                    <b-form-select id="environmentType" :plain="true" required v-model="projectCluster.enviromentType">
                         <option value="">선택</option>
                         <option value="dev">dev</option>
                         <option value="qa">qa</option>
                         <option value="stage">stage</option>
                         <option value="prod">prod</option>
                     </b-form-select>
-                    <b-form-invalid-feedback id="environment">
-                        Environment를 선택해주세요.
+                    <b-form-invalid-feedback id="environmentType">
+                        Environment Type을 선택해주세요.
                     </b-form-invalid-feedback>
                 </b-form-group>
-                <b-form-group label="Cluster" label-for="Cluster" :label-cols="4" label-class="required">
-                    <b-form-select id="clusterId" :plain="true" v-model="projectCluster.clusterId" required>
+                <b-form-group label="Cluster" label-for="cluster" :label-cols="3" label-class="required">
+                    <b-form-select id="cluster" :plain="true" required v-model="projectCluster.clusterId">
                         <option value="">선택</option>
                         <option v-for="(item, index) in clustersAll" :value="item.id">{{ item.clusterName }}</option>
                     </b-form-select>
-                    <b-form-invalid-feedback id="environment">
-                        Environment를 선택해주세요.
+                    <b-form-invalid-feedback id="cluster">
+                        Cluster를 선택해주세요.
                     </b-form-invalid-feedback>
                 </b-form-group>
-
-                <b-form-group label="Product" label-for="Product" :label-cols="4">
-                    <b-button variant="success" size="sm" class="float-right"  @click="projectClusterProductAdd"><i class="icon-plus"></i> Project 추가</b-button>
-
-                    <b-table striped hover small bordered :fields="clusterProduct_fields" :items="projectCluster.projectClusterProducts">
-                        <template v-slot:table-colgroup="scope">
-                            <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'product' ? '25%' : '' }">
-                        </template>
-
-                        <template slot="productId" slot-scope="data">
-                            <b-form-select id="productId" size="sm" :plain="true" v-model="projectCluster.projectClusterProducts[data.index].productId" required>
-                                <option value="">선택</option>
-                                <option v-for="(item, index) in products" :value="item.id">{{ item.name }}</option>
-                            </b-form-select>
-                        </template>
-                        <template slot="contractSize" slot-scope="data">
-                            <b-form-input type="text" id="contractSize" value="" size="sm" v-model="projectCluster.projectClusterProducts[data.index].contractSize"></b-form-input>
-                        </template>
-                        <template slot="billingYn" slot-scope="data">
-                            <label class="mx-1 mb-0 switch switch-label switch-success">
-                                <input class="switch-input" type="checkbox" checked="" true-value="Y" false-value="N" v-model="projectCluster.projectClusterProducts[data.index].billingYn">
-                                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
-                            </label>
-                        </template>
-                        <template slot="billingStartDt" slot-scope="data">
-                            <b-form-input type="date" id="billingStartDt" v-model="projectCluster.projectClusterProducts[data.index].billingStartDt"></b-form-input>
-                        </template>
-                        <template slot="product_actions" slot-scope="data">
-                            <b-button variant="danger" size="sm" class="mr-1" @click="projectClusterProductRemove(data.index)"><i class="fa fa-close"></i></b-button>
-                        </template>
-                    </b-table>
-                </b-form-group>
+                <b-form-row>
+                    <b-col sm="3">
+                        <label for="product" class="col-form-label">Product</label>
+                        <div>
+                            <b-button variant="success" size="sm" @click="projectClusterProductAdd"><i class="icon-plus"></i> 추가</b-button>
+                        </div>
+                    </b-col>
+                    <b-col>
+                        <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
+                            <table class="table table-sm table-bordered">
+                                <colgroup>
+                                    <col style="width: *;">
+                                    <col style="width: 15%;">
+                                    <col style="width: 12%;">
+                                    <col style="width: 15%;">
+                                    <col style="width: 10%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Contract Size</th>
+                                        <th>Billing YN</th>
+                                        <th>Billing Start Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template v-for="(item, idx) in projectCluster.projectClusterProducts">
+                                    <tr>
+                                        <td>
+                                            <b-form-select id="productId" :plain="true" v-model="projectCluster.projectClusterProducts[idx].productId">
+                                                <option value="">선택</option>
+                                                <option v-for="(item, index) in products" :value="item.id">{{ item.name }}</option>
+                                            </b-form-select>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <b-form-input type="text" id="contractSize" v-model="projectCluster.projectClusterProducts[idx].contractSize"></b-form-input>
+                                                <span class="mx-1">GB</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <label class="mx-1 mb-0 switch switch-label switch-success">
+                                                <input class="switch-input" type="checkbox" checked="" true-value="Y" false-value="N" v-model="projectCluster.projectClusterProducts[idx].billingYn">
+                                                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <b-form-input type="date" id="billingStartDt" v-model="projectCluster.projectClusterProducts[idx].billingStartDt"></b-form-input>
+                                        </td>
+                                        <td class="text-center">
+                                            <b-button variant="danger" size="sm" @click="projectClusterProductRemove(idx)"><i class="fa fa-close"></i></b-button>
+                                        </td>
+                                    </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </VuePerfectScrollbar>
+                    </b-col>
+                </b-form-row>
             </b-form>
             <template v-slot:modal-footer="{ ok, cancel }">
                 <b-button variant="secondary" @click="closeprojectClusterDialog">취소</b-button>
@@ -128,7 +154,7 @@
         </b-modal>
         <!-- // modal : Cluster Add -->
 
-        <div class="tab-bottom-btn text-left">
+        <div class="tab-bottom-btn">
             <router-link :to="{ path: '/project/' }">
                 <b-button variant="warning" class="left"><i class="icon-list"></i> 목록</b-button>
             </router-link>
@@ -201,23 +227,28 @@ export default {
                 this.id = this.$route.params.id
             }
 
-            //this.$store.dispatch('project/getProjectClusters', {id: this.$route.params.id})
-            //this.$store.dispatch('cluster/getClustersAll')
-            //this.$store.dispatch('project/getProducts')
+            this.$store.dispatch('project/getProjectClusters', {id: this.id})
+            this.$store.dispatch('cluster/getClustersAll')
+            this.$store.dispatch('project/getProducts')
         },
         projectClusterAdd() {
             const projectCluster = {
-                enviromentType: '',
-                clusterId: '',
-                projectClusterProducts: [
-                    {
-                        productId: '',
-                        contractSize: '',
-                        billingYn: 'N',
-                        billingStartDt: ''
+                content: {
+                    resource: {
+                        enviromentType: '',
+                        clusterId: '',
+                        projectClusterProducts: [
+                            {
+                                productId: '',
+                                contractSize: '',
+                                billingYn: 'N',
+                                billingStartDt: ''
+                            }
+                        ]
                     }
-                ]
+                }
             }
+
             this.$store.commit('project/setProjectCluster', projectCluster)
             this.projectClusterEdited = false
             this.projectClusterDialog = true
@@ -247,6 +278,16 @@ export default {
                 this.$zadmin.alert('Cluster를 선택하세요.')
                 e.preventDefault()
                 return false
+            }
+
+            if (this.projectCluster.projectClusterProducts.length > 0) {
+                for (let product of this.projectCluster.projectClusterProducts) {
+                    if (!product.productId) {
+                        this.$zadmin.alert('Product를 선택하세요.')
+                        e.preventDefault()
+                        return false
+                    }
+                }
             }
 
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {

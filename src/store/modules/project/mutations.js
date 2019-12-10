@@ -17,17 +17,21 @@ export default {
     setProjectsAll: function(state, data) {
         state.projectsAll = data
     },
-    
+
     // project cluster
     setProjectClusters: function(state, data) {
         state.projectClusters = data.content.resources
     },
     setProjectCluster: function(state, data) {
-        state.projectCluster = data
+        if (data.content) {
+            state.projectCluster = data.content.resource
+        } else {
+            state.projectCluster = {}
+        }
     },
 
     // product
     setProducts: function(state, data) {
-        state.products = data
+        state.products = data.content.resources
     }
 }
