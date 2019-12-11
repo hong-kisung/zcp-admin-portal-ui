@@ -10,6 +10,10 @@ export default {
         state.clustersAll = data
     },
     setCluster: function(state, data) {
-        state.cluster = data
+        if (data.content) {
+            state.cluster = data.content.resource
+        } else {
+            state.cluster = {}
+        }
     }
 }

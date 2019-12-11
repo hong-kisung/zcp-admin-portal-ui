@@ -2,8 +2,10 @@
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
             Clusters <b-badge class="m-1" variant="danger">{{ clustersPage.totalCount }}</b-badge>
-            <b-button variant="success" size="sm" class="ml-2" @click="clusterAdd"><i class="icon-plus"></i> Cluster 추가</b-button>
-            <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
+            <div class="float-right">
+                <b-button variant="success" class="mr-2" @click="clusterAdd"><i class="icon-plus"></i> Cluster 추가</b-button>
+                <b-button v-b-toggle.collapse1 variant="secondary"><i class="fa fa-filter"></i> 검색상세</b-button>
+            </div>
         </h1>
         <div>
             <b-collapse id="collapse1">

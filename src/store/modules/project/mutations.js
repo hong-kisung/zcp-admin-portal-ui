@@ -29,6 +29,9 @@ export default {
             state.projectCluster = {}
         }
     },
+    setProjectsClusters: function(state, data) {
+        state.projectsClusters = data.content.resources
+    },
 
     // product
     setProducts: function(state, data) {
