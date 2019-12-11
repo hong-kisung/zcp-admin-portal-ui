@@ -1,4 +1,5 @@
 export default {
+    // project
     projects: [],
     projectsPage: {
         pageNo: 1,
@@ -9,8 +10,20 @@ export default {
         name: '',
         status: '',
         estimatedYn: '',
-        activation: ''
+        activation: 'Y'
     },
     project: {},
-    projectsAll: []
+    projectsAll: [],
+
+    // project clusters
+    projectClusters: [],
+    projectCluster: {
+        projectClusterProducts: []
+    },
+    products: [],
+
+    // project stakeholders
+    projectStakeholders: [],
+    projectStakeholder: {},
+    projectMngUsers: []
 }

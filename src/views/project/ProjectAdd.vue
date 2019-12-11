@@ -2,7 +2,7 @@
     <b-modal id="project-add-modal" size="lg" scrollable title="project" centered no-close-on-backdrop v-model="show" @close="cancel" @cancel="cancel" @ok="saveProject">
         <b-form>
             <b-form-group label="Customer" label-for="customer" :label-cols="3" label-class="required">
-                <b-form-select id="customer" :plain="true" v-model="project.customerId" required>
+                <b-form-select id="customer" :plain="true" v-model="project.customerId" required v-on:change="changeCustomerId">
                     <option value="">선택</option>
                     <option v-for="(item, index) in customersAll" :value="item.id">{{ item.nameEn }}</option>
                 </b-form-select>
@@ -46,6 +46,27 @@
                     <b-form-radio value="N">No</b-form-radio>
                 </b-form-radio-group>
             </b-form-group>
+            <template v-if="project.estimatedYn === 'Y'">
+                <b-form-group label="Cloud Account" label-for="cloudAccount" :label-cols="3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <b-form-select id="cloudAccount" :plain="true" class="mr-2" required style="width: 30%;" v-model="project.customerCloudAccountCspCode" v-on:change="changeCspCode">
+                            <option value="">선택</option>
+                            <option v-for="(item, index) in customerCloudAccountCspCodes" :value="item.cspCode">{{ item.displayName }}</option>
+                        </b-form-select>
+                        <b-form-select id="customerCloudAccountId" :plain="true" required v-model="project.customerCloudAccountId">
+                            <option value="">선택</option>
+                            <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }}</option>
+                        </b-form-select>
+
+                        <b-form-invalid-feedback id="cloudAccount">
+                            Cloud Account를 선택해주세요.
+                        </b-form-invalid-feedback>
+                        <b-form-invalid-feedback id="cloudAccountId">
+                            Cloud Account 항목을 선택해주세요.
+                        </b-form-invalid-feedback>
+                    </div>
+                </b-form-group>
+            </template>
             <template v-if="project.estimatedYn === 'N'">
                 <b-form-group label="원가견적 상위 프로젝트" label-for="parentId" :label-cols="3" label-class="required">
                     <b-form-select id="parentId" :plain="true" v-model="project.parentId">
@@ -63,11 +84,16 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     components: {},
     data() {
         return {
-            show: false
+            show: false,
+            customersAll: [],
+            customerCloudAccountCspCodes: [],
+            customerCloudAccounts: []
         }
     },
     props: [
@@ -82,21 +108,23 @@ export default {
         project: function() {
             return this.$store.state.project.project
         },
-        customersAll: function() {
-            var customers =  this.$store.state.customer.customersAll.filter(function(customer) {
-                return customer.activation == 1
-            })
-
-            return customers
-        },
         projectsAll: function() {
             return this.$store.state.project.projectsAll
-        }
+        },
     },
     created() {
-        this.getProjectsAll()
+        this.initialize()
     },
     methods: {
+        initialize() {
+            this.getCustomersAll()
+            this.getProjectsAll()
+        },
+        getCustomersAll() {
+            axios.get('/api/admin-customer/customers/all?activation=Y').then(response => {
+                this.customersAll = response.data.content.resources
+            })
+        },
         getProjectsAll() {
             this.$store.dispatch('project/getProjectsAll')
         },
@@ -125,8 +153,48 @@ export default {
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {
                 if (!result) return false
 
-                this.$store.dispatch('project/saveProject', {project: this.project, reload: this.$emit('fire-dialog-closed')})
+                axios.post('/api/admin-project/projects', this.project).then(response => {
+        			if (response.status === 201) {
+                        this.$emit('fire-dialog-closed')
+                        this.$store.dispatch('project/getProjectsReload')
+                        this.$zadmin.alert('저장 되었습니다.')
+        			} else {
+        				this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+        			}
+        		})
             })
+        },
+        changeCustomerId() {
+            if (this.project.customerId) {
+                axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
+                    this.customerCloudAccountCspCodes = response.data.content.resources
+                }).catch(error => {
+                    console.log('failed get getCustomerCloudAccountCspCodes')
+                })
+            } else {
+                this.customerCloudAccountCspCodes = []
+                this.project.customerCloudAccountCspCode = ''
+
+                this.customerCloudAccounts = []
+                this.project.customerCloudAccountId = ''
+            }
+        },
+        changeCspCode() {
+            if (this.project.customerCloudAccountCspCode) {
+                axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts?cspCode=' + this.project.customerCloudAccountCspCode).then(response => {
+                    if (response.data.content.resources) {
+                        this.customerCloudAccounts = response.data.content.resources
+                    } else {
+                        this.customerCloudAccounts = []
+                        this.project.customerCloudAccountId = ''
+                    }
+                }).catch(error => {
+                    console.log('failed get getCustomerCloudAccounts')
+                })
+            } else {
+                this.customerCloudAccounts = []
+                this.project.customerCloudAccountId = ''
+            }
         },
         cancel() {
             this.$emit('fire-dialog-closed')

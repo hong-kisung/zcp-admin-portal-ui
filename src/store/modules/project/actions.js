@@ -1,6 +1,7 @@
 import axios from '@/plugins/axios'
 
 export default {
+	// project
 	getProjects: function(store, payload) {
 		// set search
 		let customerId = 'customerId=' + payload.search.customerId
@@ -30,17 +31,6 @@ export default {
 			console.log('failed get getProjectsReload')
 		})
 	},
-	saveProject: function (store, payload) {
-		axios.post('/api/admin-project/projects', payload.project).then(response => {
-			if (response.status === 201) {
-				store.dispatch('getProjectsReload')
-				store.dispatch('getProjectsAll', {sort: 'name', orderBy: 'asc'})
-				this._vm.$zadmin.alert('저장 되었습니다.')
-			} else {
-				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-			}
-		})
-	},
 	getProject: function(store, payload) {
 		axios.get('/api/admin-project/projects/' + payload.id).then(response => {
 			store.commit('setProject', response.data)
@@ -48,20 +38,59 @@ export default {
 			console.log('failed get getProjects')
 		})
 	},
-	updateProject: function (store, payload) {
-		axios.put('/api/admin-project/projects/' + payload.id, payload.project).then(response => {
-			if (response.status === 200) {
-				this._vm.$zadmin.alert('저장 되었습니다.')
-			} else {
-				this._vm.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-			}
-		})
-	},
 	getProjectsAll: function(store, payload) {
 		axios.get('/api/admin-project/projects/all').then(response => {
-			store.commit('settProjectsAll', response.data)
+			store.commit('setProjectsAll', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectsAll')
+		})
+	},
+
+	// project cluster
+	getProjectClusters: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/clusters').then(response => {
+			store.commit('setProjectClusters', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectClusters')
+		})
+	},
+	getProjectCluster: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/clusters/' + payload.projectClusterId).then(response => {
+			store.commit('setProjectCluster', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectCluster')
+		})
+	},
+
+	// product
+	getProducts: function(store, payload) {
+		axios.get('/api/admin-project/products').then(response => {
+			store.commit('setProducts', response.data)
+		}).catch(error => {
+			console.log('failed get getProducts')
+		})
+	},
+
+	// project stakeholders
+	getProjectStakeholders: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/stakeholders').then(response => {
+			store.commit('setProjectStakeholders', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectStakeholders')
+		})
+	},
+	getProjectStakeholder: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/stakeholders/' + payload.projectStakeholderId).then(response => {
+			store.commit('setProjectStakeholder', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectStakeholder')
+		})
+	},
+	getProjectMngUsers: function(store, payload) {
+		axios.get('/api/admin-project/projects/mng-users').then(response => {
+			store.commit('setProjectMngUsers', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectMngUsers')
 		})
 	}
 }

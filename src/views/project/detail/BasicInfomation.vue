@@ -5,7 +5,7 @@
         </template>
         <b-form>
             <b-form-group label="Customer" label-for="customer" :label-cols="3" label-class="required">
-                <b-form-select id="customer" :plain="true" v-model="project.customerId" required>
+                <b-form-select id="customer" :plain="true" v-model="project.customerId" required v-on:change="changeCustomerId">
                     <option value="">선택</option>
                     <option v-for="(item, index) in customersAll" :value="item.id">{{ item.nameEn }}</option>
                 </b-form-select>
@@ -44,11 +44,32 @@
                 <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description"></b-form-input>
             </b-form-group>
             <b-form-group label="원가견적 여부" label-for="estimatedYn" :label-cols="3">
-                <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn">
+                <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn" v-on:change="changeCustomerId">
                     <b-form-radio value="Y">Yes</b-form-radio>
                     <b-form-radio value="N">No</b-form-radio>
                 </b-form-radio-group>
             </b-form-group>
+            <template v-if="project.estimatedYn === 'Y'">
+                <b-form-group label="Cloud Account" label-for="cloudAccount" :label-cols="3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <b-form-select id="cloudAccount" :plain="true" class="mr-2" required style="width: 30%;" v-model="project.customerCloudAccountCspCode" v-on:change="changeCspCode">
+                            <option value="">선택</option>
+                            <option v-for="(item, index) in customerCloudAccountCspCodes" :value="item.cspCode">{{ item.displayName }}</option>
+                        </b-form-select>
+                        <b-form-select id="customerCloudAccountId" :plain="true" required v-model="project.customerCloudAccountId">
+                            <option value="">선택</option>
+                            <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }}</option>
+                        </b-form-select>
+
+                        <b-form-invalid-feedback id="cloudAccount">
+                            Cloud Account를 선택해주세요.
+                        </b-form-invalid-feedback>
+                        <b-form-invalid-feedback id="cloudAccountId">
+                            Cloud Account 항목을 선택해주세요.
+                        </b-form-invalid-feedback>
+                    </div>
+                </b-form-group>
+            </template>
             <template v-if="project.estimatedYn === 'N'">
                 <b-form-group label="원가견적 상위 프로젝트" label-for="parentId" :label-cols="3" label-class="required">
                     <b-form-select id="parentId" :plain="true" v-model="project.parentId">
@@ -73,6 +94,7 @@
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
+import axios from 'axios'
 
 export default {
     components: {
@@ -89,19 +111,17 @@ export default {
                 useBothWheelAxes: true
             }
         },
-        project: function() {
-            return this.$store.state.project.project
-        },
-        customersAll: function() {
-            return this.$store.state.customer.customersAll
-        },
         projectsAll: function() {
             return this.$store.state.project.projectsAll
         }
     },
     data()  {
         return {
-            id: 0
+            id: 0,
+            project: {},
+            customersAll: [],
+            customerCloudAccountCspCodes: [],
+            customerCloudAccounts: []
         }
     },
     created () {
@@ -116,8 +136,54 @@ export default {
                 this.id = this.$route.params.id
             }
             this.$store.dispatch('project/getProjectsAll')
-            this.$store.dispatch('customer/getCustomersAll', {activation: 'Y'})
-            this.$store.dispatch('project/getProject', {id: this.$route.params.id})
+
+            this.getCustomersAll()
+            this.getProject()
+        },
+        getCustomersAll() {
+            axios.get('/api/admin-customer/customers/all?activation=Y').then(response => {
+                this.customersAll = response.data.content.resources
+            })
+        },
+        getProject() {
+            axios.get('/api/admin-project/projects/' + this.id).then(response => {
+                let data = response.data
+
+                if (data.content) {
+                    this.project = data.content.resource
+
+                    if (this.project.customerCloudAccountCspCode) {
+                        this.getCustomerCloudAccountCspCodes()
+                    }
+                } else {
+                    this.project = {}
+                }
+            }).catch(error => {
+                console.log('failed get getProjects')
+            })
+        },
+        getCustomerCloudAccountCspCodes() {
+            axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
+                this.customerCloudAccountCspCodes = response.data.content.resources
+
+                if (this.project.customerCloudAccountId) {
+                    this.getCustomerCloudAccounts()
+                }
+            }).catch(error => {
+                console.log('failed get getCustomerCloudAccountCspCodes')
+            })
+        },
+        getCustomerCloudAccounts() {
+            axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts?cspCode=' + this.project.customerCloudAccountCspCode).then(response => {
+                if (response.data.content.resources) {
+                    this.customerCloudAccounts = response.data.content.resources
+                } else {
+                    this.customerCloudAccounts = []
+                    this.project.customerCloudAccountId = ''
+                }
+            }).catch(error => {
+                console.log('failed get getCustomerCloudAccounts')
+            })
         },
         updateProject(e) {
             if (!this.project.customerId) {
@@ -144,8 +210,45 @@ export default {
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {
                 if (!result) return false
 
-                this.$store.dispatch('project/updateProject', {id: this.id, project: this.project})
+                axios.put('/api/admin-project/projects/' + this.id, this.project).then(response => {
+        			if (response.status === 200) {
+        				this.$zadmin.alert('저장 되었습니다.')
+        			} else {
+        				this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+        			}
+        		})
             })
+        },
+        changeCustomerId() {
+            console.log('changeCustomerId')
+            if (this.project.customerId) {
+                axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
+                    this.customerCloudAccountCspCodes = response.data.content.resources
+                    this.project.customerCloudAccountCspCode = ''
+                    this.project.customerCloudAccountId = ''
+                }).catch(error => {
+                    console.log('failed get getCustomerCloudAccountCspCodes')
+                })
+            } else {
+                this.customerCloudAccountCspCodes = []
+                this.project.customerCloudAccountCspCode = ''
+
+                this.customerCloudAccounts = []
+                this.project.customerCloudAccountId = ''
+            }
+        },
+        changeCspCode() {
+            if (this.project.customerCloudAccountCspCode) {
+                axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts?cspCode=' + this.project.customerCloudAccountCspCode).then(response => {
+                    this.customerCloudAccounts = response.data.content.resources
+                    this.project.customerCloudAccountId = ''
+                }).catch(error => {
+                    console.log('failed get getCustomerCloudAccounts')
+                })
+            } else {
+                this.customerCloudAccounts = []
+                this.project.customerCloudAccountId = ''
+            }
         }
     }
 }

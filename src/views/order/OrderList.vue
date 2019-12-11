@@ -204,12 +204,12 @@ export default {
                 {
                     key: 'orderUserName',
                     label: '주문자',
-                    tdClass: 'text-center'
+                    tdClass: 'text-left'
                 },
                 {
                     key: 'companyName',
                     label: '기업명',
-                    tdClass: 'text-center'
+                    tdClass: 'text-left'
                 },
                 {
                     key: 'productPackageName',
@@ -218,7 +218,12 @@ export default {
                 {
                     key: 'clusterName',
                     label: '클러스터',
-                    tdClass: 'text-center'
+                    tdClass: 'text-left'
+                },
+                {
+                    key: 'productDescription',
+                    label: '설명',
+                    tdClass: 'text-left'
                 },
                 {
                     key: 'orderDate',
