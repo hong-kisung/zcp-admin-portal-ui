@@ -164,7 +164,7 @@ export default {
         },
         getCustomerCloudAccountCspCodes() {
             axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
-                this.customerCloudAccountCspCodes = response.data
+                this.customerCloudAccountCspCodes = response.data.content.resources
 
                 if (this.project.customerCloudAccountId) {
                     this.getCustomerCloudAccounts()
@@ -220,9 +220,12 @@ export default {
             })
         },
         changeCustomerId() {
+            console.log('changeCustomerId')
             if (this.project.customerId) {
                 axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
-                    this.customerCloudAccountCspCodes = response.data
+                    this.customerCloudAccountCspCodes = response.data.content.resources
+                    this.project.customerCloudAccountCspCode = ''
+                    this.project.customerCloudAccountId = ''
                 }).catch(error => {
                     console.log('failed get getCustomerCloudAccountCspCodes')
                 })
@@ -237,12 +240,8 @@ export default {
         changeCspCode() {
             if (this.project.customerCloudAccountCspCode) {
                 axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts?cspCode=' + this.project.customerCloudAccountCspCode).then(response => {
-                    if (response.data.content.resources) {
-                        this.customerCloudAccounts = response.data.content.resources
-                    } else {
-                        this.customerCloudAccounts = []
-                        this.project.customerCloudAccountId = ''
-                    }
+                    this.customerCloudAccounts = response.data.content.resources
+                    this.project.customerCloudAccountId = ''
                 }).catch(error => {
                     console.log('failed get getCustomerCloudAccounts')
                 })

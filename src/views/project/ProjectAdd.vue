@@ -167,7 +167,7 @@ export default {
         changeCustomerId() {
             if (this.project.customerId) {
                 axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
-                    this.customerCloudAccountCspCodes = response.data
+                    this.customerCloudAccountCspCodes = response.data.content.resources
                 }).catch(error => {
                     console.log('failed get getCustomerCloudAccountCspCodes')
                 })

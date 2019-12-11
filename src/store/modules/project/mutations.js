@@ -15,7 +15,7 @@ export default {
         }
     },
     setProjectsAll: function(state, data) {
-        state.projectsAll = data
+        state.projectsAll = data.content.resources
     },
 
     // project cluster

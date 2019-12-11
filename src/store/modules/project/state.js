@@ -10,7 +10,7 @@ export default {
         name: '',
         status: '',
         estimatedYn: '',
-        activation: ''
+        activation: 'Y'
     },
     project: {},
     projectsAll: [],
@@ -26,5 +26,4 @@ export default {
     projectStakeholders: [],
     projectStakeholder: {},
     projectMngUsers: []
-
 }

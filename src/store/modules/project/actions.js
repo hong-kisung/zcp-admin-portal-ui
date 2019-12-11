@@ -87,7 +87,7 @@ export default {
 		})
 	},
 	getProjectMngUsers: function(store, payload) {
-		axios.get('/api/admin-project/projects/mng/users').then(response => {
+		axios.get('/api/admin-project/projects/mng-users').then(response => {
 			store.commit('setProjectMngUsers', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectMngUsers')

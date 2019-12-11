@@ -18,11 +18,11 @@
                 <template slot="no" slot-scope="data">
                     {{ projectStakeholders.length - data.index }}
                 </template>
-                <template slot="name" slot-scope="data">
-                    <b-link  @click="getProjectStakeholder(data.item.id)">{{ data.item.name }}</b-link>
+                <template slot="userName" slot-scope="data">
+                    <b-link  @click="getProjectStakeholder(data.item.id)">{{ data.item.userName }}</b-link>
                 </template>
                 <template slot="actions" slot-scope="data">
-                    <b-button variant="danger" size="sm" class="mr-1" @click="removeProjectStakeholder(data.item.id, data.item.name)"><i class="fa fa-close"></i></b-button>
+                    <b-button variant="danger" size="sm" class="mr-1" @click="removeProjectStakeholder(data.item.id, data.item.userName)"><i class="fa fa-close"></i></b-button>
                 </template>
             </b-table>
         </VuePerfectScrollbar>
@@ -46,10 +46,10 @@
                     </b-form-invalid-feedback>
                 </b-form-group>
                 <b-form-group label="User Name" label-for="stakeholdersUserName" :label-cols="3" label-class="required">
-                    <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required v-model="projectStakeholder.name"></b-form-input>
-                    <b-list-group class="mb-3" v-if="projectStakeholder.name">
-                        <b-list-group-item href="#" v-for="(item, idx) in projectMngUsers.filter(c => c.name.indexOf(projectStakeholder.name) != -1)" :key="idx" @click="setMngUser(item)">
-                        {{ item.name }}
+                    <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required v-model="projectStakeholder.userName"></b-form-input>
+                    <b-list-group class="mb-3" v-if="projectStakeholder.userName">
+                        <b-list-group-item href="#" v-for="(item, idx) in projectMngUsers.filter(c => c.userName.indexOf(projectStakeholder.userName) != -1)" :key="idx" @click="setMngUser(item)">
+                        {{ item.userName }}
                         </b-list-group-item>
                     </b-list-group>
                 </b-form-group>
@@ -63,7 +63,7 @@
                     <b-form-input type="email" id="stakeholdersEmail" placeholder="Email을 입력하세요." v-model="projectStakeholder.email"></b-form-input>
                 </b-form-group>
                 <b-form-group label="Mobile" label-for="stakeholdersMobile" :label-cols="3">
-                    <b-form-input type="tel" id="stakeholdersMobile" placeholder="Mobile을 입력하세요." v-model="projectStakeholder.mobileNo"></b-form-input>
+                    <b-form-input type="tel" id="stakeholdersMobile" placeholder="Mobile을 입력하세요." v-model="projectStakeholder.mobileNumber"></b-form-input>
                 </b-form-group>
             </b-form>
             <template v-slot:modal-footer="{ ok, cancel }">
@@ -121,11 +121,11 @@ export default {
             projectStakeholders_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
                 { key: 'role', label: 'Role', tdClass: 'text-left' },
-                { key: 'name', label: 'Name', tdClass: 'text-left' },
+                { key: 'userName', label: 'Name', tdClass: 'text-left' },
                 { key: 'companyName', label: 'Company', tdClass: 'text-left' },
                 { key: 'org', label: 'Org', tdClass: 'text-left' },
                 { key: 'email', label: 'E-mail', tdClass: 'text-left' },
-                { key: 'mobileNo', label: 'Mobile Number', tdClass: 'text-left' },
+                { key: 'mobileNumber', label: 'Mobile Number', tdClass: 'text-left' },
                 { key: 'created', label: 'created', tdClass: 'text-left' },
                 { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
@@ -203,8 +203,8 @@ export default {
                 e.preventDefault()
                 return false
             }
-            if (!this.projectStakeholder.name) {
-                this.$zadmin.alert('Name을 입력하세요.')
+            if (!this.projectStakeholder.userName) {
+                this.$zadmin.alert('userName을 입력하세요.')
                 e.preventDefault()
                 return false
             }
@@ -250,8 +250,8 @@ export default {
                 }
             })
         },
-        removeProjectStakeholder(projectStakeholderId, name) {
-            this.$zadmin.confirm(name + '을(를) 삭제 하시겠습니까?', (result) => {
+        removeProjectStakeholder(projectStakeholderId, userName) {
+            this.$zadmin.confirm(userName + '을(를) 삭제 하시겠습니까?', (result) => {
                 if (!result) return false
 
                 axios.delete('/api/admin-project/projects/' + this.id + '/stakeholders/' + projectStakeholderId).then(response => {
@@ -293,11 +293,11 @@ export default {
                 content: {
                     resource: {
                         role: this.projectStakeholder.role,
-                        name: item.name,
+                        userName: item.userName,
                         companyName: item.companyName,
                         org: item.org,
                         email: item.email,
-                        mobileNo: item.mobileNo
+                        mobileNumber: item.mobileNumber
                     }
                 }
             }
