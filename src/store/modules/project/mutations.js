@@ -30,7 +30,18 @@ export default {
         }
     },
     setProjectsClusters: function(state, data) {
-        state.projectsClusters = data.content.resources
+        let projectsClusters = data.content.resources
+
+        for (let projectsCluster of projectsClusters) {
+            let productCnt = 0
+            for (let projectCluster of projectsCluster.projectClusters) {
+                productCnt += projectCluster.projectClusterProducts.length
+            }
+
+            projectsCluster.productCnt = productCnt
+        }
+
+        state.projectsClusters = projectsClusters
     },
 
     // product

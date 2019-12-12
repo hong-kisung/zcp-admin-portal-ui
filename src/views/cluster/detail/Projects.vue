@@ -32,60 +32,55 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th rowspan="3" class="bg-dark">
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="BiOk" value="">
-                                <label class="custom-control-label" for="BiOk">BiOk</label>
-                            </div>
-                        </th>
-                        <td rowspan="2" class="text-center">
-                            <b-link v-b-modal.project-modal>prod</b-link>
-                        </td>
-                        <td rowspan="2" class="text-center">cluster-abc</td>
-                        <td class="text-center">Cloud Z CP</td>
-                        <td class="text-right">4GB</td>
-                        <td class="text-center">Y</td>
-                        <td class="text-center">2020-01-01</td>
-                        <td class="text-center">2019-10-30</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">Cloud Z DB</td>
-                        <td class="text-right">10GB</td>
-                        <td class="text-center">N</td>
-                        <td class="text-center">2020-01-01</td>
-                        <td class="text-center">2019-10-30</td>
-                    </tr>
+                    <template v-for="(item, idx) in projectsClusters">
+                        <template v-for="(projectCluster, projectClusterIdx) in item.projectClusters">
+                            <template v-if="projectCluster.projectClusterProducts.length == 0">
+                                <tr>
+                                    <th class="bg-dark" v-if="projectClusterIdx == 0" :rowspan="item.projectClusters.length">
+                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                            <input type="checkbox" class="custom-control-input" :id="item.projectName" :value="item" v-model="selected">
+                                            <label class="custom-control-label" :for="item.projectName">{{ item.projectName }}</label>
+                                        </div>
+                                    </th>
+                                    <td class="text-left" v-if="projectClusterIdx == 0" :rowspan="item.projectClusters.length">
+                                        <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
+                                    </td>
+                                    <td class="text-left" v-if="projectClusterIdx == 0" :rowspan="item.projectClusters.length">
+                                        {{ projectCluster.clusterName }}
+                                    </td>
+                                    <td class="text-center">&nbsp;</td>
+                                    <td class="text-right">&nbsp;</td>
+                                    <td class="text-center">&nbsp;</td>
+                                    <td class="text-center">&nbsp;</td>
+                                    <td class="text-center">&nbsp;</td>
+                                </tr>
+                            </template>
 
-                    <tr>
-                        <td class="text-center">
-                            <b-link v-b-modal.project-modal>dev</b-link>
-                        </td>
-                        <td class="text-center">cluster-abc</td>
-                        <td class="text-center">Cloud Z CP</td>
-                        <td class="text-right">4GB</td>
-                        <td class="text-center">Y</td>
-                        <td class="text-center">2020-01-01</td>
-                        <td class="text-center">2019-10-30</td>;
-                    </tr>
+                            <template v-else>
+                                <tr v-for="(projectClusterProduct, clusterProductIndex) in projectCluster.projectClusterProducts">
+                                    <th class="bg-dark" >
+                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                            <input type="checkbox" class="custom-control-input" :id="item.projectName" :value="item" v-model="selected">
+                                            <label class="custom-control-label" :for="item.projectName">{{ item.projectName }}</label>
+                                        </div>
+                                    </th>
 
-                    <tr>
-                        <th class="bg-dark">
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input type="checkbox" class="custom-control-input" id="BiOk_itsm" value="">
-                                <label class="custom-control-label" for="BiOk_itsm">ITSM</label>
-                            </div>
-                        </th>
-                        <td class="text-center">
-                            <b-link v-b-modal.project-modal>prod</b-link>
-                        </td>
-                        <td rowspan="2" class="text-center">cluster-abc</td>
-                        <td class="text-center">&nbsp;</td>
-                        <td class="text-center">&nbsp;</td>
-                        <td class="text-center">&nbsp;</td>
-                        <td class="text-center">&nbsp;</td>
-                        <td class="text-center">&nbsp;</td>
-                    </tr>
+                                    <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
+                                        <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
+                                    </td>
+                                    <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
+                                        {{ projectCluster.clusterName }}
+                                    </td>
+
+                                    <td class="text-center">{{ projectClusterProduct.productName }}</td>
+                                    <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
+                                    <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
+                                    <td class="text-center">{{ projectClusterProduct.billingStartDt }}</td>
+                                    <td class="text-center">{{ projectClusterProduct.createdDt }}</td>
+                                </tr>
+                            </template>
+                        </template>
+                    </template>
                 </tbody>
             </table>
         </VuePerfectScrollbar>
@@ -215,6 +210,7 @@ export default {
             return this.$store.state.cluster.cluster
         },
         projectsClusters: function() {
+            console.log(JSON.stringify(this.$store.state.project.projectsClusters))
             return this.$store.state.project.projectsClusters
         },
         projectCluster: function() {
@@ -389,9 +385,9 @@ export default {
                 })
             })
         },
-        getProjectCluster(projectClusterId) {
+        getProjectCluster(projectId, projectClusterId) {
             this.$store.commit('project/setProjectCluster', {})
-            this.$store.dispatch('project/getProjectCluster', {id: this.id, projectClusterId: projectClusterId})
+            this.$store.dispatch('project/getProjectCluster', {id: projectId, projectClusterId: projectClusterId})
             this.projectClusterId = projectClusterId
             this.projectClusterEdited = true
             this.projectClusterDialog = true

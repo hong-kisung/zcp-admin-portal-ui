@@ -195,7 +195,19 @@ export default {
             this.$store.dispatch('cluster/getClusters', params)
         },
         clusterAdd() {
-            this.$store.commit('cluster/setCluster', {environmentType: null, nwArchType: null, sreIntegrationYn: 'N', multiTenantYn: 'N', clusterCsp: null})
+            const cluster = {
+                content: {
+                    resource: {
+                        environmentType: null,
+                        nwArchType: null,
+                        sreIntegrationYn: 'N',
+                        multiTenantYn: 'N',
+                        clusterCsp: null
+                    }
+                }
+            }
+
+            this.$store.commit('cluster/setCluster', cluster)
             this.clusterAddDialog = true
         },
         updateClusterActivation(id, activation) {
