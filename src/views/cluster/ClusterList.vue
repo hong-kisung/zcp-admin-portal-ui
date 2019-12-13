@@ -25,8 +25,8 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="environmentType">Enviroment Type</label>
-                                <b-form-select id="environmentType" :plain="true" v-model="clustersSearch.environmentType">
+                                <label for="enviromentType">Enviroment Type</label>
+                                <b-form-select id="enviromentType" :plain="true" v-model="clustersSearch.enviromentType">
                                     <option value="">All</option>
                                     <option value="dev">dev</option>
                                     <option value="qa">qa</option>
@@ -134,10 +134,10 @@ export default {
         return {
             cluster_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-center' },
+                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left' },
                 { key: 'clusterName', label: 'Cluster Name' },
-                { key: 'environmentType', label: 'Environment Type', tdClass: 'text-center' },
-                { key: 'nwArchType', label: 'n/w arch', tdClass: 'text-center' },
+                { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center' },
+                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-center' },
                 { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center' },
                 { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center' },
                 { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-center' },
@@ -198,7 +198,7 @@ export default {
             const cluster = {
                 content: {
                     resource: {
-                        environmentType: null,
+                        enviromentType: null,
                         nwArchType: null,
                         sreIntegrationYn: 'N',
                         multiTenantYn: 'N',

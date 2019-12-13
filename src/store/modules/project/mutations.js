@@ -35,7 +35,11 @@ export default {
         for (let projectsCluster of projectsClusters) {
             let productCnt = 0
             for (let projectCluster of projectsCluster.projectClusters) {
-                productCnt += projectCluster.projectClusterProducts.length
+                if (projectCluster.projectClusterProducts.length > 0) {
+                    productCnt += projectCluster.projectClusterProducts.length
+                } else {
+                    productCnt += 1
+                }
             }
 
             projectsCluster.productCnt = productCnt
