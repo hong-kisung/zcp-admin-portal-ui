@@ -109,7 +109,6 @@ export default {
                 { key: 'cspCode', label: 'Cloud Service', tdClass: 'text-center' },
                 { key: 'cspId', label: 'Account ID' },
                 { key: 'accountAlias', label: 'Account Alias' },
-                { key: 'created', label: 'Created', tdClass: 'text-left' },
                 { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],

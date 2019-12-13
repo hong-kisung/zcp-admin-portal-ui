@@ -7,9 +7,13 @@ export default {
         state.clustersPage.pageNo = data
     },
     settClustersAll: function(state, data) {
-        state.clustersAll = data
+        state.clustersAll = data.content.resources
     },
     setCluster: function(state, data) {
-        state.cluster = data
+        if (data.content) {
+            state.cluster = data.content.resource
+        } else {
+            state.cluster = {}
+        }
     }
 }

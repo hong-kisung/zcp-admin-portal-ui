@@ -45,14 +45,21 @@
                         Role을 선택해주세요.
                     </b-form-invalid-feedback>
                 </b-form-group>
+
                 <b-form-group label="User Name" label-for="stakeholdersUserName" :label-cols="3" label-class="required">
-                    <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required v-model="projectStakeholder.userName"></b-form-input>
-                    <b-list-group class="mb-3" v-if="projectStakeholder.userName">
-                        <b-list-group-item href="#" v-for="(item, idx) in projectMngUsers.filter(c => c.userName.indexOf(projectStakeholder.userName) != -1)" :key="idx" @click="setMngUser(item)">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <b-form-input type="text" id="stakeholdersUserName" placeholder="User Search" required v-model="autocomplete.name" style="width: 30%;">
+                        </b-form-input>
+                        <span class="mx-1"></span>
+                        <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required v-model="projectStakeholder.userName"></b-form-input>
+                    </div>
+                    <b-list-group class="mb-3" v-if="autocomplete.name">
+                        <b-list-group-item href="#" v-for="(item, idx) in projectMngUsers.filter(c => c.userName.indexOf(autocomplete.name) != -1)" :key="idx" @click="setMngUser(item)">
                         {{ item.userName }}
                         </b-list-group-item>
                     </b-list-group>
                 </b-form-group>
+
                 <b-form-group label="Company" label-for="stakeholdersCompany" :label-cols="3">
                     <b-form-input type="text" id="stakeholdersCompany" placeholder="Company를 입력하세요." v-model="projectStakeholder.companyName"></b-form-input>
                 </b-form-group>
@@ -133,7 +140,10 @@ export default {
             id: 0,
             projectStakeholderId: 0,
             projectStakeholderDialog: false,
-            projectStakeholderEdited: false
+            projectStakeholderEdited: false,
+            autocomplete: {
+                name: ''
+            }
         }
     },
     created () {
@@ -205,6 +215,11 @@ export default {
             }
             if (!this.projectStakeholder.userName) {
                 this.$zadmin.alert('userName을 입력하세요.')
+                e.preventDefault()
+                return false
+            }
+            if (this.projectStakeholder.email && !this.validEmail(this.projectStakeholder.email)) {
+                this.$zadmin.alert('유효한 Email을 입력하세요.')
                 e.preventDefault()
                 return false
             }
@@ -303,6 +318,11 @@ export default {
             }
 
             this.$store.commit('project/setProjectStakeholder', projectStakeholder)
+            this.autocomplete.name = ''
+        },
+        validEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return re.test(email)
         }
     }
 }

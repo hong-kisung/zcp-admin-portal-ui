@@ -89,7 +89,7 @@
                         {{toCustomerLabel(data.item.customerId)}}
                     </template>
                     <template slot="name" slot-scope="data">
-                        <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name }}">
+                        <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'BasicInfomation' }}">
                             {{data.item.name}}
                         </router-link>
                     </template>

@@ -2,8 +2,10 @@
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
             Clusters <b-badge class="m-1" variant="danger">{{ clustersPage.totalCount }}</b-badge>
-            <b-button variant="success" size="sm" class="ml-2" @click="clusterAdd"><i class="icon-plus"></i> Cluster 추가</b-button>
-            <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
+            <div class="float-right">
+                <b-button variant="success" class="mr-2" @click="clusterAdd"><i class="icon-plus"></i> Cluster 추가</b-button>
+                <b-button v-b-toggle.collapse1 variant="secondary"><i class="fa fa-filter"></i> 검색상세</b-button>
+            </div>
         </h1>
         <div>
             <b-collapse id="collapse1">
@@ -23,8 +25,8 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="environmentType">Enviroment Type</label>
-                                <b-form-select id="environmentType" :plain="true" v-model="clustersSearch.environmentType">
+                                <label for="enviromentType">Enviroment Type</label>
+                                <b-form-select id="enviromentType" :plain="true" v-model="clustersSearch.enviromentType">
                                     <option value="">All</option>
                                     <option value="dev">dev</option>
                                     <option value="qa">qa</option>
@@ -132,10 +134,10 @@ export default {
         return {
             cluster_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-center' },
+                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left' },
                 { key: 'clusterName', label: 'Cluster Name' },
-                { key: 'environmentType', label: 'Environment Type', tdClass: 'text-center' },
-                { key: 'nwArchType', label: 'n/w arch', tdClass: 'text-center' },
+                { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center' },
+                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-center' },
                 { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center' },
                 { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center' },
                 { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-center' },
@@ -193,7 +195,19 @@ export default {
             this.$store.dispatch('cluster/getClusters', params)
         },
         clusterAdd() {
-            this.$store.commit('cluster/setCluster', {environmentType: null, nwArchType: null, sreIntegrationYn: 'N', multiTenantYn: 'N', clusterCsp: null})
+            const cluster = {
+                content: {
+                    resource: {
+                        enviromentType: null,
+                        nwArchType: null,
+                        sreIntegrationYn: 'N',
+                        multiTenantYn: 'N',
+                        clusterCsp: null
+                    }
+                }
+            }
+
+            this.$store.commit('cluster/setCluster', cluster)
             this.clusterAddDialog = true
         },
         updateClusterActivation(id, activation) {

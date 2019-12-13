@@ -7,10 +7,10 @@ export default {
     clustersSearch: {
         clusterId: '',
         clusterName: '',
-        environmentType: '',
+        enviromentType: '',
         nwArchType: '',
         sreIntegrationYn: '',
-        activation: ''
+        activation: 'Y'
     },
     cluster: {},
     clustersAll: []

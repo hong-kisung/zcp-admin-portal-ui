@@ -20,6 +20,7 @@ export default {
     projectCluster: {
         projectClusterProducts: []
     },
+    projectsClusters: [],
     products: [],
 
     // project stakeholders

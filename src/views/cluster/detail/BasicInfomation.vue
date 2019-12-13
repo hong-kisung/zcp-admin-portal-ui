@@ -16,8 +16,8 @@
                     Cluster Name을 입력해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
-            <b-form-group label="Environment Type" label-for="environmentType" :label-cols="3" label-class="required">
-                <b-form-select id="environmentType" :plain="true" required v-model="cluster.environmentType">
+            <b-form-group label="Environment Type" label-for="enviromentType" :label-cols="3" label-class="required">
+                <b-form-select id="enviromentType" :plain="true" required v-model="cluster.enviromentType">
                     <option value="null">선택</option>
                     <option value="dev">dev</option>
                     <option value="qa">qa</option>
@@ -25,7 +25,7 @@
                     <option value="prod">prod</option>
                     <option value="combination">combination</option>
                 </b-form-select>
-                <b-form-invalid-feedback id="environmentType">
+                <b-form-invalid-feedback id="enviromentType">
                     Environment Type을 선택해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
@@ -84,6 +84,7 @@
 
 <script>
 import { Switch as cSwitch } from '@coreui/vue'
+import axios from 'axios'
 
 export default {
     components: {
@@ -110,7 +111,7 @@ export default {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
             }
-            this.$store.dispatch('cluster/getCluster', {id: this.$route.params.id})
+            this.$store.dispatch('cluster/getCluster', {id: this.id})
         },
         updateCluster(e) {
             if (!this.cluster.clusterId) {
@@ -123,8 +124,8 @@ export default {
                 e.preventDefault()
                 return false
             }
-            if (!this.cluster.environmentType) {
-                this.$zadmin.alert('Environment Type을 선택하세요.')
+            if (!this.cluster.enviromentType) {
+                this.$zadmin.alert('Enviroment Type을 선택하세요.')
                 e.preventDefault()
                 return false
             }
@@ -132,7 +133,14 @@ export default {
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {
                 if (!result) return false
 
-                this.$store.dispatch('cluster/updateCluster', {id: this.id, cluster: this.cluster})
+                axios.put('/api/admin-cluster/clusters/' + this.id, this.cluster).then(response => {
+        			if (response.status === 200) {
+                        this.$store.dispatch('cluster/getCluster', {id: this.id})
+        				this.$zadmin.alert('저장 되었습니다.')
+        			} else {
+        				this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+        			}
+        		})
             })
         }
     }
