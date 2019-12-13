@@ -10,7 +10,7 @@ export default {
         enviromentType: '',
         nwArchType: '',
         sreIntegrationYn: '',
-        activation: ''
+        activation: 'Y'
     },
     cluster: {},
     clustersAll: []
