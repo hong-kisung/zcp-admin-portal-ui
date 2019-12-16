@@ -1,7 +1,7 @@
 export default {
     setClusters: function(state, data) {
         state.clusters = data.content.resources
-        state.clustersPage = data.page
+        state.clustersCondition.page = data.page
     },
     setClustersPageNo: function(state, data) {
         state.clustersPage.pageNo = data
