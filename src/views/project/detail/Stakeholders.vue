@@ -13,7 +13,7 @@
                 </template>
 
                 <template slot="role" slot-scope="data">
-                    {{ data.item.role | toRoleName }}
+                    {{ data.item.roleName }}
                 </template>
                 <template slot="no" slot-scope="data">
                     {{ projectStakeholders.length - data.index }}
@@ -150,36 +150,6 @@ export default {
     created () {
 		this.initialize()
 	},
-    filters: {
-        toRoleName(value) {
-            let val;
-            switch(value) {
-            case 'PM':
-                val = 'Project Manager'
-                break;
-            case 'NWM':
-                val = 'Network Manager'
-                break;
-            case 'ADM':
-                val = 'Application Maintenance Manager'
-                break;
-            case 'AMM':
-                val = 'Application Maintenance Manager'
-                break;
-            case 'IFM':
-                val = 'Infrastructure Manager'
-                break;
-            case 'CNM':
-                val = 'Contract Manager'
-                break;
-            case 'MSP':
-                val = 'Managed Service Provider Manager'
-                break
-            }
-
-            return val
-        }
-    },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)

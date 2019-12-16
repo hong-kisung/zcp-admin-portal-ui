@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-            Projects <b-badge class="m-1" variant="danger">{{ projectsPage.totalCount }}</b-badge>
+            Projects <b-badge class="m-1" variant="danger">{{ projectsCondition.page.totalCount }}</b-badge>
             <div class="float-right">
                 <b-button variant="success" class="mr-2" @click="projectAdd"><i class="icon-plus"></i> Project 추가</b-button>
                 <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
@@ -14,7 +14,7 @@
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="customer">Customer</label>
-                                <b-form-select id="customerId" :plain="true" v-model="projectsSearch.customerId" >
+                                <b-form-select id="customerId" :plain="true" v-model="projectsCondition.filter.customerId" >
                                     <option value="">All</option>
                                     <option v-for="(item, index) in customersAll" :value="item.id">{{ item.nameEn }}</option>
                                 </b-form-select>
@@ -22,14 +22,14 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="project">Project</label>
-                                <b-form-input type="text" id="name" placeholder="Project Name을 입력하세요." v-model="projectsSearch.name"></b-form-input>
+                                <label for="project">Project Name</label>
+                                <b-form-input type="text" id="name" placeholder="Project Name을 입력하세요." v-model="projectsCondition.filter.name"></b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="status">Status</label>
-                                <b-form-select id="status" :plain="true" value="선택" v-model="projectsSearch.status">
+                                <b-form-select id="status" :plain="true" value="선택" v-model="projectsCondition.filter.status">
                                     <option value="">All</option>
                                     <option value="Proposal">Proposal</option>
                                     <option value="Development">Development</option>
@@ -41,7 +41,7 @@
                             <b-form-group>
                                 <label for="activation">estimated YN</label>
                                 <div>
-                                    <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsSearch.estimatedYn">
+                                    <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsCondition.filter.estimatedYn">
                                         <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
@@ -53,7 +53,7 @@
                             <b-form-group>
                                 <label for="activation">Activation</label>
                                 <div>
-                                    <b-form-radio-group id="activation" name="activation" v-model="projectsSearch.activation">
+                                    <b-form-radio-group id="activation" name="activation" v-model="projectsCondition.filter.activation">
                                         <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
@@ -71,19 +71,21 @@
         <b-card>
             <div class="mb-3">
                 <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                    <b-form-select v-model="projectsPage.pageSize" id="perPageSelect" :options="pageOptions" @change="getProjectsByPage(1)" class="w-auto"></b-form-select>
+                    <b-form-select v-model="projectsCondition.page.pageSize" id="perPageSelect" :options="pageOptions" @change="getProjectsByPage(1)" class="w-auto"></b-form-select>
                 </b-form-group>
-                <b-pagination v-model="projectsPage.pageNo" :total-rows="projectsPage.totalCount" :per-page="projectsPage.pageSize" @input="getProjectsByPage(projectsPage.pageNo)" align="right" class="my-0">
+                <b-pagination v-model="projectsCondition.page.pageNo" :total-rows="projectsCondition.page.totalCount" :per-page="projectsCondition.page.pageSize" @input="getProjectsByPage(projectsCondition.page.pageNo)" align="right" class="my-0">
                 </b-pagination>
             </div>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-                <b-table striped hover small bordered :fields="projects_fields" :items="projects">
+                <b-table striped hover small bordered :fields="projects_fields" :items="projects"
+                    :sort-by.sync="projectsCondition.sortBy" :sort-desc.sync="projectsCondition.sortDesc" @sort-changed="sortingChanged">
+
                     <template v-slot:table-colgroup="scope">
                         <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'projects_number' ? '5%' : '' }">
                     </template>
 
                     <template slot="no" slot-scope="data">
-                        {{ (projectsPage.totalCount - ((projectsPage.pageNo - 1) * projectsPage.pageSize)) - data.index }}
+                        {{ (projectsCondition.page.totalCount - ((projectsCondition.page.pageNo - 1) * projectsCondition.page.pageSize)) - data.index }}
                     </template>
                     <template slot="customer" slot-scope="data">
                         {{toCustomerLabel(data.item.customerId)}}
@@ -143,16 +145,16 @@ export default {
         return {
             projects_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'customer', label: 'Customer', tdClass: 'text-left' },
-                { key: 'name', label: 'Project Name', tdClass: 'text-left' },
-                { key: 'status', label: 'Status', tdClass: 'text-center' },
+                { key: 'customer', label: 'Customer', tdClass: 'text-left', sortable: true },
+                { key: 'name', label: 'Project Name', tdClass: 'text-left', sortable: true },
+                { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
-                { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center' },
-                { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center' },
+                { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
+                { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
                 { key: 'projects_clusters', label: 'Clusters', tdClass: 'text-center' },
-                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' },
+                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center', sortable: true },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
@@ -175,11 +177,8 @@ export default {
         projects: function() {
             return this.$store.state.project.projects
         },
-        projectsPage: function() {
-            return this.$store.state.project.projectsPage
-        },
-        projectsSearch: function() {
-            return this.$store.state.project.projectsSearch
+        projectsCondition: function() {
+            return this.$store.state.project.projectsCondition
         }
     },
     filters: {
@@ -192,12 +191,15 @@ export default {
         }
     },
     created() {
-        this.getProjects()
-        this.getCustomersAll()
+        this.initialize()
     },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)
+        },
+        initialize() {
+            this.getProjects()
+            this.getCustomersAll()
         },
         getCustomersAll() {
             axios.get('/api/admin-customer/customers/all').then(response => {
@@ -205,21 +207,11 @@ export default {
             })
         },
         getProjects() {
-            const params = {
-                search: this.projectsSearch,
-                page: this.projectsPage
-            }
-
-            this.$store.dispatch('project/getProjects', params)
+            this.$store.dispatch('project/getProjects', this.projectsCondition)
         },
         getProjectsByPage(pageNo) {
             this.$store.commit('project/setProjectsPageNo', pageNo)
-
-            const params = {
-                search: this.projectsSearch,
-                page: this.projectsPage
-            }
-            this.$store.dispatch('project/getProjects', params)
+            this.$store.dispatch('project/getProjects', this.projectsCondition)
         },
         projectAdd() {
             const project = {
@@ -272,7 +264,13 @@ export default {
             if (project != null) {
                 return project.nameKr
             }
-        }
+        },
+        sortingChanged(ctx) {
+            console.log(JSON.stringify(ctx))
+			this.projectsCondition.sortBy = ctx.sortBy
+			this.projectsCondition.sortDesc = ctx.sortDesc
+			this.$store.dispatch('project/getProjects', this.projectsCondition)
+		}
     }
 }
 </script>
