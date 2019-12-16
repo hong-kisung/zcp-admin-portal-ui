@@ -17,17 +17,6 @@ export default {
         sortBy: 'createdDt',
     	sortDesc: true
     },
-    projectsPage: {
-        pageNo: 1,
-        pageSize: 10
-    },
-    projectsSearch: {
-        customerId: '',
-        name: '',
-        status: '',
-        estimatedYn: '',
-        activation: 'Y'
-    },
     project: {},
     projectsAll: [],
 
