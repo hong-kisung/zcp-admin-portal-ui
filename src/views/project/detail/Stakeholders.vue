@@ -180,6 +180,7 @@ export default {
             this.$store.commit('project/setProjectStakeholder', projectStakeholder)
             this.projectStakeholderEdited = false
             this.projectStakeholderDialog = true
+            this.autocomplete.name = ''
         },
         saveProjectStakeholder(e) {
             if (!this.projectStakeholder.role) {

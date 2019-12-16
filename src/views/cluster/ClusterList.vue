@@ -139,10 +139,10 @@ export default {
                 { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left', sortable: true },
                 { key: 'clusterName', label: 'Cluster Name', sortable: true },
                 { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center', sortable: true },
-                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-center', sortable: true },
+                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-left', sortable: true },
                 { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center', sortable: true },
                 { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center', sortable: true },
-                { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-center', sortable: true },
+                { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-right', sortable: true },
                 { key: 'createdDt', label: 'Created date', tdClass: 'text-center', sortable: true },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
@@ -224,9 +224,7 @@ export default {
                 }).catch(error => {
                     let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                        this.$zadmin.alert(errorMsg)
+                        this.$zadmin.alert(response.data.message)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
