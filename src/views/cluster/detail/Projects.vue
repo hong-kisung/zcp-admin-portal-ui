@@ -340,6 +340,7 @@ export default {
                 if (response.status === 201) {
                     this.$store.dispatch('project/getProjectsClusters', {id: this.id})
                     this.closeProjectClusterDialog()
+                    this.selected = []
                     this.$zadmin.alert('저장 되었습니다.')
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')

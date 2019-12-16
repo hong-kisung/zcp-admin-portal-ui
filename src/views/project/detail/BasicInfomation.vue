@@ -1,5 +1,5 @@
 <template>
-    <b-tab active>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icons cui-justify-left mr-1"></i> Basic Information
         </template>
@@ -121,7 +121,8 @@ export default {
             project: {},
             customersAll: [],
             customerCloudAccountCspCodes: [],
-            customerCloudAccounts: []
+            customerCloudAccounts: [],
+            isActive: false
         }
     },
     created () {
@@ -135,8 +136,11 @@ export default {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
             }
-            this.$store.dispatch('project/getProjectsAll')
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'BasicInfomation' ? true : false
+            }
 
+            this.$store.dispatch('project/getProjectsAll')
             this.getCustomersAll()
             this.getProject()
         },

@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-people mr-1"></i> Stakeholders
         </template>
@@ -143,7 +143,8 @@ export default {
             projectStakeholderEdited: false,
             autocomplete: {
                 name: ''
-            }
+            },
+            isActive: false
         }
     },
     created () {
@@ -186,6 +187,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Stakeholders' ? true : false
             }
 
             this.$store.dispatch('project/getProjectStakeholders', {id: this.id})

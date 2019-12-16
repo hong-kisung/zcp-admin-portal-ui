@@ -96,14 +96,18 @@
                     <template slot="period" slot-scope="data">
                         {{data.item.devStartDt | toDevPeriod}} ~ {{data.item.devEndDt | toDevPeriod}}
                     </template>
-                    <template slot="projects_clusters" slot-scope="data">
-                        <b-link><img src="img/img_k8s.png" alt="kubernetes" width="22"></b-link>
-                    </template>
                     <template slot="projects_stakeholder" slot-scope="data">
-                        <b-button variant="primary" size="sm"><i class="icon-people"></i></b-button>
+                        <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'Stakeholders' }}">
+                            <b-button variant="primary" size="sm"><i class="icon-people"></i></b-button>
+                        </router-link>
                     </template>
                     <template slot="projects_estimates" slot-scope="data">
                         <b-button variant="warning" size="sm"><i class="icons cui-note"></i></b-button>
+                    </template>
+                    <template slot="projects_clusters" slot-scope="data">
+                        <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'Clusters' }}">
+                            <img src="img/img_k8s.png" alt="kubernetes" width="22">
+                        </router-link>
                     </template>
                     <template slot="activation" slot-scope="data">
                         <label class="mx-1 mb-0 switch switch-label switch-success">
