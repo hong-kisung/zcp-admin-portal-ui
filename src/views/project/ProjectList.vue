@@ -266,8 +266,7 @@ export default {
             }
         },
         sortingChanged(ctx) {
-            console.log(JSON.stringify(ctx))
-			this.projectsCondition.sortBy = ctx.sortBy
+    		this.projectsCondition.sortBy = ctx.sortBy
 			this.projectsCondition.sortDesc = ctx.sortDesc
 			this.$store.dispatch('project/getProjects', this.projectsCondition)
 		}
