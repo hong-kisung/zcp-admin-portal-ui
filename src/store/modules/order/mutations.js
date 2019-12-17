@@ -1,10 +1,10 @@
 export default {
 	setOrders: function(state, data) {
 		state.orders = data.content.resources;
-		state.ordersPage = data.page;
+		state.ordersCondition.page = data.page
 	},
 	setOrdersPageNo: function(state, data) {
-        state.ordersPage.pageNo = data
+        state.ordersCondition.page.pageNo = data
     },
 	setOrder: function(state, data) {
 		state.orderDetail.order = data;

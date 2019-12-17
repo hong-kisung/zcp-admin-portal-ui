@@ -34,23 +34,19 @@
                 </b-form-group>
             </b-col>
             <b-col lg="6">
+                <b-form-group label="고객ID" label-for="md-orderCustomerId" :label-cols="3">
+                    <b-form-input type="text" id="md-orderCustomerId" :value="order.orderCustomerId" readonly></b-form-input>
+                </b-form-group>
+            </b-col>
+
+            <b-col lg="6">
                 <b-form-group label="회사명" label-for="md-companyName" :label-cols="3">
                     <b-form-input type="text" id="md-companyName" :value="order.companyName" readonly></b-form-input>
                 </b-form-group>
             </b-col>
             <b-col lg="6">
-                <b-form-group label="배치대상여부" label-for="md-bacthType" :label-cols="3">
-                    <b-form-input type="text" id="md-bacthType" :value="order.batchTargetYn" readonly></b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col lg="6">
-                <b-form-group label="상품명(단축)" label-for="md-productNameShort" :label-cols="3">
-                    <b-form-input type="text" id="md-productNameShort" :value="orderProduct.productShortName" readonly></b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col lg="6">
-                <b-form-group label="상품명" label-for="md-productName" :label-cols="3">
-                    <b-form-input type="text" id="md-productName" :value="orderProduct.productName" readonly></b-form-input>
+                <b-form-group label="상품명" label-for="md-productNameShort" :label-cols="3">
+                    <b-form-input type="text" id="md-productNameShort" :value="orderProduct.productName" readonly></b-form-input>
                 </b-form-group>
             </b-col>
             <b-col lg="6">
@@ -74,6 +70,11 @@
                 </b-form-group>
             </b-col>
             <b-col lg="6">
+                <b-form-group label="배치대상여부" label-for="md-bacthType" :label-cols="3">
+                    <b-form-input type="text" id="md-bacthType" :value="order.batchTargetYn" readonly></b-form-input>
+                </b-form-group>
+            </b-col>
+            <b-col lg="6">
                 <b-form-group label="등록자" label-for="md-registrant" :label-cols="3">
                     <b-form-input type="text" id="md-registrant" :value="order.regId" readonly></b-form-input>
                 </b-form-group>
@@ -83,6 +84,7 @@
                     <b-form-input type="text" id="md-registDate" :value="order.regDate" readonly></b-form-input>
                 </b-form-group>
             </b-col>
+            <!--
             <b-col lg="6">
                 <b-form-group label="수정자" label-for="md-modifier" :label-cols="3">
                     <b-form-input type="text" id="md-modifier" :value="order.modId" readonly></b-form-input>
@@ -93,6 +95,7 @@
                     <b-form-input type="text" id="md-modifyDate" :value="order.modDate" readonly></b-form-input>
                 </b-form-group>
             </b-col>
+            -->
         </b-form>
         <VuePerfectScrollbar class="scroll-area mt-3" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <b-table striped small bordered :fields="orderPackageCategoryFields" :items="orderPackageCategories">
@@ -144,65 +147,21 @@ export default {
     data() {
         return {
             show: false,
-            orderPackageCategoryFields: [{
-                    key: 'categoryCode',
-                    label: '카테고리코드',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'categoryName',
-                    label: '카테고리명'
-                },
-                {
-                    key: 'isMandatory',
-                    label: '필수주문여부',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'meteringType',
-                    label: '계량유형',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'billingCycle',
-                    label: '결제주기',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'itemName',
-                    label: '아이템명'
-                },
-                {
-                    key: 'itemPrice',
-                    label: '아이템가격',
-                    tdClass: 'text-right'
-                }
+            orderPackageCategoryFields: [
+                { key: 'categoryCode', label: '카테고리코드', tdClass: 'text-center'},
+                { key: 'categoryName', label: '카테고리명'},
+                { key: 'isMandatory', label: '필수주문여부', tdClass: 'text-center' },
+                { key: 'meteringType', label: '계량유형', tdClass: 'text-center' },
+                { key: 'billingCycle', label: '결제주기', tdClass: 'text-center' },
+                { key: 'itemName', label: '아이템명' },
+                { key: 'itemPrice', label: '아이템가격', tdClass: 'text-right'}
             ],
-            orderClusterFileds: [{
-                    key: 'clusterId',
-                    label: '클러스터ID',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'clusterName',
-                    label: '클러스터명',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'clusterModId',
-                    label: '등록자',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'clusterModDate',
-                    label: '등록일시',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'cluster_action',
-                    label: 'Actions',
-                    tdClass: 'text-center'
-                }
+            orderClusterFileds: [
+                { key: 'clusterId', label: '클러스터ID', tdClass: 'text-center' },
+                { key: 'clusterName', label: '클러스터명', tdClass: 'text-center' },
+                { key: 'clusterModId', label: '등록자', tdClass: 'text-center' },
+                { key: 'clusterModDate', label: '등록일시', tdClass: 'text-center'},
+                { key: 'cluster_action', label: 'Actions', tdClass: 'text-center' }
             ],
             autocomplete: {
                 clusterName: ''
@@ -231,23 +190,23 @@ export default {
             }
         },
         order: function() {
-            return this.$store.state.order.orderDetail.order;
+            return this.$store.state.order.orderDetail.order
         },
         orderProduct: function() {
-            return this.$store.state.order.orderDetail.orderProduct;
+            return this.$store.state.order.orderDetail.orderProduct
         },
         orderPackageCategories: function() {
-            return this.$store.state.order.orderDetail.orderPackageCategories;
+            return this.$store.state.order.orderDetail.orderPackageCategories
         },
         orderClusters: function() {
-            return this.$store.state.order.orderDetail.orderClusters;
+            return this.$store.state.order.orderDetail.orderClusters
         },
         clustersAll: function() {
-            return this.$store.state.cluster.clustersAll;
+            return this.$store.state.cluster.clustersAll
         }
     },
     created() {
-
+        //
     },
     methods: {
         scrollHandle(evt) {
@@ -255,37 +214,36 @@ export default {
         },
         updateOrderClusters(cluster) {
             axios.put('/api/admin-order/orders/' + this.order.id + '/cluster/' + cluster.id).then(response => {
-                this.autocomplete.clusterName = '';
-                this.refresh();
-                this.$emit('list-reload');
+                this.autocomplete.clusterName = ''
+                this.refresh()
+                this.$emit('list-reload')
             }).catch(error => {
-                console.log(error);
+                console.log(error)
                 this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
             })
         },
         removeOrderClusters() {
             this.$zadmin.confirm('클러스터 정보를 삭제하시겠습니까?', (result) => {
-                if (!result) return false;
+                if (!result) return false
 
                 axios.delete('/api/admin-order/orders/' + this.order.id + '/cluster').then(response => {
                     if (response && response.status === 204) {
-                        this.refresh();
-                        this.$emit('list-reload');
+                        this.refresh()
+                        this.$emit('list-reload')
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
                 }).catch(error => {
-                    console.log(error);
+                    console.log(error)
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 })
-
-            });
+            })
         },
         refresh() {
             this.$store.dispatch('order/getOrder', {id: this.order.id})
         },
         cancel() {
-            this.$emit('fire-dialog-closed');
+            this.$emit('fire-dialog-closed')
         }
     }
 }

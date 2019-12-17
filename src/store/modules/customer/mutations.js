@@ -2,10 +2,10 @@ export default {
     // customer
     setCustomers: function(state, data) {
         state.customers = data.content.resources
-        state.customersPage = data.page
+        state.customersCondition.page = data.page
     },
     setCustomersPageNo: function(state, data) {
-        state.customersPage.pageNo = data
+        state.customersCondition.page.pageNo = data
     },
     setCustomer: function(state, data) {
         if (data.content) {

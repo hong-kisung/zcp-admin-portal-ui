@@ -2,28 +2,21 @@ import axios from '@/plugins/axios'
 
 export default {
 	getOrders: function(store, payload) {
-		let orderStatus = payload.search.orderStatus.join('-');
-		let orderType = payload.search.orderType.join('-');
-		let batchTargetYn = payload.search.batchTargetYn;
-		let orderUserName = payload.search.orderUserName;
-		let clusterName = payload.search.clusterName;
-		let orderId = payload.search.orderId;
-
 		// set search
-		let orderStatusQ = 'orderStatus=' + orderStatus;
-		let orderTypeQ = ',orderType=' + orderType;
-		let orderUserNameQ = ',orderUserName=' + orderUserName;
-		let batchTargetYnQ = ',batchTargetYn=' + batchTargetYn;
-		let clusterNameQ = ',clusterName=' + clusterName;
-		let orderIdQ = ',orderId=' + orderId;
+		let orderStatus = 'orderStatus=' + payload.filter.orderStatus.join('-')
+		let orderType = ',orderType=' + payload.filter.orderType.join('-')
+		let orderId = ',orderId=' + payload.filter.orderId
+		let orderUserName = ',orderUserName=' + payload.filter.orderUserName
+		let clusterName = ',clusterName=' + payload.filter.clusterName
+		let batchTargetYn = ',batchTargetYn=' + payload.filter.batchTargetYn
 
-		let q = encodeURIComponent(orderStatusQ + orderTypeQ + orderUserNameQ + batchTargetYnQ + clusterNameQ + orderIdQ);
+		let q = encodeURIComponent(orderStatus + orderType + orderId + orderUserName + clusterName + batchTargetYn)
 
 		// set page
-		let pageNo = payload.page.pageNo;
-		let pageSize = payload.page.pageSize;
-		let sort = 'orderDate';
-		let orderBy = 'desc';
+		let pageNo = payload.page.pageNo
+		let pageSize = payload.page.pageSize
+		let sort = payload.sortBy
+		let orderBy = payload.sortDesc == true ? 'desc' : 'asc'
 
 		axios.get('/api/admin-order/orders?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setOrders', response.data)
