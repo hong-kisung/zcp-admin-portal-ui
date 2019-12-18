@@ -78,7 +78,7 @@
         <b-modal id="project-modal" size="lg" title="Project" centered no-close-on-backdrop v-model="projectClusterDialog" @close="closeProjectClusterDialog">
             <b-form>
                 <b-form-group label="Project" label-for="project" :label-cols="3" label-class="required">
-                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId">
+                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId" :disabled="projectClusterEdited == true">
                         <option value="">선택</option>
                         <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
                     </b-form-select>
