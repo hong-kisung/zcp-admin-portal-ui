@@ -3,20 +3,20 @@ import axios from '@/plugins/axios'
 export default {
 	getClusters: function(store, payload) {
 		// set search
-		let clusterId = 'clusterId=' + payload.search.clusterId
-		let clusterName = ',clusterName=' + payload.search.clusterName
-		let enviromentType = ',enviromentType=' + payload.search.enviromentType
-		let nwArchType = ',nwArchType=' + payload.search.nwArchType
-		let sreIntegrationYn = ',sreIntegrationYn=' + payload.search.sreIntegrationYn
-		let activation = ',activation=' + payload.search.activation
+		let clusterId = 'clusterId=' + payload.filter.clusterId
+		let clusterName = ',clusterName=' + payload.filter.clusterName
+		let enviromentType = ',enviromentType=' + payload.filter.enviromentType
+		let nwArchType = ',nwArchType=' + payload.filter.nwArchType
+		let sreIntegrationYn = ',sreIntegrationYn=' + payload.filter.sreIntegrationYn
+		let activation = ',activation=' + payload.filter.activation
 
 		let q = encodeURIComponent(clusterId + clusterName + enviromentType + nwArchType + sreIntegrationYn + activation)
 
 		// set page
 		let pageNo = payload.page.pageNo
 		let pageSize = payload.page.pageSize
-		let sort = 'createdDt'
-		let orderBy = 'desc'
+		let sort = payload.sortBy
+		let orderBy = payload.sortDesc == true ? 'desc' : 'asc'
 
 		axios.get('/api/admin-cluster/clusters?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setClusters', response.data)

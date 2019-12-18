@@ -1,16 +1,21 @@
 export default {
     // project
     projects: [],
-    projectsPage: {
-        pageNo: 1,
-        pageSize: 10
-    },
-    projectsSearch: {
-        customerId: '',
-        name: '',
-        status: '',
-        estimatedYn: '',
-        activation: 'Y'
+    projectsCondition: {
+        page: {
+            pageNo: 1,
+            pageSize: 10,
+            totalCount: 0
+        },
+        filter: {
+            customerId: '',
+            name: '',
+            status: '',
+            estimatedYn: '',
+            activation: 'Y'
+        },
+        sortBy: 'createdDt',
+    	sortDesc: true
     },
     project: {},
     projectsAll: [],

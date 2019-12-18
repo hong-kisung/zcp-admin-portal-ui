@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-people mr-1"></i> Stakeholders
         </template>
@@ -13,7 +13,7 @@
                 </template>
 
                 <template slot="role" slot-scope="data">
-                    {{ data.item.role | toRoleName }}
+                    {{ data.item.roleName }}
                 </template>
                 <template slot="no" slot-scope="data">
                     {{ projectStakeholders.length - data.index }}
@@ -143,42 +143,13 @@ export default {
             projectStakeholderEdited: false,
             autocomplete: {
                 name: ''
-            }
+            },
+            isActive: false
         }
     },
     created () {
 		this.initialize()
 	},
-    filters: {
-        toRoleName(value) {
-            let val;
-            switch(value) {
-            case 'PM':
-                val = 'Project Manager'
-                break;
-            case 'NWM':
-                val = 'Network Manager'
-                break;
-            case 'ADM':
-                val = 'Application Maintenance Manager'
-                break;
-            case 'AMM':
-                val = 'Application Maintenance Manager'
-                break;
-            case 'IFM':
-                val = 'Infrastructure Manager'
-                break;
-            case 'CNM':
-                val = 'Contract Manager'
-                break;
-            case 'MSP':
-                val = 'Managed Service Provider Manager'
-                break
-            }
-
-            return val
-        }
-    },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)
@@ -186,6 +157,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Stakeholders' ? true : false
             }
 
             this.$store.dispatch('project/getProjectStakeholders', {id: this.id})
@@ -206,6 +180,7 @@ export default {
             this.$store.commit('project/setProjectStakeholder', projectStakeholder)
             this.projectStakeholderEdited = false
             this.projectStakeholderDialog = true
+            this.autocomplete.name = ''
         },
         saveProjectStakeholder(e) {
             if (!this.projectStakeholder.role) {

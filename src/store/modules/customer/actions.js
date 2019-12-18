@@ -4,10 +4,10 @@ export default {
 	// customer
 	getCustomers: function(store, payload) {
 		let q = ''
-		let pageNo = payload.pageNo
-		let pageSize = payload.pageSize
-		let sort = 'createdDt'
-		let orderBy = 'desc'
+		let pageNo = payload.page.pageNo
+		let pageSize = payload.page.pageSize
+		let sort = payload.sortBy
+		let orderBy = payload.sortDesc == true ? 'desc' : 'asc'
 
 		axios.get('/api/admin-customer/customers?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setCustomers', response.data)
@@ -49,7 +49,7 @@ export default {
 			}
 		})
 	},
-	
+
 	// customer cloud account
 	getCustomerCloudAccounts: function(store, payload) {
 		axios.get('/api/admin-customer/customers/' + payload.id + '/cloud-accounts').then(response => {

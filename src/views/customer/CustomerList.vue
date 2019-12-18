@@ -1,15 +1,15 @@
 <template>
 <div class="animated fadeIn">
     <h1 class="display-tit mb-3">
-        Customer <b-badge class="m-1" variant="danger">{{ customersPage.totalCount }}</b-badge>
+        Customer <b-badge class="m-1" variant="danger">{{ customersCondition.page.totalCount }}</b-badge>
         <b-button variant="success" class="float-right" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
     </h1>
     <b-card>
         <div class="mb-3">
             <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                <b-form-select v-model="customersPage.pageSize" id="perPageSelect" :options="pageOptions" @change="getCustomersByPage(1)" class="w-auto"></b-form-select>
+                <b-form-select v-model="customersCondition.page.pageSize" id="perPageSelect" :options="pageOptions" @change="getCustomersByPage(1)" class="w-auto"></b-form-select>
             </b-form-group>
-            <b-pagination v-model="customersPage.pageNo" :total-rows="customersPage.totalCount" :per-page="customersPage.pageSize" @input="getCustomersByPage(customersPage.pageNo)" align="right" class="my-0">
+            <b-pagination v-model="customersCondition.page.pageNo" :total-rows="customersCondition.page.totalCount" :per-page="customersCondition.page.pageSize" @input="getCustomersByPage(customersCondition.page.pageNo)" align="right" class="my-0">
             </b-pagination>
         </div>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
@@ -19,7 +19,7 @@
                 </template>
 
                 <template slot="no" slot-scope="data">
-                    {{ (customersPage.totalCount - ((customersPage.pageNo - 1) * customersPage.pageSize)) - data.index }}
+                    {{ (customersCondition.page.totalCount - ((customersCondition.page.pageNo - 1) * customersCondition.page.pageSize)) - data.index }}
                 </template>
                 <template slot="nameKr" slot-scope="data">
                     <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr } }">
@@ -73,9 +73,7 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import {
-    Switch as cSwitch
-} from '@coreui/vue'
+import { Switch as cSwitch} from '@coreui/vue'
 import axios from 'axios'
 import customerAdd from './CustomerAdd'
 
@@ -87,51 +85,16 @@ export default {
     },
     data() {
         return {
-            fields: [{
-                    key: 'no',
-                    label: 'No',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'nameEn',
-                    label: 'Customer Name(EN)',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'nameKr',
-                    label: 'Customer Name(KR)',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'cloudAccounts',
-                    label: 'Cloud Account',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'projectCnt',
-                    label: 'Projecs',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'clusterCnt',
-                    label: 'Clusters',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'createdDt',
-                    label: 'Created Date',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'activation',
-                    label: 'Activation',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'actions',
-                    label: 'Actions',
-                    tdClass: 'text-center'
-                }
+            fields: [
+                { key: 'no', label: 'No', tdClass: 'text-center'},
+                { key: 'nameEn', label: 'Customer Name(EN)', tdClass: 'text-left'},
+                { key: 'nameKr', label: 'Customer Name(KR)', tdClass: 'text-left'},
+                { key: 'cloudAccounts', label: 'Cloud Account', tdClass: 'text-left'},
+                { key: 'projectCnt', label: 'Projecs', tdClass: 'text-center' },
+                { key: 'clusterCnt', label: 'Clusters', tdClass: 'text-center' },
+                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center'},
+                { key: 'activation', label: 'Activation', tdClass: 'text-center'},
+                { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
             pageOptions: [10, 20, 30, 50, 100],
             customerAddDialog: false,
@@ -151,23 +114,26 @@ export default {
         customers: function() {
             return this.$store.state.customer.customers
         },
-        customersPage: function() {
-            return this.$store.state.customer.customersPage
+        customersCondition: function() {
+            return this.$store.state.customer.customersCondition
         }
     },
     created() {
-        this.getCustomers()
+        this.initialize()
     },
     methods: {
         scrollHandle(evt) {
             // console.log(evt)
         },
+        initialize() {
+            this.getCustomers()
+        },
         getCustomers() {
-            this.$store.dispatch('customer/getCustomers', this.customersPage)
+            this.$store.dispatch('customer/getCustomers', this.customersCondition)
         },
         getCustomersByPage(pageNo) {
             this.$store.commit('customer/setCustomersPageNo', pageNo)
-            this.$store.dispatch('customer/getCustomers', this.customersPage)
+            this.$store.dispatch('customer/getCustomers', this.customersCondition)
         },
         customerAdd() {
             this.$store.commit('customer/setCustomer', {})

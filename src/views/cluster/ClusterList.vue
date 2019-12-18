@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-            Clusters <b-badge class="m-1" variant="danger">{{ clustersPage.totalCount }}</b-badge>
+            Clusters <b-badge class="m-1" variant="danger">{{ clustersCondition.page.totalCount }}</b-badge>
             <div class="float-right">
                 <b-button variant="success" class="mr-2" @click="clusterAdd"><i class="icon-plus"></i> Cluster 추가</b-button>
                 <b-button v-b-toggle.collapse1 variant="secondary"><i class="fa fa-filter"></i> 검색상세</b-button>
@@ -14,19 +14,19 @@
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="clusterId">Cluster ID</label>
-                                <b-form-input type="text" id="clusterId" placeholder="Cluster ID를 입력하세요." v-model="clustersSearch.clusterId"></b-form-input>
+                                <b-form-input type="text" id="clusterId" placeholder="Cluster ID를 입력하세요." v-model="clustersCondition.filter.clusterId"></b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="clusterName">Cluster Name</label>
-                                <b-form-input type="text" id="clusterName" placeholder="Cluster Name을 입력하세요." v-model="clustersSearch.clusterName"></b-form-input>
+                                <b-form-input type="text" id="clusterName" placeholder="Cluster Name을 입력하세요." v-model="clustersCondition.filter.clusterName"></b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="enviromentType">Enviroment Type</label>
-                                <b-form-select id="enviromentType" :plain="true" v-model="clustersSearch.enviromentType">
+                                <b-form-select id="enviromentType" :plain="true" v-model="clustersCondition.filter.enviromentType">
                                     <option value="">All</option>
                                     <option value="dev">dev</option>
                                     <option value="qa">qa</option>
@@ -39,7 +39,7 @@
                         <b-col lg="4">
                             <b-form-group>
                                 <label for="nwArch">n/w arch</label>
-                                <b-form-select id="nwArch" :plain="true" v-model="clustersSearch.nwArchType">
+                                <b-form-select id="nwArch" :plain="true" v-model="clustersCondition.filter.nwArchType">
                                     <option value="">All</option>
                                     <option value="Private">Private Only</option>
                                     <option value="Public">Public Only</option>
@@ -51,7 +51,7 @@
                             <b-form-group>
                                 <label for="sreConnect">SRE Integration</label>
                                 <div class="mt-1">
-                                    <b-form-radio-group id="sreConnect" v-model="clustersSearch.sreIntegrationYn">
+                                    <b-form-radio-group id="sreConnect" v-model="clustersCondition.filter.sreIntegrationYn">
                                         <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
@@ -63,7 +63,7 @@
                             <b-form-group>
                                 <label for="activation">Activation</label>
                                 <div class="mt-1">
-                                    <b-form-radio-group id="activation" v-model="clustersSearch.activation">
+                                    <b-form-radio-group id="activation" v-model="clustersCondition.filter.activation">
                                         <b-form-radio value="">All</b-form-radio>
                                         <b-form-radio value="Y">Yes</b-form-radio>
                                         <b-form-radio value="N">No</b-form-radio>
@@ -81,19 +81,21 @@
         <b-card>
             <div class="mb-3">
                 <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                    <b-form-select v-model="clustersPage.pageSize" id="perPageSelect" :options="pageOptions" @change="getClustersByPage(1)" class="w-auto"></b-form-select>
+                    <b-form-select v-model="clustersCondition.page.pageSize" id="perPageSelect" :options="pageOptions" @change="getClustersByPage(1)" class="w-auto"></b-form-select>
                 </b-form-group>
-                <b-pagination v-model="clustersPage.pageNo" :total-rows="clustersPage.totalCount" :per-page="clustersPage.pageSize" @input="getClustersByPage(clustersPage.pageNo)" align="right" class="my-0">
+                <b-pagination v-model="clustersCondition.page.pageNo" :total-rows="clustersCondition.page.totalCount" :per-page="clustersCondition.page.pageSize" @input="getClustersByPage(clustersCondition.page.pageNo)" align="right" class="my-0">
                 </b-pagination>
             </div>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-                <b-table striped hover small bordered :fields="cluster_fields" :items="clusters">
+                <b-table striped hover small bordered :fields="cluster_fields" :items="clusters"
+                    :sort-by.sync="clustersCondition.sortBy" :sort-desc.sync="clustersCondition.sortDesc" @sort-changed="sortingChanged">
+
                     <template v-slot:table-colgroup="scope">
                         <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'no' ? '4%' : '' }">
                     </template>
 
                     <template slot="no" slot-scope="data">
-                        {{ (clustersPage.totalCount - ((clustersPage.pageNo - 1) * clustersPage.pageSize)) - data.index }}
+                        {{ (clustersCondition.page.totalCount - ((clustersCondition.page.pageNo - 1) * clustersCondition.page.pageSize)) - data.index }}
                     </template>
                     <template slot="clusterName" slot-scope="data">
                         <router-link :to="{ name: 'ClusterDetail', params: { id: data.item.id, name: data.item.clusterName }}">
@@ -134,14 +136,14 @@ export default {
         return {
             cluster_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left' },
-                { key: 'clusterName', label: 'Cluster Name' },
-                { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center' },
-                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-center' },
-                { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center' },
-                { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center' },
-                { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-center' },
-                { key: 'createdDt', label: 'Created date', tdClass: 'text-center' },
+                { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left', sortable: true },
+                { key: 'clusterName', label: 'Cluster Name', sortable: true },
+                { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center', sortable: true },
+                { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-left', sortable: true },
+                { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center', sortable: true },
+                { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center', sortable: true },
+                { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-right', sortable: true },
+                { key: 'createdDt', label: 'Created date', tdClass: 'text-center', sortable: true },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
@@ -163,36 +165,26 @@ export default {
         clusters: function() {
             return this.$store.state.cluster.clusters
         },
-        clustersPage: function() {
-            return this.$store.state.cluster.clustersPage
-        },
-        clustersSearch: function() {
-            return this.$store.state.cluster.clustersSearch
+        clustersCondition: function() {
+            return this.$store.state.cluster.clustersCondition
         }
     },
     created() {
-        this.getClusters()
+        this.initialize()
     },
     methods: {
         scrollHandle (evt) {
             // console.log(evt)
         },
+        initialize() {
+            this.getClusters()
+        },
         getClusters() {
-            const params = {
-                search: this.clustersSearch,
-                page: this.clustersPage
-            }
-
-            this.$store.dispatch('cluster/getClusters', params)
+            this.$store.dispatch('cluster/getClusters', this.clustersCondition)
         },
         getClustersByPage(pageNo) {
             this.$store.commit('cluster/setClustersPageNo', pageNo)
-
-            const params = {
-                search: this.clustersSearch,
-                page: this.clustersPage
-            }
-            this.$store.dispatch('cluster/getClusters', params)
+            this.$store.dispatch('cluster/getClusters', this.clustersCondition)
         },
         clusterAdd() {
             const cluster = {
@@ -232,15 +224,18 @@ export default {
                 }).catch(error => {
                     let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                        this.$zadmin.alert(errorMsg)
+                        this.$zadmin.alert(response.data.message)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
                 })
             })
-        }
+        },
+        sortingChanged(ctx) {
+    		this.clustersCondition.sortBy = ctx.sortBy
+			this.clustersCondition.sortDesc = ctx.sortDesc
+			this.$store.dispatch('cluster/getClusters', this.clustersCondition)
+		}
     }
 }
 </script>
