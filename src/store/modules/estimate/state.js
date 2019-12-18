@@ -35,7 +35,7 @@ export default {
     		customerId: null,
     		status: null,
     		cspCode: null,
-    		activation: null
+    		estimateActivationYn: 'Y'
     	},
     	sortBy: 'updatedDt',
     	sortDesc: true
