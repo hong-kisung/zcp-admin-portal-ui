@@ -159,8 +159,8 @@ export default {
             orderClusterFileds: [
                 { key: 'clusterId', label: '클러스터ID', tdClass: 'text-center' },
                 { key: 'clusterName', label: '클러스터명', tdClass: 'text-center' },
-                { key: 'clusterModId', label: '등록자', tdClass: 'text-center' },
-                { key: 'clusterModDate', label: '등록일시', tdClass: 'text-center'},
+                { key: 'clusterRegId', label: '등록자', tdClass: 'text-center' },
+                { key: 'clusterRegDate', label: '등록일시', tdClass: 'text-center'},
                 { key: 'cluster_action', label: 'Actions', tdClass: 'text-center' }
             ],
             autocomplete: {
