@@ -4,19 +4,19 @@ export default {
 	// project
 	getProjects: function(store, payload) {
 		// set search
-		let customerId = 'customerId=' + payload.search.customerId
-		let name = ',name=' + payload.search.name
-		let status = ',status=' + payload.search.status
-		let activation = ',activation=' + payload.search.activation
-		let estimatedYn = ',estimatedYn=' + payload.search.estimatedYn
+		let customerId = 'customerId=' + payload.filter.customerId
+		let name = ',name=' + payload.filter.name
+		let status = ',status=' + payload.filter.status
+		let activation = ',activation=' + payload.filter.activation
+		let estimatedYn = ',estimatedYn=' + payload.filter.estimatedYn
 
 		let q = encodeURIComponent(customerId + name + status + estimatedYn + activation)
 
 		// set page
 		let pageNo = payload.page.pageNo
 		let pageSize = payload.page.pageSize
-		let sort = 'createdDt'
-		let orderBy = 'desc'
+		let sort = payload.sortBy
+		let orderBy = payload.sortDesc == true ? 'desc' : 'asc'
 
 		axios.get('/api/admin-project/projects?q=' + q + '&pageNo=' + pageNo + '&pageSize=' + pageSize + '&sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setProjects', response.data)

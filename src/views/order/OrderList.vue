@@ -1,7 +1,7 @@
 <template>
 <div class="animated fadeIn">
     <h1 class="display-tit mb-3">
-        Orders <b-badge class="m-1" variant="danger">{{ ordersPage.totalCount }}</b-badge>
+        Orders <b-badge class="m-1" variant="danger">{{ ordersCondition.page.totalCount }}</b-badge>
         <b-button v-b-toggle.collapse1 variant="secondary" class="float-right"><i class="fa fa-filter"></i> 검색상세</b-button>
     </h1>
     <div>
@@ -13,11 +13,11 @@
                             <label for="orderBuy">주문타입</label>
                             <div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="purchase" value="PURCHASE" v-model="search.orderType">
+                                    <input type="checkbox" class="custom-control-input" id="purchase" value="PURCHASE" v-model="ordersCondition.filter.orderType">
                                     <label class="custom-control-label" for="purchase">구매</label>
                                 </div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="disposal" value="DISPOSAL" v-model="search.orderType">
+                                    <input type="checkbox" class="custom-control-input" id="disposal" value="DISPOSAL" v-model="ordersCondition.filter.orderType">
                                     <label class="custom-control-label" for="disposal">취소</label>
                                 </div>
                             </div>
@@ -28,19 +28,19 @@
                             <label for="orderRequest">주문상태</label>
                             <div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="requested" value="REQUESTED" v-model="search.orderStatus">
+                                    <input type="checkbox" class="custom-control-input" id="requested" value="REQUESTED" v-model="ordersCondition.filter.orderStatus">
                                     <label class="custom-control-label" for="requested">요청</label>
                                 </div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="proceeding" value="PROCEEDING" v-model="search.orderStatus">
+                                    <input type="checkbox" class="custom-control-input" id="proceeding" value="PROCEEDING" v-model="ordersCondition.filter.orderStatus">
                                     <label class="custom-control-label" for="proceeding">처리중</label>
                                 </div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="done" value="DONE" v-model="search.orderStatus">
+                                    <input type="checkbox" class="custom-control-input" id="done" value="DONE" v-model="ordersCondition.filter.orderStatus">
                                     <label class="custom-control-label" for="done">완료</label>
                                 </div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="denied" value="DENIED" v-model="search.orderStatus">
+                                    <input type="checkbox" class="custom-control-input" id="denied" value="DENIED" v-model="ordersCondition.filter.orderStatus">
                                     <label class="custom-control-label" for="denied">거절</label>
                                 </div>
                             </div>
@@ -48,39 +48,39 @@
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="batchAll">배치대상 여부</label>
-                            <div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="batchAll" value="ALL" v-model="search.batchTargetYn">
-                                    <label class="custom-control-label" for="batchAll">전체</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="batchY" value="Y" v-model="search.batchTargetYn">
-                                    <label class="custom-control-label" for="batchY">Y</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="batchN" value="N" v-model="search.batchTargetYn">
-                                    <label class="custom-control-label" for="batchN">N</label>
-                                </div>
-                            </div>
+                            <label for="orderNumber">주문번호</label>
+                            <b-form-input type="number" id="orderId" placeholder="주문번호를 입력하세요." v-model="ordersCondition.filter.orderId"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
                             <label for="orderUser">주문자</label>
-                            <b-form-input type="text" id="orderUserName" placeholder="주문자 이름을 입력하세요." v-model="search.orderUserName"></b-form-input>
+                            <b-form-input type="text" id="orderUserName" placeholder="주문자 이름을 입력하세요." v-model="ordersCondition.filter.orderUserName"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
                             <label for="orderCluster">클러스터</label>
-                            <b-form-input type="text" id="clusterName" placeholder="클러스터명을 입력하세요." v-model="search.clusterName"></b-form-input>
+                            <b-form-input type="text" id="clusterName" placeholder="클러스터명을 입력하세요." v-model="ordersCondition.filter.clusterName"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderNumber">주문번호</label>
-                            <b-form-input type="number" id="orderId" placeholder="주문번호를 입력하세요." v-model="search.orderId"></b-form-input>
+                            <label for="batchAll">배치대상 여부</label>
+                            <div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="batchAll" value="" v-model="ordersCondition.filter.batchTargetYn">
+                                    <label class="custom-control-label" for="batchAll">전체</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="batchY" value="Y" v-model="ordersCondition.filter.batchTargetYn">
+                                    <label class="custom-control-label" for="batchY">Y</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="batchN" value="N" v-model="ordersCondition.filter.batchTargetYn">
+                                    <label class="custom-control-label" for="batchN">N</label>
+                                </div>
+                            </div>
                         </b-form-group>
                     </b-col>
                     <b-col lg="12">
@@ -93,15 +93,17 @@
     <b-card>
         <div class="mb-3">
             <b-form-group label-for="perPageSelect" class="mb-0 float-left">
-                <b-form-select v-model="ordersPage.pageSize" id="perPageSelect" :options="pageOptions" @change="getOrdersByPage(1)" class="w-auto"></b-form-select>
+                <b-form-select v-model="ordersCondition.page.pageSize" id="perPageSelect" :options="pageOptions" @change="getOrdersByPage(1)" class="w-auto"></b-form-select>
             </b-form-group>
-            <b-pagination v-model="ordersPage.pageNo" :total-rows="ordersPage.totalCount" :per-page="ordersPage.pageSize" @input="getOrdersByPage(ordersPage.pageNo)" align="right" class="my-0">
+            <b-pagination v-model="ordersCondition.page.pageNo" :total-rows="ordersCondition.page.totalCount" :per-page="ordersCondition.page.pageSize" @input="getOrdersByPage(ordersCondition.page.pageNo)" align="right" class="my-0">
             </b-pagination>
         </div>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-            <b-table striped small hover bordered :fields="fields" :items="orders">
+            <b-table striped small hover bordered :fields="fields" :items="orders"
+                :sort-by.sync="ordersCondition.sortBy" :sort-desc.sync="ordersCondition.sortDesc" @sort-changed="sortingChanged">
+
                 <template slot="no" slot-scope="data">
-                    {{ (ordersPage.totalCount - ((ordersPage.pageNo - 1) * ordersPage.pageSize)) - data.index }}
+                    {{ (ordersCondition.page.totalCount - ((ordersCondition.page.pageNo - 1) * ordersCondition.page.pageSize)) - data.index }}
                 </template>
                 <template slot="orderType" slot-scope="data">
                     {{ data.item.orderType | toOrderTypeText }}
@@ -144,7 +146,7 @@
         <b-tabs>
             <b-tab>
                 <template slot="title">
-                    <b-link href="#" @click="closeOrderStatusLog();"><i class="fa fa-close"></i></b-link>
+                    <b-link href="#" @click="closeOrderStatusLog()"><i class="fa fa-close"></i></b-link>
                 </template>
                 <b-list-group class="list-group-accent">
                     <b-list-group-item class="list-group-item-accent-primary bg-light text-center font-weight-bold text-muted text-uppercase">
@@ -171,9 +173,7 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import {
-    Switch as cSwitch
-} from '@coreui/vue'
+import { Switch as cSwitch } from '@coreui/vue'
 import axios from 'axios'
 import orderDetail from './OrderDetail'
 
@@ -181,80 +181,22 @@ export default {
     data() {
         return {
             fields: [
-                {
-                    key: 'no',
-                    label: 'No',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderType',
-                    label: '주문타입',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderStatus',
-                    label: '주문상태',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderId',
-                    label: '주문번호',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderUserName',
-                    label: '주문자',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'companyName',
-                    label: '기업명',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'productPackageName',
-                    label: '주문상품'
-                },
-                {
-                    key: 'clusterName',
-                    label: '클러스터',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'productDescription',
-                    label: '설명',
-                    tdClass: 'text-left'
-                },
-                {
-                    key: 'orderDate',
-                    label: '주문일시',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderStatusChange',
-                    label: '상태변경',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'batchTargetYn',
-                    label: '배치대상여부',
-                    tdClass: 'text-center'
-                },
-                {
-                    key: 'orderStatusLog',
-                    label: '변경이력',
-                    tdClass: 'text-center'
-                }
+                { key: 'no', label: 'No', tdClass: 'text-center'},
+                { key: 'orderType', label: '주문타입', tdClass: 'text-center', sortable: true },
+                { key: 'orderStatus', label: '주문상태', tdClass: 'text-center', sortable: true },
+                { key: 'orderId', label: '주문번호', tdClass: 'text-center', sortable: true },
+                { key: 'orderUserName', label: '주문자', tdClass: 'text-left', sortable: true },
+                { key: 'orderCustomerId', label: '고객ID', tdClass: 'text-center', sortable: true },
+                { key: 'companyName', label: '기업명', tdClass: 'text-left', sortable: true },
+                { key: 'productPackageName', label: '주문상품' },
+                { key: 'clusterName', label: '클러스터', tdClass: 'text-left' },
+                { key: 'productDescription', label: '설명', tdClass: 'text-left'},
+                { key: 'orderDate', label: '주문일시', tdClass: 'text-center', sortable: true },
+                { key: 'orderStatusChange', label: '상태변경', tdClass: 'text-center'},
+                { key: 'batchTargetYn', label: '배치대상여부', tdClass: 'text-center'},
+                { key: 'orderStatusLog', label: '변경이력', tdClass: 'text-center'}
             ],
             pageOptions: [10, 20, 30, 50, 100],
-            search: {
-                orderType: ['PURCHASE', 'DISPOSAL'],
-                orderStatus: ['REQUESTED', 'PROCEEDING', 'DONE', 'DENIED'],
-                batchTargetYn: 'ALL',
-                orderUserName: '',
-                clusterName: '',
-                orderId: ''
-            },
             orderDetailDialog: false,
         }
     },
@@ -274,89 +216,89 @@ export default {
             }
         },
         orders: function() {
-            return this.$store.state.order.orders;
+            return this.$store.state.order.orders
         },
-        ordersPage: function() {
-            return this.$store.state.order.ordersPage;
+        ordersCondition: function() {
+            return this.$store.state.order.ordersCondition
         },
         orderStatusLogs: function() {
-            return this.$store.state.order.orderDetail.orderStatusLogs;
+            return this.$store.state.order.orderDetail.orderStatusLogs
         }
     },
     created() {
-        this.getOrders();
+        this.initialize()
     },
     methods: {
         scrollHandle(evt) {
             // console.log(evt)
         },
+        initialize() {
+            this.getOrders()
+        },
         getOrders() {
-            const ordersParams = {
-                search: this.search,
-                page: this.ordersPage
-            }
-            this.$store.dispatch('order/getOrders', ordersParams)
+            this.$store.dispatch('order/getOrders', this.ordersCondition)
         },
         getOrdersByPage(pageNo) {
             this.$store.commit('order/setOrdersPageNo', pageNo)
-
-            this.getOrders();
+            this.$store.dispatch('order/getOrders', this.ordersCondition)
         },
         getOrder(id) {
-            this.orderDetailDialog = true;
-
-            this.$store.dispatch('cluster/getClustersAll');
+            this.$store.dispatch('cluster/getClustersAll')
             this.$store.dispatch('order/getOrder', {id: id})
+            this.orderDetailDialog = true
         },
         updateOrderStatus(item, orderStatus) {
-            let confirmMsg;
+            let confirmMsg
             if (orderStatus === 'DENIED') {
-                confirmMsg = '주문을 반려 하시겠습니까?';
+                confirmMsg = '주문을 반려 하시겠습니까?'
             } else if (orderStatus === 'PROCEEDING') {
-                confirmMsg = '주문 상태를 처리중으로 변경 하시겠습니까?';
+                confirmMsg = '주문 상태를 처리중으로 변경 하시겠습니까?'
             } else if (orderStatus === 'DONE') {
-                confirmMsg = '주문 상태를 완료로 변경 하시겠습니까?';
+                confirmMsg = '주문 상태를 완료로 변경 하시겠습니까?'
             }
 
             this.$zadmin.confirm(confirmMsg, (result) => {
-                if (!result) return false;
+                if (!result) return false
 
                 axios.put('/api/admin-order/orders/' + item.id + '/status/' + orderStatus).then(response => {
                     this.$zadmin.alert('주문 상태가 변경되었습니다.')
 
-                    let order = this.$store.state.order.orders.find(o => o.id == item.id) || {};
-                    order.orderStatus = orderStatus;
+                    let order = this.$store.state.order.orders.find(o => o.id == item.id) || {}
+                    order.orderStatus = orderStatus
                 }).catch(error => {
-                    let response = error.response;
+                    let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']';
+                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
 
                         this.$zadmin.alert(errorMsg)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
                 })
-            });
+            })
         },
         updateOrderBatchTarget(id, batchTargetYn) {
-            let yn = (batchTargetYn == 'Y') ? 'N' : 'Y';
+            let yn = (batchTargetYn == 'Y') ? 'N' : 'Y'
             axios.put('/api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
-                let order = this.$store.state.order.orders.find(o => o.id == id) || {};
-                order.batchTargetYn = yn;
+                let order = this.$store.state.order.orders.find(o => o.id == id) || {}
+                order.batchTargetYn = yn
             }).catch(error => {
                 this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
             })
         },
         getOrderStatusLogs(id) {
-            document.body.classList.toggle("local-aside-show");
+            document.body.classList.toggle("local-aside-show")
 
-            this.$store.dispatch('order/getOrderStatusLogs', {
-                id: id
-            });
+            this.$store.dispatch('order/getOrderStatusLogs', {id: id})
         },
         closeOrderStatusLog() {
-            document.body.classList.toggle("local-aside-show");
-        }
+            document.body.classList.toggle("local-aside-show")
+        },
+        sortingChanged(ctx) {
+    		this.ordersCondition.sortBy = ctx.sortBy
+			this.ordersCondition.sortDesc = ctx.sortDesc
+			this.$store.dispatch('order/getOrders', this.ordersCondition)
+		}
     }
 }
 </script>

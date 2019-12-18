@@ -1,5 +1,5 @@
 <template>
-    <b-tab active>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icons cui-justify-left mr-1"></i> Basic Information
         </template>
@@ -121,7 +121,8 @@ export default {
             project: {},
             customersAll: [],
             customerCloudAccountCspCodes: [],
-            customerCloudAccounts: []
+            customerCloudAccounts: [],
+            isActive: false
         }
     },
     created () {
@@ -135,8 +136,11 @@ export default {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
             }
-            this.$store.dispatch('project/getProjectsAll')
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'BasicInfomation' ? true : false
+            }
 
+            this.$store.dispatch('project/getProjectsAll')
             this.getCustomersAll()
             this.getProject()
         },
@@ -152,9 +156,7 @@ export default {
                 if (data.content) {
                     this.project = data.content.resource
 
-                    if (this.project.customerCloudAccountCspCode) {
-                        this.getCustomerCloudAccountCspCodes()
-                    }
+                    this.getCustomerCloudAccountCspCodes()
                 } else {
                     this.project = {}
                 }
@@ -168,6 +170,9 @@ export default {
 
                 if (this.project.customerCloudAccountId) {
                     this.getCustomerCloudAccounts()
+                } else {
+                    this.project.customerCloudAccountCspCode = ''
+                    this.project.customerCloudAccountId = ''
                 }
             }).catch(error => {
                 console.log('failed get getCustomerCloudAccountCspCodes')
@@ -212,6 +217,7 @@ export default {
 
                 axios.put('/api/admin-project/projects/' + this.id, this.project).then(response => {
         			if (response.status === 200) {
+                        this.getProject()
         				this.$zadmin.alert('저장 되었습니다.')
         			} else {
         				this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
@@ -220,7 +226,6 @@ export default {
             })
         },
         changeCustomerId() {
-            console.log('changeCustomerId')
             if (this.project.customerId) {
                 axios.get('/api/admin-customer/customers/' + this.project.customerId + '/cloud-accounts/csps').then(response => {
                     this.customerCloudAccountCspCodes = response.data.content.resources

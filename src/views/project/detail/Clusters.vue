@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-list mr-1"></i> Clusters
         </template>
@@ -212,7 +212,8 @@ export default {
                 { key: 'billingYn', label: 'Billing YN', tdClass: 'text-center' },
                 { key: 'billingStartDt', label: 'Billing Started Date', tdClass: 'text-center' },
                 { key: 'product_actions', label: 'Actions', tdClass: 'text-center' }
-            ]
+            ],
+            isActive: false
         }
     },
     created () {
@@ -225,6 +226,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Clusters' ? true : false
             }
 
             this.$store.dispatch('project/getProjectClusters', {id: this.id})

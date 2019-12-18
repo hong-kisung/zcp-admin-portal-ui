@@ -2,10 +2,10 @@ export default {
     // project
     setProjects: function(state, data) {
         state.projects = data.content.resources
-        state.projectsPage = data.page
+        state.projectsCondition.page = data.page
     },
     setProjectsPageNo: function(state, data) {
-        state.projectsPage.pageNo = data
+        state.projectsCondition.page.pageNo = data
     },
     setProject: function(state, data) {
         if (data.content) {

@@ -10,20 +10,18 @@
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <table class="table table-sm table-bordered">
                 <colgroup>
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
                     <col style="width: *;">
+                    <col style="width: 12.5%;">
+                    <col style="width: 12.5%;">
+                    <col style="width: 12.5%;">
+                    <col style="width: 12.5%;">
+                    <col style="width: 12.5%;">
+                    <col style="width: 12.5%;">
                 </colgroup>
                 <thead>
                     <tr>
                         <th>Project</th>
                         <th>Environment Type</th>
-                        <th>Cluster</th>
                         <th>Product</th>
                         <th>Contract Size</th>
                         <th>Billing YN</th>
@@ -45,9 +43,6 @@
                                     <td class="text-left">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
-                                    <td class="text-left">
-                                        {{ projectCluster.clusterName }}
-                                    </td>
                                     <td class="text-center">&nbsp;</td>
                                     <td class="text-right">&nbsp;</td>
                                     <td class="text-center">&nbsp;</td>
@@ -66,9 +61,6 @@
                                     <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
-                                    <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
-                                        {{ projectCluster.clusterName }}
-                                    </td>
                                     <td class="text-left">{{ projectClusterProduct.productName }}</td>
                                     <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
                                     <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
@@ -86,7 +78,7 @@
         <b-modal id="project-modal" size="lg" title="Project" centered no-close-on-backdrop v-model="projectClusterDialog" @close="closeProjectClusterDialog">
             <b-form>
                 <b-form-group label="Project" label-for="project" :label-cols="3" label-class="required">
-                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId">
+                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId" :disabled="projectClusterEdited == true">
                         <option value="">선택</option>
                         <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
                     </b-form-select>
@@ -340,6 +332,7 @@ export default {
                 if (response.status === 201) {
                     this.$store.dispatch('project/getProjectsClusters', {id: this.id})
                     this.closeProjectClusterDialog()
+                    this.selected = []
                     this.$zadmin.alert('저장 되었습니다.')
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
@@ -347,9 +340,7 @@ export default {
             }).catch(error => {
                 let response = error.response
                 if (response.data) {
-                    let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                    this.$zadmin.alert(errorMsg)
+                    this.$zadmin.alert(response.data.message)
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 }
@@ -380,9 +371,7 @@ export default {
                 }).catch(error => {
                     let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                        this.$zadmin.alert(errorMsg)
+                        this.$zadmin.alert(response.data.message)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
@@ -404,9 +393,7 @@ export default {
                 }).catch(error => {
                     let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                        this.$zadmin.alert(errorMsg)
+                        this.$zadmin.alert(response.data.message)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }

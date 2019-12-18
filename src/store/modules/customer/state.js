@@ -1,8 +1,16 @@
 export default {
     customers: [],
-    customersPage: {
-        pageNo: 1,
-        pageSize: 10
+    customersCondition: {
+        page: {
+            pageNo: 1,
+            pageSize: 10,
+            totalCount: 0
+        },
+        filter: {
+
+        },
+        sortBy: 'createdDt',
+    	sortDesc: true
     },
     customer: {},
     customerCloudAccounts: [],
