@@ -87,9 +87,6 @@
                     <template slot="no" slot-scope="data">
                         {{ (projectsCondition.page.totalCount - ((projectsCondition.page.pageNo - 1) * projectsCondition.page.pageSize)) - data.index }}
                     </template>
-                    <template slot="customer" slot-scope="data">
-                        {{toCustomerLabel(data.item.customerId)}}
-                    </template>
                     <template slot="name" slot-scope="data">
                         <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'BasicInfomation' }}">
                             {{data.item.name}}
@@ -145,7 +142,7 @@ export default {
         return {
             projects_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'customer', label: 'Customer', tdClass: 'text-left' },
+                { key: 'customerName', label: 'Customer', tdClass: 'text-left' },
                 { key: 'name', label: 'Project Name', tdClass: 'text-left', sortable: true },
                 { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
@@ -258,12 +255,6 @@ export default {
                     }
                 })
             })
-        },
-        toCustomerLabel(val) {
-            let project = this.customersAll.find(o => o.id == val)
-            if (project != null) {
-                return project.nameKr
-            }
         },
         sortingChanged(ctx) {
     		this.projectsCondition.sortBy = ctx.sortBy
