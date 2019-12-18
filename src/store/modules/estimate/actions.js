@@ -194,13 +194,6 @@ export default {
 			console.log('failed get getProjects')
 		})
 	},
-	addProject: function (store, payload) {
-		payload.project.created = store.rootGetters.getUserId
-		axios.post('/api/estimate/project', payload.project).then(response => {
-			this._vm.$zadmin.alert('저장되었습니다.')
-			store.dispatch('getProjects')
-		})
-	},
 	getProjectVolume: function (store, payload) {
 		axios.get('/api/estimate/project/' + payload.projectId + '/volume').then(response => {
 			store.commit('setProjectVolume', response.data)

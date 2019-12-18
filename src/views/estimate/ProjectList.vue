@@ -1,9 +1,8 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-        	Estimates
+        	Estimates <b-badge class="m-1" variant="danger">{{ totalRows }}</b-badge>
         	<div class="float-right">
-        		<b-button variant="success" class="mr-2" @click="addProject"><i class="icon-plus"></i> Project 추가</b-button>
             	<b-button v-b-toggle.collapse1 variant="secondary"><i class="fa fa-filter"></i> 검색상세</b-button>
             </div>
         </h1>
@@ -45,7 +44,7 @@
                         <b-col lg="12">
                             <b-form-group>
                             	<label for="estimateStatusActive">Activation</label>
-                            	<b-form-radio-group v-model="projectListCondition.filter.activation" :options="activationOptions" name="estimateStatusActive">
+                            	<b-form-radio-group v-model="projectListCondition.filter.estimateActivationYn" :options="activationOptions" name="estimateStatusActive">
                             	</b-form-radio-group>
                             </b-form-group>
                         </b-col>
@@ -66,10 +65,21 @@
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
                 <b-table striped hover small bordered :fields="fields" :items="projects" :current-page="projectListCondition.currentPage" :per-page="projectListCondition.perPage" 
                 	:filter="filterItem" :filter-function="filterTable"
-                	:sort-by.sync="projectListCondition.sortBy" :sort-desc.sync="projectListCondition.sortDesc" @sort-changed="sortingChanged"
+                	:sort-by.sync="projectListCondition.sortBy" 
+                	:sort-desc.sync="projectListCondition.sortDesc" 
+                	@filtered="onFiltered"
+                	@sort-changed="sortingChanged"
                 >
                     <template slot="rowno" slot-scope="data">
-                        {{ data.index + 1 }}
+                        {{ (totalRows - ((projectListCondition.currentPage - 1) * projectListCondition.perPage)) - data.index }}
+                    </template>
+                    <template slot="name" slot-scope="data">
+                        <router-link :to="{ name: 'ProjectCostEstimate', params: { projectId: data.item.id, editable: true } }">
+                            {{ data.value }}
+                        </router-link>
+                    </template>
+                    <template slot="status" slot-scope="data">
+                        <b-badge :variant="variant(data.item.status)">{{data.item.status}}</b-badge>
                     </template>
                     <template slot="button_volume" slot-scope="data">
                         <router-link :to="{ name: 'ProjectVolume', params: { projectId: data.item.id } }">
@@ -81,16 +91,14 @@
                             <b-button variant="outline-warning" size="sm"><i class="icon-info"></i> 원가견적</b-button>
                         </router-link>
                     </template>
-                    <template slot="activation" slot-scope="data">
-                        {{ data.value === 1 ? 'Activate':'Inactivate' }}
+                    <template slot="estimateActivationYn" slot-scope="data">
+                        <label class="mx-1 mb-0 switch switch-label switch-success">
+                            <input class="switch-input" type="checkbox" :checked="data.item.estimateActivationYn==='Y' ? true:false" @click="updateEstimateActivationYn(data.item)">
+                            <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                        </label>
                     </template>
                 </b-table>
             </VuePerfectScrollbar>
-            
-		    <projectDetail
-		    	v-bind:dialogVisible="projectDetailDialog"
-		    	v-on:fire-dialog-closed="closeProjectDetailDialog"
-		    />
         </b-card>
     </div>
 </template>
@@ -99,12 +107,11 @@
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
 import perfectScrollbar from '@/mixins/perfect-scrollbar'
-import projectDetail from './project/ProjectDetail'
 
 export default {
 	mixins: [perfectScrollbar],
     components: {
-        VuePerfectScrollbar, cSwitch, projectDetail
+        VuePerfectScrollbar, cSwitch
     },
     data()  {
         return {
@@ -112,28 +119,28 @@ export default {
         		customerId: null,
         		status: null,
         		cspCode: null,
-        		activation: null
+        		estimateActivationYn: null
         	},
         	activationOptions: [
-        		{ text: 'Active', value: 1 },
-        		{ text: 'Inactive', value: 0 },
+        		{ text: 'Active', value: 'Y' },
+        		{ text: 'Inactive', value: 'N' },
         		{ text: 'All', value: null }
         	],
-	       	projectDetailDialog: false,
 	      	projectId: 0,
             fields: [
-                { key: 'rowno', label: 'No', sortable: true },
+                { key: 'rowno', label: 'No', tdClass: 'text-center', sortable: true },
                 { key: 'customerNameKr', label: 'Customer', sortable: true },
                 { key: 'name', label: 'Project', sortable: true },
                 { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
-                { key: 'cloud', label: 'Cloud', tdClass: 'text-center', sortable: true },
+                { key: 'cspCode', label: 'Cloud', tdClass: 'text-center', sortable: true },
                 { key: 'createdDt', label: 'Estimate Sheet Created Date', tdClass: 'text-center', sortable: true },
                 { key: 'updatedDt', label: 'Estimate Sheet Last Updated Date', tdClass: 'text-center', sortable: true },
                 { key: 'button_volume', label: '용량산정', tdClass: 'text-center' },
                 { key: 'button_cost', label: '원가견적', tdClass: 'text-center' },
-                { key: 'activation', label: 'Activation', tdClass: 'text-center', sortable: true }
+                { key: 'estimateActivationYn', label: 'Activation', tdClass: 'text-center', sortable: true }
             ],
-            pageOptions: [10, 20, 30, 50, 100]
+            pageOptions: [2,10, 20, 30, 50, 100],
+            totalRows: 0
         }
     },
     computed: {
@@ -149,9 +156,9 @@ export default {
 		projects: function() {
 			return this.$store.state.estimate.projects
 		},
-		totalRows: function() {
-			return this.$store.state.estimate.projects.length
-		},
+		//totalRows: function() {
+		//	return this.$store.state.estimate.projects.length
+		//},
 		projectListCondition: function() {
 			return this.$store.state.estimate.projectListCondition
 		}
@@ -161,11 +168,9 @@ export default {
 		this.$store.dispatch('estimate/getCustomers')
 		this.$store.dispatch('estimate/getProjectStatus')
 		this.$store.dispatch('estimate/getCspTypes')
+		Object.assign(this.filterItem, this.projectListCondition.filter)
 	},
     methods: {
-		addProject() {
-			this.projectDetailDialog = true;
-		},
 		changeCurrentPage(value) {
 			this.projectListCondition.currentPage = value
 			this.$store.commit('estimate/setProjectListCondition', this.projectListCondition)
@@ -174,10 +179,6 @@ export default {
 			this.projectListCondition.currentPage = 1
 			this.projectListCondition.perPage = value
 			this.$store.commit('estimate/setProjectListCondition', this.projectListCondition)
-		},
-		closeProjectDetailDialog() {
-			this.projectDetailDialog = false
-			this.$store.dispatch('estimate/getProjects')
 		},
 		filterTable(row, filter) {
 			if(filter.customerId != null && row.customerId !== filter.customerId) {
@@ -189,7 +190,7 @@ export default {
 			if(filter.cspCode != null && row.cspCode !== filter.cspCode) {
 				return false
 			}
-			if(filter.activation != null && row.activation !== filter.activation) {
+			if(filter.estimateActivationYn != null && row.estimateActivationYn !== filter.estimateActivationYn) {
 				return false
 			}
 			
@@ -200,10 +201,39 @@ export default {
 			Object.assign(this.filterItem, this.projectListCondition.filter)
 			this.$store.commit('estimate/setProjectListCondition', this.projectListCondition)
 		},
+		onFiltered(filteredItems) {
+			this.totalRows = filteredItems.length
+		},
 		sortingChanged(ctx) {
 			this.projectListCondition.sortBy = ctx.sortBy
 			this.projectListCondition.sortDesc = ctx.sortDesc
 			this.$store.commit('estimate/setProjectListCondition', this.projectListCondition)
+		},
+        variant (status) {
+            let $variant
+            
+            if(status == 'Operation') {
+                $variant = 'success'
+            }else if(status == 'Proposal') {
+                $variant = 'warning'
+            }else if(status == 'Development') {
+                $variant = 'primary'
+            }
+            return $variant
+        },
+		updateEstimateActivationYn(item) {
+			let changedActivation;
+			if(item.estimateActivationYn === 'Y') {
+				changedActivation = 'N'
+			} else {
+				changedActivation ='Y'
+			}
+			
+			this.$http.put('/api/estimate/project/' + item.id, {id: item.id, estimateActivationYn: changedActivation}).then(response => {
+				this.$zadmin.alert('변경되었습니다.')
+				item.estimateActivationYn = changedActivation
+				this.search()
+			})
 		}
     }
 }
