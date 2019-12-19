@@ -142,7 +142,7 @@ export default {
         return {
             projects_fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'customerName', label: 'Customer', tdClass: 'text-left' },
+                { key: 'customerNameKr', label: 'Customer', tdClass: 'text-left', sortable: true },
                 { key: 'name', label: 'Project Name', tdClass: 'text-left', sortable: true },
                 { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
