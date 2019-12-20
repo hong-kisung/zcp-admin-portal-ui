@@ -10,7 +10,7 @@
                 <b-form class="row">
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderBuy">주문타입</label>
+                            <label for="orderBuy">Order Type</label>
                             <div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
                                     <input type="checkbox" class="custom-control-input" id="purchase" value="PURCHASE" v-model="ordersCondition.filter.orderType">
@@ -25,7 +25,7 @@
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderRequest">주문상태</label>
+                            <label for="orderRequest">Order Status</label>
                             <div>
                                 <div class="custom-control custom-checkbox custom-control-inline">
                                     <input type="checkbox" class="custom-control-input" id="requested" value="REQUESTED" v-model="ordersCondition.filter.orderStatus">
@@ -48,29 +48,29 @@
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderNumber">주문번호</label>
+                            <label for="orderNumber">Order ID</label>
                             <b-form-input type="number" id="orderId" placeholder="주문번호를 입력하세요." v-model="ordersCondition.filter.orderId"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderUser">주문자</label>
+                            <label for="orderUser">Orderd</label>
                             <b-form-input type="text" id="orderUserName" placeholder="주문자 이름을 입력하세요." v-model="ordersCondition.filter.orderUserName"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="orderCluster">클러스터</label>
+                            <label for="orderCluster">Cluster Name</label>
                             <b-form-input type="text" id="clusterName" placeholder="클러스터명을 입력하세요." v-model="ordersCondition.filter.clusterName"></b-form-input>
                         </b-form-group>
                     </b-col>
                     <b-col lg="4">
                         <b-form-group>
-                            <label for="batchAll">배치대상 여부</label>
+                            <label for="batchAll">Batch Target YN</label>
                             <div>
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input" id="batchAll" value="" v-model="ordersCondition.filter.batchTargetYn">
-                                    <label class="custom-control-label" for="batchAll">전체</label>
+                                    <label class="custom-control-label" for="batchAll">All</label>
                                 </div>
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input" id="batchY" value="Y" v-model="ordersCondition.filter.batchTargetYn">
@@ -182,19 +182,19 @@ export default {
         return {
             fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center'},
-                { key: 'orderType', label: '주문타입', tdClass: 'text-center', sortable: true },
-                { key: 'orderStatus', label: '주문상태', tdClass: 'text-center', sortable: true },
-                { key: 'orderId', label: '주문번호', tdClass: 'text-center', sortable: true },
-                { key: 'orderUserName', label: '주문자', tdClass: 'text-left', sortable: true },
-                { key: 'orderCustomerId', label: '고객ID', tdClass: 'text-center', sortable: true },
-                { key: 'companyName', label: '기업명', tdClass: 'text-left', sortable: true },
-                { key: 'productPackageName', label: '주문상품' },
-                { key: 'clusterName', label: '클러스터', tdClass: 'text-left' },
-                { key: 'productDescription', label: '설명', tdClass: 'text-left'},
-                { key: 'orderDate', label: '주문일시', tdClass: 'text-center', sortable: true },
-                { key: 'orderStatusChange', label: '상태변경', tdClass: 'text-center'},
-                { key: 'batchTargetYn', label: '배치대상여부', tdClass: 'text-center'},
-                { key: 'orderStatusLog', label: '변경이력', tdClass: 'text-center'}
+                { key: 'orderType', label: 'Type', tdClass: 'text-center', sortable: true },
+                { key: 'orderStatus', label: 'Status ', tdClass: 'text-center', sortable: true },
+                { key: 'orderId', label: 'Order ID', tdClass: 'text-center', sortable: true },
+                { key: 'orderUserName', label: 'Orderd', tdClass: 'text-left', sortable: true },
+                { key: 'orderCustomerId', label: 'Customer ID', tdClass: 'text-center', sortable: true },
+                { key: 'companyName', label: 'Company Name', tdClass: 'text-left', sortable: true },
+                { key: 'productPackageName', label: 'Product Package Name', sortable: true },
+                { key: 'clusterName', label: 'Cluster', tdClass: 'text-left', sortable: true },
+                { key: 'productDescription', label: 'Description', tdClass: 'text-left', sortable: true },
+                { key: 'orderDate', label: 'Orderd Date', tdClass: 'text-center', sortable: true },
+                { key: 'orderStatusChange', label: 'Actions', tdClass: 'text-center'},
+                { key: 'batchTargetYn', label: 'Batch YN', tdClass: 'text-center', sortable: true},
+                { key: 'orderStatusLog', label: 'Stauts Log', tdClass: 'text-center'}
             ],
             pageOptions: [10, 20, 30, 50, 100],
             orderDetailDialog: false,
