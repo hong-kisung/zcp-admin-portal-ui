@@ -13,7 +13,9 @@
             </b-pagination>
         </div>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-            <b-table striped hover small bordered :fields="fields" :items="customers">
+            <b-table striped hover small bordered :fields="fields" :items="customers"
+                :sort-by.sync="customersCondition.sortBy" :sort-desc.sync="customersCondition.sortDesc" @sort-changed="sortingChanged">
+
                 <template v-slot:table-colgroup="scope">
                     <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'no' ? '5%' : '' }">
                 </template>
@@ -87,13 +89,13 @@ export default {
         return {
             fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center'},
-                { key: 'nameEn', label: 'Customer Name(EN)', tdClass: 'text-left'},
-                { key: 'nameKr', label: 'Customer Name(KR)', tdClass: 'text-left'},
+                { key: 'nameEn', label: 'Customer Name(EN)', tdClass: 'text-left', sortable: true},
+                { key: 'nameKr', label: 'Customer Name(KR)', tdClass: 'text-left', sortable: true},
                 { key: 'cloudAccounts', label: 'Cloud Account', tdClass: 'text-left'},
                 { key: 'projectCnt', label: 'Projecs', tdClass: 'text-center' },
                 { key: 'clusterCnt', label: 'Clusters', tdClass: 'text-center' },
-                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center'},
-                { key: 'activation', label: 'Activation', tdClass: 'text-center'},
+                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center', sortable: true},
+                { key: 'activation', label: 'Activation', tdClass: 'text-center', sortable: true},
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
             pageOptions: [10, 20, 30, 50, 100],
@@ -167,7 +169,12 @@ export default {
                     }
                 })
             })
-        }
+        },
+        sortingChanged(ctx) {
+    		this.customersCondition.sortBy = ctx.sortBy
+			this.customersCondition.sortDesc = ctx.sortDesc
+			this.$store.dispatch('customer/getCustomers', this.customersCondition)
+		}
     }
 }
 </script>
