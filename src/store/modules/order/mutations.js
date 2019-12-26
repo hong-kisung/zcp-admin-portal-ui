@@ -33,5 +33,8 @@ export default {
 	},
 	setOrderClusters: function(state, data) {
 		state.orderDetail.orderClusters = data
+	},
+	setOrderProductClients: function(state, data) {
+		state.orderProductClients = data
 	}
 }

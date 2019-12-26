@@ -12,7 +12,8 @@ export default {
             orderId: '',
             batchTargetYn: '',
             orderUserName: '',
-            clusterName: ''
+            clusterName: '',
+            clientId: ''
         },
         sortBy: 'orderDate',
     	sortDesc: true
@@ -23,5 +24,6 @@ export default {
         orderPackageCategories: [],
         orderStatusLogs: [],
         orderClusters: []
-    }
+    },
+    orderProductClients: []
 }

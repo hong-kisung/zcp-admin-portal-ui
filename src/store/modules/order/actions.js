@@ -9,8 +9,9 @@ export default {
 		let orderUserName = ',orderUserName=' + payload.filter.orderUserName
 		let clusterName = ',clusterName=' + payload.filter.clusterName
 		let batchTargetYn = ',batchTargetYn=' + payload.filter.batchTargetYn
+		let clientId = ',clientId=' + payload.filter.clientId
 
-		let q = encodeURIComponent(orderStatus + orderType + orderId + orderUserName + clusterName + batchTargetYn)
+		let q = encodeURIComponent(orderStatus + orderType + orderId + orderUserName + clusterName + batchTargetYn + clientId)
 
 		// set page
 		let pageNo = payload.page.pageNo
@@ -37,5 +38,12 @@ export default {
 		}).catch(error => {
 			console.log('failed get getOrderStatusLogs')
 		})
-	}
+	},
+	getOrderProductClients: function (store, payload) {
+		axios.get('/api/admin-order//orders/product/clients').then(response => {
+			store.commit('setOrderProductClients', response.data)
+		}).catch(error => {
+			console.log('failed get getOrderProductClients')
+		})
+	},
 }
