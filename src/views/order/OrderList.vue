@@ -83,6 +83,15 @@
                             </div>
                         </b-form-group>
                     </b-col>
+                    <b-col lg="4">
+                        <b-form-group>
+                            <label for="clientId">Product</label>
+                            <b-form-select id="clientId" :plain="true" value="선택" v-model="ordersCondition.filter.clientId">
+                                <option value="">All</option>
+                                <option v-for="(item, index) in orderProductClients" :value="item.clientId">{{ item.clientName }}</option>
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
                     <b-col lg="12">
                         <b-button variant="primary" block @click="getOrdersByPage(1)"><i class="fa fa-search"></i> 검색</b-button>
                     </b-col>
@@ -223,6 +232,9 @@ export default {
         },
         orderStatusLogs: function() {
             return this.$store.state.order.orderDetail.orderStatusLogs
+        },
+        orderProductClients: function() {
+            return this.$store.state.order.orderProductClients
         }
     },
     created() {
@@ -234,9 +246,13 @@ export default {
         },
         initialize() {
             this.getOrders()
+            this.getOrderProductClients()
         },
         getOrders() {
             this.$store.dispatch('order/getOrders', this.ordersCondition)
+        },
+        getOrderProductClients() {
+            this.$store.dispatch('order/getOrderProductClients')
         },
         getOrdersByPage(pageNo) {
             this.$store.commit('order/setOrdersPageNo', pageNo)
