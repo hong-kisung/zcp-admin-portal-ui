@@ -78,7 +78,7 @@
         <b-modal id="project-modal" size="lg" title="Project" centered no-close-on-backdrop v-model="projectClusterDialog" @close="closeProjectClusterDialog">
             <b-form>
                 <b-form-group label="Project" label-for="project" :label-cols="3" label-class="required">
-                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId" :disabled="projectClusterEdited == true">
+                    <b-form-select id="project" :plain="true" required v-model="projectCluster.projectId">
                         <option value="">선택</option>
                         <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
                     </b-form-select>
@@ -138,7 +138,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <b-form-input type="text" id="contractSize" v-model="projectCluster.projectClusterProducts[idx].contractSize"></b-form-input>
+                                                <b-form-input type="text" v-model="projectCluster.projectClusterProducts[idx].contractSize"></b-form-input>
                                                 <span class="mx-1">GB</span>
                                             </div>
                                         </td>
@@ -149,7 +149,7 @@
                                             </label>
                                         </td>
                                         <td>
-                                            <b-form-input type="date" id="billingStartDt" v-model="projectCluster.projectClusterProducts[idx].billingStartDt"></b-form-input>
+                                            <b-form-input type="date" v-model="projectCluster.projectClusterProducts[idx].billingStartDt"></b-form-input>
                                         </td>
                                         <td class="text-center">
                                             <b-button variant="danger" size="sm" @click="projectClusterProductRemove(idx)"><i class="fa fa-close"></i></b-button>
@@ -352,6 +352,13 @@ export default {
                     this.$store.dispatch('project/getProjectsClusters', {id: this.id})
                     this.closeProjectClusterDialog()
                     this.$zadmin.alert('저장 되었습니다.')
+                } else {
+                    this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                }
+            }).catch(error => {
+                let response = error.response
+                if (response.data) {
+                    this.$zadmin.alert(response.data.message)
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 }

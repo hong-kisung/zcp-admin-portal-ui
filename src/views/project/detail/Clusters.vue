@@ -316,9 +316,7 @@ export default {
             }).catch(error => {
                 let response = error.response
                 if (response.data) {
-                    let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                    this.$zadmin.alert(errorMsg)
+                    this.$zadmin.alert(response.data.message)
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 }
@@ -330,6 +328,13 @@ export default {
                     this.$store.dispatch('project/getProjectClusters', {id: this.id})
                     this.closeProjectClusterDialog()
                     this.$zadmin.alert('저장 되었습니다.')
+                } else {
+                    this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                }
+            }).catch(error => {
+                let response = error.response
+                if (response.data) {
+                    this.$zadmin.alert(response.data.message)
                 } else {
                     this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                 }
@@ -349,9 +354,7 @@ export default {
                 }).catch(error => {
                     let response = error.response
                     if (response.data) {
-                        let errorMsg = response.data.message + ' [' + response.data.code + ']'
-
-                        this.$zadmin.alert(errorMsg)
+                        this.$zadmin.alert(response.data.message)
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
                     }
