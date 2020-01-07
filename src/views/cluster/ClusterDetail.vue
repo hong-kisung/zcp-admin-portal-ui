@@ -4,17 +4,14 @@
         <b-tabs class="detail-cnt">
             <basic-infomation />
             <projects />
-
+            
             <b-tab>
                 <template slot="title">
                     <i class="icon-calculator mr-1"></i> Estimate Sheet
                 </template>
             </b-tab>
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-basket mr-1"></i> Orders
-                </template>
-            </b-tab>
+
+            <orders />
         </b-tabs>
     </div>
 </template>
@@ -22,6 +19,7 @@
 <script>
 import BasicInfomation from './detail/BasicInfomation'
 import Projects from './detail/Projects'
+import Orders from './detail/Orders'
 
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
@@ -31,7 +29,8 @@ export default {
         VuePerfectScrollbar,
         cSwitch,
         BasicInfomation,
-        Projects
+        Projects,
+        Orders
     },
     data()  {
         return {

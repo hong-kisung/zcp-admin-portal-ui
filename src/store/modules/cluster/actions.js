@@ -44,5 +44,12 @@ export default {
 		}).catch(error => {
 			console.log('failed get getClustersAll')
 		})
+	},
+	getClusterOrders: function(store, payload) {
+		axios.get('/api/admin-order/orders/all?clusterId=' + payload.clusterId).then(response => {
+			store.commit('setClusterOrders', response.data)
+		}).catch(error => {
+			console.log('failed get getClusterOrders')
+		})
 	}
 }
