@@ -4,7 +4,7 @@ export default {
         state.clustersCondition.page = data.page
     },
     setClustersPageNo: function(state, data) {
-        state.clustersPage.pageNo = data
+        state.clustersCondition.page.pageNo = data
     },
     settClustersAll: function(state, data) {
         state.clustersAll = data.content.resources
@@ -15,5 +15,8 @@ export default {
         } else {
             state.cluster = {}
         }
+    },
+    setClusterOrders: function(state, data) {
+        state.clusterOrders = data.content.resources
     }
 }

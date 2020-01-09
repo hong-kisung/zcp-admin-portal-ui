@@ -25,6 +25,16 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
+                                <label for="status">Status</label>
+                                <b-form-select id="status" :plain="true" v-model="clustersCondition.filter.status">
+                                    <option value="">All</option>
+                                    <option value="Running">Running</option>
+                                    <option value="Deleted">Deleted</option>
+                                </b-form-select>
+                            </b-form-group>
+                        </b-col>
+                        <b-col lg="4">
+                            <b-form-group>
                                 <label for="enviromentType">Enviroment Type</label>
                                 <b-form-select id="enviromentType" :plain="true" v-model="clustersCondition.filter.enviromentType">
                                     <option value="">All</option>
@@ -102,6 +112,9 @@
                             {{data.item.clusterName}}
                         </router-link>
                     </template>
+                    <template slot="status" slot-scope="data">
+                        <b-badge pill :variant="variant(data.item.status)">{{data.item.status}}</b-badge>
+                    </template>
                     <template slot="activation" slot-scope="data">
                         <label class="mx-1 mb-0 switch switch-label switch-success">
                             <input class="switch-input" type="checkbox" checked="" v-model="data.item.activation" @click="updateClusterActivation(data.item.id, data.item.activation)">
@@ -138,6 +151,7 @@ export default {
                 { key: 'no', label: 'No', tdClass: 'text-center' },
                 { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left', sortable: true },
                 { key: 'clusterName', label: 'Cluster Name', sortable: true },
+                { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
                 { key: 'enviromentType', label: 'Environment Type', tdClass: 'text-center', sortable: true },
                 { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-left', sortable: true },
                 { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center', sortable: true },
@@ -190,6 +204,7 @@ export default {
             const cluster = {
                 content: {
                     resource: {
+                        status: null,
                         enviromentType: null,
                         nwArchType: null,
                         sreIntegrationYn: 'N',
@@ -235,7 +250,18 @@ export default {
     		this.clustersCondition.sortBy = ctx.sortBy
 			this.clustersCondition.sortDesc = ctx.sortDesc
 			this.$store.dispatch('cluster/getClusters', this.clustersCondition)
-		}
+		},
+        variant (status) {
+            let val
+
+            if (status == 'Running') {
+                val = 'success'
+            } else if(status == 'Deleted') {
+                val = 'secondary'
+            }
+
+            return val
+        }
     }
 }
 </script>

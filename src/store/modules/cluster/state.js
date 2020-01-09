@@ -9,6 +9,7 @@ export default {
         filter: {
             clusterId: '',
             clusterName: '',
+            status: '',
             enviromentType: '',
             nwArchType: '',
             sreIntegrationYn: '',
@@ -17,13 +18,7 @@ export default {
         sortBy: 'createdDt',
     	sortDesc: true
     },
-    clustersPage: {
-        pageNo: 1,
-        pageSize: 10
-    },
-    clustersSearch: {
-
-    },
     cluster: {},
-    clustersAll: []
+    clustersAll: [],
+    clusterOrders: []
 }

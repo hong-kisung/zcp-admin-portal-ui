@@ -63,7 +63,8 @@
                 <b-pagination :value="projectListCondition.currentPage" :total-rows="totalRows" :per-page="projectListCondition.perPage" @change="changeCurrentPage" align="right" class="my-0"></b-pagination>
             </div>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-                <b-table striped hover small bordered :fields="fields" :items="projects" :current-page="projectListCondition.currentPage" :per-page="projectListCondition.perPage" 
+                <b-table striped hover small bordered :fields="fields" :items="projects" 
+                	:current-page="projectListCondition.currentPage" :per-page="projectListCondition.perPage" 
                 	:filter="filterItem" :filter-function="filterTable"
                 	:sort-by.sync="projectListCondition.sortBy" 
                 	:sort-desc.sync="projectListCondition.sortDesc" 
@@ -92,8 +93,17 @@
                         </router-link>
                     </template>
                     <template slot="estimateActivationYn" slot-scope="data">
+                    	<!--c-switch class="mx-1 mb-0" color="success" label v-model="data.item.estimateActivationYn" :checked="isChecked(data.item)" @change="updateEstimateActivationYn(data.item)" value="Y" uncheckedValue="N"/-->
+                    	
+                    	<!--b-form-checkbox v-model="data.item.estimateActivationYn" 
+                    		:checked="data.item.estimateActivationYn==='Y' ? true:false" 
+                    		@change="updateEstimateActivationYn(data.item)" 
+                    		value="Y" uncheckedValue="N" 
+                    		switch>
+                    	</b-form-checkbox-->
+                    	
                         <label class="mx-1 mb-0 switch switch-label switch-success">
-                            <input class="switch-input" type="checkbox" :checked="data.item.estimateActivationYn==='Y' ? true:false" @click="updateEstimateActivationYn(data.item)">
+                            <input class="switch-input" type="checkbox" v-model="data.item.estimateActivationYn" @click="updateEstimateActivationYn(data.item)" true-value="Y" false-value="N">
                             <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
                         </label>
                     </template>
@@ -139,7 +149,7 @@ export default {
                 { key: 'button_cost', label: '원가견적', tdClass: 'text-center' },
                 { key: 'estimateActivationYn', label: 'Activation', tdClass: 'text-center', sortable: true }
             ],
-            pageOptions: [2,10, 20, 30, 50, 100],
+            pageOptions: [10, 20, 30, 50, 100],
             totalRows: 0
         }
     },
@@ -171,6 +181,9 @@ export default {
 		Object.assign(this.filterItem, this.projectListCondition.filter)
 	},
     methods: {
+    	isChecked(item) {
+    		return item.estimateActivationYn==='Y' ? true:false
+    	},
 		changeCurrentPage(value) {
 			this.projectListCondition.currentPage = value
 			this.$store.commit('estimate/setProjectListCondition', this.projectListCondition)
@@ -231,9 +244,10 @@ export default {
 			
 			this.$http.put('/api/estimate/project/' + item.id, {id: item.id, estimateActivationYn: changedActivation}).then(response => {
 				this.$zadmin.alert('변경되었습니다.')
-				item.estimateActivationYn = changedActivation
-				this.search()
-			})
+				this.$store.dispatch('estimate/getProjects')
+			}).catch(error => {
+                console.log(error)
+            })
 		}
     }
 }
