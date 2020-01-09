@@ -9,6 +9,7 @@ export default {
         filter: {
             clusterId: '',
             clusterName: '',
+            status: '',
             enviromentType: '',
             nwArchType: '',
             sreIntegrationYn: '',

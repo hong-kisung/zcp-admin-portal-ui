@@ -16,6 +16,13 @@
                     Cluster Name을 입력해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
+            <b-form-group label="Status" label-for="status" :label-cols="3" label-class="required">
+                <b-form-select id="status" :plain="true" required v-model="cluster.status">
+                    <option value="null">선택</option>
+                    <option value="Running">Running</option>
+                    <option value="Deleted">Deleted</option>
+                </b-form-select>
+            </b-form-group>
             <b-form-group label="Environment Type" label-for="enviromentType" :label-cols="3" label-class="required">
                 <b-form-select id="enviromentType" :plain="true" required v-model="cluster.enviromentType">
                     <option value="null">선택</option>
@@ -121,6 +128,11 @@ export default {
             }
             if (!this.cluster.clusterName) {
                 this.$zadmin.alert('Cluster Name을 입력하세요.')
+                e.preventDefault()
+                return false
+            }
+            if (!this.cluster.status) {
+                this.$zadmin.alert('Status를 선택하세요.')
                 e.preventDefault()
                 return false
             }
