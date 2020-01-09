@@ -34,6 +34,7 @@
                                     <option value="Proposal">Proposal</option>
                                     <option value="Development">Development</option>
                                     <option value="Operation">Operation</option>
+                                    <option value="Closed">Closed</option>
                                 </b-form-select>
                             </b-form-group>
                         </b-col>
@@ -147,6 +148,7 @@ export default {
                 { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
+                { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center', sortable: true },
                 { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },

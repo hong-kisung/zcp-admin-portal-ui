@@ -25,6 +25,7 @@
                     <option value="Proposal">Proposal</option>
                     <option value="Development">Development</option>
                     <option value="Operation">Operation</option>
+                    <option value="Closed">Closed</option>
                 </b-form-select>
                 <b-form-invalid-feedback id="status">
                     Status를 선택해주세요.
@@ -40,6 +41,11 @@
             <b-form-group label="Launching Date" label-for="launchDt" :label-cols="3">
                 <b-form-input type="date" id="launchDt" v-model="project.launchDt"></b-form-input>
             </b-form-group>
+            <template v-if="project.status === 'Closed'">
+                <b-form-group label="Closed Date" label-for="closedDt" :label-cols="3">
+                    <b-form-input type="date" id="closedDt" v-model="project.closedDt"></b-form-input>
+                </b-form-group>
+            </template>
             <b-form-group label="Description" label-for="description" :label-cols="3">
                 <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description"></b-form-input>
             </b-form-group>
