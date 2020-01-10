@@ -31,5 +31,8 @@ export default {
     // project stakeholders
     projectStakeholders: [],
     projectStakeholder: {},
-    projectMngUsers: []
+    projectMngUsers: [],
+
+    // project cluster orders
+    projectClustersOrders: []
 }
