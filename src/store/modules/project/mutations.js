@@ -66,5 +66,10 @@ export default {
     },
     setProjectMngUsers: function(state, data) {
         state.projectMngUsers = data.content.resources
+    },
+
+    // project clusters projectClustersOrders
+    setProjectClustersOrders: function(state, data) {
+        state.projectClustersOrders = data.content.resources
     }
 }

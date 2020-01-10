@@ -99,5 +99,14 @@ export default {
 		}).catch(error => {
 			console.log('failed get getProjectMngUsers')
 		})
+	},
+
+	// project clusters projectClustersOrders
+	getProjectClustersOrders: function(store, payload) {
+		axios.get('/api/admin-project/projects/' + payload.id + '/clusters/orders').then(response => {
+			store.commit('setProjectClustersOrders', response.data)
+		}).catch(error => {
+			console.log('failed get getProjectClustersOrders')
+		})
 	}
 }
