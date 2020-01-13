@@ -40,7 +40,7 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="activation">estimated YN</label>
+                                <label for="activation">Estimated YN</label>
                                 <div>
                                     <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsCondition.filter.estimatedYn">
                                         <b-form-radio value="">All</b-form-radio>
@@ -149,7 +149,7 @@ export default {
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center', sortable: true },
-                { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center', sortable: true },
+                { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
                 { key: 'projects_clusters', label: 'Clusters', tdClass: 'text-center' },
