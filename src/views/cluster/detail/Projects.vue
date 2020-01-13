@@ -30,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-for="(item, idx) in projectsClusters">
+                    <template v-for="(item, idx) in clusterProjects">
                         <template v-for="(projectCluster, projectClusterIdx) in item.projectClusters">
                             <template v-if="projectCluster.projectClusterProducts.length == 0">
                                 <tr>
@@ -201,8 +201,8 @@ export default {
         cluster: function() {
             return this.$store.state.cluster.cluster
         },
-        projectsClusters: function() {
-            return this.$store.state.project.projectsClusters
+        clusterProjects: function() {
+            return this.$store.state.cluster.clusterProjects
         },
         projectCluster: function() {
             return this.$store.state.project.projectCluster
@@ -247,7 +247,7 @@ export default {
                 this.id = this.$route.params.id
             }
 
-            this.$store.dispatch('project/getProjectsClusters', {id: this.id})
+            this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
             this.$store.dispatch('project/getProjectsAll')
             this.$store.dispatch('project/getProducts')
         },
@@ -330,7 +330,7 @@ export default {
         createProjectCluster() {
             axios.post('/api/admin-project/projects/' + this.projectCluster.projectId + '/clusters', this.projectCluster).then(response => {
                 if (response.status === 201) {
-                    this.$store.dispatch('project/getProjectsClusters', {id: this.id})
+                    this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
                     this.closeProjectClusterDialog()
                     this.selected = []
                     this.$zadmin.alert('저장 되었습니다.')
@@ -349,7 +349,7 @@ export default {
         updateProjectCluster() {
             axios.put('/api/admin-project/projects/' + this.projectCluster.projectId + '/clusters/' + this.projectClusterId, this.projectCluster).then(response => {
                 if (response.status === 200) {
-                    this.$store.dispatch('project/getProjectsClusters', {id: this.id})
+                    this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
                     this.closeProjectClusterDialog()
                     this.$zadmin.alert('저장 되었습니다.')
                 } else {
@@ -370,7 +370,7 @@ export default {
 
                 axios.delete('/api/admin-project/projects/' + this.projectCluster.projectId + '/clusters/' + this.projectClusterId).then(response => {
                     if (response && response.status === 204) {
-                        this.$store.dispatch('project/getProjectsClusters', {id: this.id})
+                        this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
                         this.closeProjectClusterDialog()
                     } else {
                         this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
@@ -391,7 +391,7 @@ export default {
 
                 axios.delete('/api/admin-project/projects/' + this.selected[0] + '/clusters/').then(response => {
                     if (response && response.status === 204) {
-                        this.$store.dispatch('project/getProjectsClusters', {id: this.id})
+                        this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
                         this.selected = []
                         this.closeProjectClusterDialog()
                     } else {

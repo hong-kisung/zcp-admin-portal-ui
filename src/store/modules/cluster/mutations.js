@@ -18,5 +18,23 @@ export default {
     },
     setClusterOrders: function(state, data) {
         state.clusterOrders = data.content.resources
+    },
+    setClusterProjects: function(state, data) {
+        let clusterProjects = data.content.resources
+
+        for (let clusterProject of clusterProjects) {
+            let productCnt = 0
+            for (let projectCluster of clusterProject.projectClusters) {
+                if (projectCluster.projectClusterProducts.length > 0) {
+                    productCnt += projectCluster.projectClusterProducts.length
+                } else {
+                    productCnt += 1
+                }
+            }
+
+            clusterProject.productCnt = productCnt
+        }
+
+        state.clusterProjects = clusterProjects
     }
 }

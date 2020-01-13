@@ -61,13 +61,6 @@ export default {
 			console.log('failed get getProjectCluster')
 		})
 	},
-	getProjectsClusters: function(store, payload) {
-		axios.get('/api/admin-project/projects/clusters/' + payload.id).then(response => {
-			store.commit('setProjectsClusters', response.data)
-		}).catch(error => {
-			console.log('failed get getProjectsClusters')
-		})
-	},
 
 	// product
 	getProducts: function(store, payload) {
