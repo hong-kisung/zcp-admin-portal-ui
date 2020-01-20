@@ -39,7 +39,10 @@ export default {
 		})
 	},
 	getProjectsAll: function(store, payload) {
-		axios.get('/api/admin-project/projects/all').then(response => {
+		let sort = payload.sortBy
+		let orderBy = payload.sortDesc == true ? 'desc' : 'asc'
+
+		axios.get('/api/admin-project/projects/all?sort=' + sort + '&orderBy=' + orderBy).then(response => {
 			store.commit('setProjectsAll', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectsAll')

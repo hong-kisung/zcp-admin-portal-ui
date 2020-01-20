@@ -77,7 +77,7 @@
                 </b-form-group>
             </template>
             <template v-if="project.estimatedYn === 'N'">
-                <b-form-group label="Cost estimate parent project" label-for="parentId" :label-cols="3" label-class="required">
+                <b-form-group label="Cost estimate parent" label-for="parentId" :label-cols="3" label-class="required">
                     <b-form-select id="parentId" :plain="true" v-model="project.parentId">
                         <option value="">선택</option>
                         <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
@@ -146,7 +146,7 @@ export default {
                 this.isActive = this.$route.params.active === 'BasicInfomation' ? true : false
             }
 
-            this.$store.dispatch('project/getProjectsAll')
+            this.$store.dispatch('project/getProjectsAll', {sortBy: 'name', sortDesc: true})
             this.getCustomersAll()
             this.getProject()
         },

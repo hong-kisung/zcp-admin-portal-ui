@@ -248,7 +248,7 @@ export default {
             }
 
             this.$store.dispatch('cluster/getClusterProjects', {id: this.id})
-            this.$store.dispatch('project/getProjectsAll')
+            this.$store.dispatch('project/getProjectsAll', {sortBy: 'name', sortDesc: true})
             this.$store.dispatch('project/getProducts')
         },
         projectClusterAdd() {
