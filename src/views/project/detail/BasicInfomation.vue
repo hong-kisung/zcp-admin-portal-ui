@@ -64,7 +64,7 @@
                         </b-form-select>
                         <b-form-select id="customerCloudAccountId" :plain="true" required v-model="project.customerCloudAccountId">
                             <option value="">선택</option>
-                            <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }}</option>
+                            <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }} ({{ item.accountAlias }})</option>
                         </b-form-select>
 
                         <b-form-invalid-feedback id="cloudAccount">
