@@ -11,16 +11,18 @@
             <table class="table table-sm table-bordered">
                 <colgroup>
                     <col style="width: *;">
+                    <col style="width: 5%;">
                     <col style="width: 12.5%;">
                     <col style="width: 12.5%;">
                     <col style="width: 12.5%;">
                     <col style="width: 12.5%;">
                     <col style="width: 12.5%;">
-                    <col style="width: 12.5%;">
+                    <col style="width: 10%;">
                 </colgroup>
                 <thead>
                     <tr>
                         <th>Project</th>
+                        <th>Cloud</th>
                         <th>Environment Type</th>
                         <th>Product</th>
                         <th>Contract Size</th>
@@ -40,6 +42,13 @@
                                             <label class="custom-control-label" :for="item.projectName">{{ item.projectName }}</label>
                                         </div>
                                     </th>
+                                    <td class="text-center" v-if="projectClusterIdx == 0" :rowspan="item.productCnt">
+                                        <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'GCP'">
+                                        <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AWS'">
+                                        <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'CLOUDZ'">
+                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCodecspCode == 'IBM'">
+                                        <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AZURE'">
+                                    </td>
                                     <td class="text-left">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
@@ -58,6 +67,13 @@
                                             <label class="custom-control-label" :for="item.projectName">{{ item.projectName }}</label>
                                         </div>
                                     </th>
+                                    <td class="text-center" v-if="clusterProductIndex == 0 && projectClusterIdx == 0" :rowspan="item.productCnt">
+                                        <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'GCP'">
+                                        <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AWS'">
+                                        <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'CLOUDZ'">
+                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCodecspCode == 'IBM'">
+                                        <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AZURE'">
+                                    </td>
                                     <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
