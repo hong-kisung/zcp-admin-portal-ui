@@ -5,12 +5,7 @@
             <basic-infomation />
             <cloud-service-account />
             <projects />
-
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-layers mr-1"></i> Clusters
-                </template>
-            </b-tab>
+            <clusters />
         </b-tabs>
     </div>
 </template>
@@ -22,6 +17,7 @@ import { Switch as cSwitch } from '@coreui/vue'
 import BasicInfomation from './detail/BasicInfomation'
 import CloudServiceAccount from './detail/CloudServiceAccount'
 import Projects from './detail/Projects'
+import Clusters from './detail/Clusters'
 
 export default {
     components: {
@@ -29,7 +25,8 @@ export default {
         cSwitch,
         BasicInfomation,
         CloudServiceAccount,
-        Projects
+        Projects,
+        Clusters
     },
     data()  {
         return {
