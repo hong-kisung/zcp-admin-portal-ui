@@ -97,7 +97,7 @@
                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'GCP'">
                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AWS'">
                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'CLOUDZ'">
-                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCodecspCode == 'IBM'">
+                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'IBM'">
                         <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AZURE'">
                     </template>
                     <template slot="period" slot-scope="data">
