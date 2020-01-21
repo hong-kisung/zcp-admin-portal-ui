@@ -1,7 +1,7 @@
 <template>
 <div class="animated fadeIn">
     <h1 class="display-tit mb-3">
-        Customer <b-badge class="m-1" variant="danger">{{ customersCondition.page.totalCount }}</b-badge>
+        Customers <b-badge class="m-1" variant="danger">{{ customersCondition.page.totalCount }}</b-badge>
         <b-button variant="success" class="float-right" @click="customerAdd"><i class="icon-plus"></i> Customer 추가</b-button>
     </h1>
     <b-card>
