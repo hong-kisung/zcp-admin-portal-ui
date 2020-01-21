@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-layers mr-1"></i> Clusters
         </template>
@@ -81,7 +81,8 @@ export default {
                 { key: 'mngK8sVersion', label: 'k8s version', tdClass: 'text-right' },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'createdDt', label: 'Created date', tdClass: 'text-center' }
-            ]
+            ],
+            isActive: false
         }
     },
     filters: {
@@ -103,6 +104,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Clusters' ? true : false
             }
 
             this.$store.dispatch('customer/getCustomerProjectsClusters', {id: this.id})

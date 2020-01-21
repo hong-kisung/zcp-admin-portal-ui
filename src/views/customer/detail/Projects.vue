@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-folder-alt mr-1"></i> Projects
         </template>
@@ -72,7 +72,8 @@ export default {
                 { key: 'slackChannel', label: 'Slack Channel', tdClass: 'text-left' },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' }
-            ]
+            ],
+            isActive: false
         }
     },
     filters: {
@@ -94,6 +95,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Projects' ? true : false
             }
 
             this.$store.dispatch('customer/getCustomerProjects', {id: this.id})

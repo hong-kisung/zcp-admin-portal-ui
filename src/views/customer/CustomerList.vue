@@ -13,18 +13,12 @@
             </b-pagination>
         </div>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-            <b-table striped hover small bordered :fields="fields" :items="customers"
-                :sort-by.sync="customersCondition.sortBy" :sort-desc.sync="customersCondition.sortDesc" @sort-changed="sortingChanged">
-
-                <template v-slot:table-colgroup="scope">
-                    <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'no' ? '5%' : '' }">
-                </template>
-
+            <b-table striped hover small bordered :fields="fields" :items="customers">
                 <template slot="no" slot-scope="data">
                     {{ (customersCondition.page.totalCount - ((customersCondition.page.pageNo - 1) * customersCondition.page.pageSize)) - data.index }}
                 </template>
                 <template slot="nameKr" slot-scope="data">
-                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr } }">
+                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr, active: 'BasicInfomation' } }">
                         {{data.item.nameKr}}
                     </router-link>
                 </template>
@@ -50,11 +44,15 @@
                             v-if="data.item.cloudAccounts.find(o => o.cspCode == 'IBM').cspCnt > 0 ">
                     </b-link>
                 </template>
-                <template slot="projects" slot-scope="data">
-                    <b-link>{{data.item.projects}}</b-link>
+                <template slot="projectCnt" slot-scope="data">
+                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr, active: 'Projects' } }">
+                        {{data.item.projectCnt}}
+                    </router-link>
                 </template>
-                <template slot="clusters" slot-scope="data">
-                    <b-link>{{data.item.clusters}}</b-link>
+                <template slot="clusterCnt" slot-scope="data">
+                    <router-link :to="{ name: 'CustomerDetail', params: { id: data.item.id, name: data.item.nameKr, active: 'Clusters' } }">
+                        {{data.item.clusterCnt}}
+                    </router-link>
                 </template>
                 <template slot="activation" slot-scope="data">
                     <label class="mx-1 mb-0 switch switch-label switch-success">
@@ -89,13 +87,13 @@ export default {
         return {
             fields: [
                 { key: 'no', label: 'No', tdClass: 'text-center'},
-                { key: 'nameEn', label: 'Customer Name(EN)', tdClass: 'text-left', sortable: true},
-                { key: 'nameKr', label: 'Customer Name(KR)', tdClass: 'text-left', sortable: true},
+                { key: 'nameEn', label: 'Customer Name(EN)', tdClass: 'text-left' },
+                { key: 'nameKr', label: 'Customer Name(KR)', tdClass: 'text-left' },
                 { key: 'cloudAccounts', label: 'Cloud Account', tdClass: 'text-left'},
                 { key: 'projectCnt', label: 'Projecs', tdClass: 'text-center' },
                 { key: 'clusterCnt', label: 'Clusters', tdClass: 'text-center' },
-                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center', sortable: true},
-                { key: 'activation', label: 'Activation', tdClass: 'text-center', sortable: true},
+                { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' },
+                { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'actions', label: 'Actions', tdClass: 'text-center' }
             ],
             pageOptions: [10, 20, 30, 50, 100],
@@ -169,12 +167,7 @@ export default {
                     }
                 })
             })
-        },
-        sortingChanged(ctx) {
-    		this.customersCondition.sortBy = ctx.sortBy
-			this.customersCondition.sortDesc = ctx.sortDesc
-			this.$store.dispatch('customer/getCustomers', this.customersCondition)
-		}
+        }
     }
 }
 </script>
