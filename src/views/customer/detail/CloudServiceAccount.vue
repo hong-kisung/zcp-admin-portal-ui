@@ -8,9 +8,11 @@
         </b-form-group>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
             <b-table striped hover small bordered :fields="customerCloudAccount_fields" :items="customerCloudAccounts">
+                <!--
                 <template v-slot:table-colgroup="scope">
                     <col v-for="field in scope.fields" :key="field.key" :style="{ width: field.key === 'no' ? '5%' : '' }">
                 </template>
+                -->
 
                 <template slot="no" slot-scope="data">
                     {{ customerCloudAccounts.length - data.index }}
