@@ -51,7 +51,7 @@
                         <b-form-input type="text" id="stakeholdersUserName" placeholder="User Search" required v-model="autocomplete.name" style="width: 30%;">
                         </b-form-input>
                         <span class="mx-1"></span>
-                        <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required v-model="projectStakeholder.userName"></b-form-input>
+                        <b-form-input type="text" id="stakeholdersUserName" placeholder="User Name을 입력하세요." required maxlength="100" v-model="projectStakeholder.userName"></b-form-input>
                     </div>
                     <b-list-group class="mb-3" v-if="autocomplete.name">
                         <b-list-group-item href="#" v-for="(item, idx) in projectMngUsers.filter(c => c.userName.indexOf(autocomplete.name) != -1)" :key="idx" @click="setMngUser(item)">
@@ -61,16 +61,16 @@
                 </b-form-group>
 
                 <b-form-group label="Company" label-for="stakeholdersCompany" :label-cols="3">
-                    <b-form-input type="text" id="stakeholdersCompany" placeholder="Company를 입력하세요." v-model="projectStakeholder.companyName"></b-form-input>
+                    <b-form-input type="text" id="stakeholdersCompany" placeholder="Company를 입력하세요." maxlength="100" v-model="projectStakeholder.companyName"></b-form-input>
                 </b-form-group>
                 <b-form-group label="Org" label-for="stakeholdersOrg" :label-cols="3">
-                    <b-form-input type="text" id="stakeholdersOrg" placeholder="Org를 입력하세요." v-model="projectStakeholder.org"></b-form-input>
+                    <b-form-input type="text" id="stakeholdersOrg" placeholder="Org를 입력하세요." maxlength="100" v-model="projectStakeholder.org"></b-form-input>
                 </b-form-group>
                 <b-form-group label="Email" label-for="stakeholdersEmail" :label-cols="3">
-                    <b-form-input type="email" id="stakeholdersEmail" placeholder="Email을 입력하세요." v-model="projectStakeholder.email"></b-form-input>
+                    <b-form-input type="email" id="stakeholdersEmail" placeholder="Email을 입력하세요." maxlength="50" v-model="projectStakeholder.email"></b-form-input>
                 </b-form-group>
                 <b-form-group label="Mobile" label-for="stakeholdersMobile" :label-cols="3">
-                    <b-form-input type="tel" id="stakeholdersMobile" placeholder="Mobile을 입력하세요." v-model="projectStakeholder.mobileNumber"></b-form-input>
+                    <b-form-input type="tel" id="stakeholdersMobile" placeholder="Mobile을 입력하세요." maxlength="20" v-model="projectStakeholder.mobileNumber"></b-form-input>
                 </b-form-group>
             </b-form>
             <template v-slot:modal-footer="{ ok, cancel }">
