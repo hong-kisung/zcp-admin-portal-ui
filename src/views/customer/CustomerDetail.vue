@@ -4,17 +4,8 @@
         <b-tabs class="detail-cnt">
             <basic-infomation />
             <cloud-service-account />
-
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-folder-alt mr-1"></i> Projects
-                </template>
-            </b-tab>
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-layers mr-1"></i> Clusters
-                </template>
-            </b-tab>
+            <projects />
+            <clusters />
         </b-tabs>
     </div>
 </template>
@@ -25,13 +16,17 @@ import { Switch as cSwitch } from '@coreui/vue'
 
 import BasicInfomation from './detail/BasicInfomation'
 import CloudServiceAccount from './detail/CloudServiceAccount'
+import Projects from './detail/Projects'
+import Clusters from './detail/Clusters'
 
 export default {
     components: {
         VuePerfectScrollbar,
         cSwitch,
         BasicInfomation,
-        CloudServiceAccount
+        CloudServiceAccount,
+        Projects,
+        Clusters
     },
     data()  {
         return {

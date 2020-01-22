@@ -25,5 +25,15 @@ export default {
         } else {
             state.customerCloudAccount = {cspCode: ''}
         }
+    },
+
+    // projects
+    setCustomerProjects: function(state, data) {
+        state.customerProjects = data.content.resources;
+    },
+
+    // clusters
+    setCustomerProjectsClusters: function(state, data) {
+        state.customerProjectsClusters = data.content.resources;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <b-tab active>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icons cui-justify-left mr-1"></i> Basic Information
         </template>
@@ -35,7 +35,8 @@ export default {
     },
     data()  {
         return {
-            id: 0
+            id: 0,
+            isActive: false
         }
     },
     computed: {
@@ -53,6 +54,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'BasicInfomation' ? true : false
             }
 
             this.$store.dispatch('customer/getCustomer', {id: this.$route.params.id})

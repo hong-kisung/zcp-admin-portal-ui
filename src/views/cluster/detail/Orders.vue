@@ -21,12 +21,6 @@
                     <b-link @click="getOrder(data.item.id)">{{data.item.productPackageName}}</b-link>
                     <i class="fa fa-check ml-1" v-if="data.item.clusterName"></i>
                 </template>
-                <template slot="batchTargetYn" slot-scope="data">
-                    <label class="mx-1 mb-0 switch switch-label switch-success">
-                        <input class="switch-input" type="checkbox" checked="" v-model="data.item.batchTargetYn == 'Y' ? true : false" @click="updateOrderBatchTarget(data.item.id, data.item.batchTargetYn)">
-                        <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
-                    </label>
-                </template>
                 <template slot="orderStatusLog" slot-scope="data">
                     <b-button variant="outline-warning" size="sm" @click="getOrderStatusLogs(data.item.id)"><i class="icon-clock"></i>이력보기</b-button>
                 </template>
@@ -289,15 +283,6 @@ export default {
             }
 
             this.$store.dispatch('cluster/getClusterOrders', {id: this.id})
-        },
-        updateOrderBatchTarget(id, batchTargetYn) {
-            let yn = (batchTargetYn == 'Y') ? 'N' : 'Y'
-            axios.put('/api/admin-order/orders/' + id + '/batch-target/' + yn).then(response => {
-                let order = this.$store.state.cluster.clusterOrders.find(o => o.id == id) || {}
-                order.batchTargetYn = yn
-            }).catch(error => {
-                this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
-            })
         },
         getOrder(id) {
             this.$store.dispatch('order/getOrder', {id: id})

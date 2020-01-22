@@ -20,5 +20,6 @@ export default {
     },
     cluster: {},
     clustersAll: [],
-    clusterOrders: []
+    clusterOrders: [],
+    clusterProjects: []
 }

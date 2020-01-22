@@ -62,16 +62,6 @@
             <b-form-group label="Installation Auditor" label-for="installAuditor" :label-cols="4">
                 <b-form-input type="text" id="installAuditor" v-model="cluster.installAuditor"></b-form-input>
             </b-form-group>
-            <b-form-group label="Cloud Service Provider" label-for="cloudServiceProvider" :label-cols="4">
-                <b-form-select id="cloudServiceProvider" :plain="true" v-model="cluster.clusterCsp">
-                    <option value="null">선택</option>
-                    <option value="IBM">IBM</option>
-                    <option value="AWS">AWS</option>
-                    <option value="AZURE">Azure</option>
-                    <option value="GCP">GCP</option>
-                    <option value="CLOUDZ">CloudZ</option>
-                </b-form-select>
-            </b-form-group>
             <b-form-group label="Managed Kubernetes Version" label-for="managedKubernetesVersion" :label-cols="4">
                 <b-form-input type="text" id="managedKubernetesVersion" v-model="cluster.mngK8sVersion"></b-form-input>
             </b-form-group>

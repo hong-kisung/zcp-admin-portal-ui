@@ -40,7 +40,7 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="activation">estimated YN</label>
+                                <label for="activation">Estimated YN</label>
                                 <div>
                                     <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsCondition.filter.estimatedYn">
                                         <b-form-radio value="">All</b-form-radio>
@@ -92,6 +92,13 @@
                         <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'BasicInfomation' }}">
                             {{data.item.name}}
                         </router-link>
+                    </template>
+                    <template slot="customerCloudAccountCspCode" slot-scope="data">
+                        <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'GCP'">
+                        <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AWS'">
+                        <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'CLOUDZ'">
+                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'IBM'">
+                        <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AZURE'">
                     </template>
                     <template slot="period" slot-scope="data">
                         {{data.item.devStartDt | toDevPeriod}} ~ {{data.item.devEndDt | toDevPeriod}}
@@ -146,10 +153,11 @@ export default {
                 { key: 'customerNameKr', label: 'Customer', tdClass: 'text-left', sortable: true },
                 { key: 'name', label: 'Project Name', tdClass: 'text-left', sortable: true },
                 { key: 'status', label: 'Status', tdClass: 'text-center', sortable: true },
+                { key: 'customerCloudAccountCspCode', label: 'Cloud', tdClass: 'text-center', sortable: true },
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center', sortable: true },
-                { key: 'estimatedYn', label: 'estimated YN', tdClass: 'text-center', sortable: true },
+                { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
                 { key: 'projects_clusters', label: 'Clusters', tdClass: 'text-center' },

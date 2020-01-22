@@ -29,25 +29,7 @@ export default {
             state.projectCluster = {}
         }
     },
-    setProjectsClusters: function(state, data) {
-        let projectsClusters = data.content.resources
-
-        for (let projectsCluster of projectsClusters) {
-            let productCnt = 0
-            for (let projectCluster of projectsCluster.projectClusters) {
-                if (projectCluster.projectClusterProducts.length > 0) {
-                    productCnt += projectCluster.projectClusterProducts.length
-                } else {
-                    productCnt += 1
-                }
-            }
-
-            projectsCluster.productCnt = productCnt
-        }
-
-        state.projectsClusters = projectsClusters
-    },
-
+    
     // product
     setProducts: function(state, data) {
         state.products = data.content.resources

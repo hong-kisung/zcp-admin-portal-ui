@@ -64,5 +64,23 @@ export default {
 		}).catch(error => {
 			console.log('failed get getCustomerCloudAccount')
 		})
+	},
+
+	// projects
+	getCustomerProjects: function(store, payload) {
+		axios.get('/api/admin-customer/customers/' + payload.id + '/projects').then(response => {
+			store.commit('setCustomerProjects', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomerProjects')
+		})
+	},
+
+	// clusters
+	getCustomerProjectsClusters: function(store, payload) {
+		axios.get('/api/admin-customer/customers/' + payload.id + '/projects/clusters').then(response => {
+			store.commit('setCustomerProjectsClusters', response.data)
+		}).catch(error => {
+			console.log('failed get getCustomerProjectsClusters')
+		})
 	}
 }
