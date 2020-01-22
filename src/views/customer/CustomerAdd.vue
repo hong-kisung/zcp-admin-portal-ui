@@ -2,13 +2,13 @@
     <b-modal id="customer-add-modal" size="lg" scrollable title="Customer" centered no-close-on-backdrop v-model="show" @close="cancel" @cancel="cancel" @ok="saveCustomer">
         <b-form class="needs-validation" novalidate>
             <b-form-group label="Customer Name(EN)" label-for="customerNameEn" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="nameEn" required placeholder="Customer Name(EN)을 입력해주세요." v-model="customer.nameEn"></b-form-input>
+                <b-form-input type="text" id="nameEn" required placeholder="Customer Name(EN)을 입력해주세요." v-model="customer.nameEn" maxlength="50"></b-form-input>
                 <b-form-invalid-feedback id="nameEn">
                     Customer Name(EN)을 입력해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Customer Name(KR)" label-for="customerNameKr" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="nameKr" required placeholder="Customer Name(KR)을 입력해주세요." v-model="customer.nameKr"></b-form-input>
+                <b-form-input type="text" id="nameKr" required placeholder="Customer Name(KR)을 입력해주세요." v-model="customer.nameKr" maxlength="50"></b-form-input>
                 <b-form-invalid-feedback id="nameKr">
                     Customer Name(KR)을 입력해주세요.
                 </b-form-invalid-feedback>

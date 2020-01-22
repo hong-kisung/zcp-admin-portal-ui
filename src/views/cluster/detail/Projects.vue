@@ -129,7 +129,7 @@
                             <table class="table table-sm table-bordered">
                                 <colgroup>
                                     <col style="width: *;">
-                                    <col style="width: 15%;">
+                                    <col style="width: 20%;">
                                     <col style="width: 12%;">
                                     <col style="width: 15%;">
                                     <col style="width: 10%;">
@@ -147,14 +147,14 @@
                                     <template v-for="(item, idx) in projectCluster.projectClusterProducts">
                                     <tr>
                                         <td>
-                                            <b-form-select id="productId" :plain="true" v-model="projectCluster.projectClusterProducts[idx].productId">
+                                            <b-form-select :id="'productId-' + item.id" :plain="true" v-model="projectCluster.projectClusterProducts[idx].productId">
                                                 <option value="">선택</option>
                                                 <option v-for="(item, index) in products" :value="item.id">{{ item.name }}</option>
                                             </b-form-select>
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <b-form-input type="text" v-model="projectCluster.projectClusterProducts[idx].contractSize"></b-form-input>
+                                                <b-form-input type="number" :id="'contractSize-' + item.id" v-model="projectCluster.projectClusterProducts[idx].contractSize"></b-form-input>
                                                 <span class="mx-1">GB</span>
                                             </div>
                                         </td>
@@ -165,7 +165,7 @@
                                             </label>
                                         </td>
                                         <td>
-                                            <b-form-input type="date" v-model="projectCluster.projectClusterProducts[idx].billingStartDt"></b-form-input>
+                                            <b-form-input type="date" :id="'billingStartDt-' + item.id" v-model="projectCluster.projectClusterProducts[idx].billingStartDt"></b-form-input>
                                         </td>
                                         <td class="text-center">
                                             <b-button variant="danger" size="sm" @click="projectClusterProductRemove(idx)"><i class="fa fa-close"></i></b-button>

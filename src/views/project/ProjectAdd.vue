@@ -11,7 +11,7 @@
                 </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Project Name" label-for="projectName" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="projectName" required placeholder="Project Name을 입력하세요." v-model="project.name"></b-form-input>
+                <b-form-input type="text" id="projectName" required placeholder="Project Name을 입력하세요." v-model="project.name" maxlength="50"></b-form-input>
                 <b-form-invalid-feedback id="projectName">
                     Project Name을 입력해주세요.
                 </b-form-invalid-feedback>
@@ -38,7 +38,7 @@
                 <b-form-input type="date" id="launchDt" v-model="project.launchDt"></b-form-input>
             </b-form-group>
             <b-form-group label="Description" label-for="description" :label-cols="3">
-                <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description"></b-form-input>
+                <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description" maxlength="50"></b-form-input>
             </b-form-group>
             <b-form-group label="Estimated YN" label-for="estimatedYn" :label-cols="3">
                 <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn">

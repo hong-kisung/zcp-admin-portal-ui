@@ -14,7 +14,7 @@
                 </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Project Name" label-for="projectName" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="projectName" required placeholder="Project Name을 입력하세요." v-model="project.name"></b-form-input>
+                <b-form-input type="text" id="projectName" required placeholder="Project Name을 입력하세요." maxlength="50" v-model="project.name"></b-form-input>
                 <b-form-invalid-feedback id="projectName">
                     Project Name을 입력해주세요.
                 </b-form-invalid-feedback>
@@ -47,7 +47,7 @@
                 </b-form-group>
             </template>
             <b-form-group label="Description" label-for="description" :label-cols="3">
-                <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description"></b-form-input>
+                <b-form-input type="text" id="description" placeholder="Description을 입력하세요." maxlength="50" v-model="project.description"></b-form-input>
             </b-form-group>
             <b-form-group label="Estimated YN" label-for="estimatedYn" :label-cols="3">
                 <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn" v-on:change="changeCustomerId">
@@ -228,7 +228,10 @@ export default {
         			} else {
         				this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
         			}
-        		})
+                }).catch(error => {
+                    console.log(error)
+                    this.$zadmin.alert('처리 중 오류가 발생하였습니다.')
+                })
             })
         },
         changeCustomerId() {

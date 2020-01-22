@@ -5,13 +5,13 @@
         </template>
         <b-form>
             <b-form-group label="Cluster ID" label-for="clusterId" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="clusterId" required placeholder="Cluster ID를 입력해주세요." v-model="cluster.clusterId"></b-form-input>
+                <b-form-input type="text" id="clusterId" required placeholder="Cluster ID를 입력해주세요." maxlength="50" v-model="cluster.clusterId"></b-form-input>
                 <b-form-invalid-feedback id="clusterId">
                     Cluster ID를 입력해주세요.
                 </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Cluster Name" label-for="clusterName" :label-cols="3" label-class="required">
-                <b-form-input type="text" id="clusterName" required placeholder="Cluster Name을 입력해주세요." v-model="cluster.clusterName"></b-form-input>
+                <b-form-input type="text" id="clusterName" required placeholder="Cluster Name을 입력해주세요." maxlength="100" v-model="cluster.clusterName"></b-form-input>
                 <b-form-invalid-feedback id="clusterName">
                     Cluster Name을 입력해주세요.
                 </b-form-invalid-feedback>
@@ -57,16 +57,16 @@
                 </b-form-radio-group>
             </b-form-group>
             <b-form-group label="Installation Account" label-for="mspCspAccount" :label-cols="3">
-                <b-form-input type="text" id="mspCspAccount" v-model="cluster.mspCspAccount"></b-form-input>
+                <b-form-input type="text" id="mspCspAccount" maxlength="50" v-model="cluster.mspCspAccount"></b-form-input>
             </b-form-group>
             <b-form-group label="Installation Completed Date" label-for="installCompleteDt" :label-cols="3">
                 <b-form-input type="date" id="installCompleteDt" v-model="cluster.installCompleteDt"></b-form-input>
             </b-form-group>
             <b-form-group label="Installation Auditor" label-for="installAuditor" :label-cols="3">
-                <b-form-input type="text" id="installAuditor" v-model="cluster.installAuditor"></b-form-input>
+                <b-form-input type="text" id="installAuditor" maxlength="50" v-model="cluster.installAuditor"></b-form-input>
             </b-form-group>
             <b-form-group label="Managed Kubernetes Version" label-for="managedKubernetesVersion" :label-cols="3">
-                <b-form-input type="text" id="managedKubernetesVersion" v-model="cluster.mngK8sVersion"></b-form-input>
+                <b-form-input type="text" id="managedKubernetesVersion" maxlength="10" v-model="cluster.mngK8sVersion"></b-form-input>
             </b-form-group>
         </b-form>
         <div class="tab-bottom-btn">

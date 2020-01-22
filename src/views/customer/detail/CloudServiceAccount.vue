@@ -1,5 +1,5 @@
 <template>
-    <b-tab>
+    <b-tab v-bind="{ active: isActive }">
         <template slot="title">
             <i class="icon-cloud-download mr-1"></i> Cloud Accounts
         </template>
@@ -39,11 +39,11 @@
                 <b-form-group label="Cloud Service" label-for="cloudService" :label-cols="3" label-class="required">
                     <b-form-select id="cloudService" :plain="true" v-model="customerCloudAccount.cspCode" required>
                         <option value="">선택</option>
-                        <option value="IBM">IBM</option>
                         <option value="AWS">AWS</option>
                         <option value="AZURE">Azure</option>
                         <option value="GCP">GCP</option>
                         <option value="CLOUDZ">CloudZ</option>
+                        <option value="IBM">IBM</option>
                     </b-form-select>
                     <b-form-invalid-feedback id="cloudService">
                         Cloud Service를 선택해주세요.
@@ -117,7 +117,8 @@ export default {
             id: 0,
             customerCloudAccountId: 0,
             customerCloudAccountDialog: false,
-            customerCloudAccountEdited: false
+            customerCloudAccountEdited: false,
+            isActive: false
         }
     },
     created () {
@@ -130,6 +131,9 @@ export default {
         initialize() {
             if (this.$route.params.id) {
                 this.id = this.$route.params.id
+            }
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'CloudServiceAccount' ? true : false
             }
 
             this.$store.dispatch('customer/getCustomerCloudAccounts', {id: this.id})
