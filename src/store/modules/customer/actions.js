@@ -76,11 +76,11 @@ export default {
 	},
 
 	// clusters
-	getCustomerProjectsClusters: function(store, payload) {
-		axios.get('/api/admin-customer/customers/' + payload.id + '/projects/clusters').then(response => {
-			store.commit('setCustomerProjectsClusters', response.data)
+	getCustomerClusters: function(store, payload) {
+		axios.get('/api/admin-customer/customers/' + payload.id + '/clusters').then(response => {
+			store.commit('setCustomerClusters', response.data)
 		}).catch(error => {
-			console.log('failed get getCustomerProjectsClusters')
+			console.log('failed get getCustomerClusters')
 		})
 	}
 }

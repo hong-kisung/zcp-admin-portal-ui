@@ -33,7 +33,7 @@ export default {
     },
 
     // clusters
-    setCustomerProjectsClusters: function(state, data) {
-        state.customerProjectsClusters = data.content.resources;
+    setCustomerClusters: function(state, data) {
+        state.customerClusters = data.content.resources;
     }
 }

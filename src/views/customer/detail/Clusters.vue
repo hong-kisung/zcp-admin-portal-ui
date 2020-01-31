@@ -4,21 +4,9 @@
             <i class="icon-layers mr-1"></i> Clusters
         </template>
         <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
-            <b-table striped hover small bordered :fields="clusters_fields" :items="customerProjectsClusters">
+            <b-table striped hover small bordered :fields="clusters_fields" :items="customerClusters">
                 <template slot="no" slot-scope="data">
-                    {{ customerProjectsClusters.length - data.index }}
-                </template>
-                <template slot="projectName" slot-scope="data">
-                    <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.projectId, name: data.item.projectName, active: 'BasicInfomation' }}">
-                        {{data.item.projectName}}
-                    </router-link>
-                </template>
-                <template slot="customerCloudAccountCspCode" slot-scope="data">
-                    <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'GCP'">
-                    <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AWS'">
-                    <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'CLOUDZ'">
-                    <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCodecspCode == 'IBM'">
-                    <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="data.item.customerCloudAccountCspCode == 'AZURE'">
+                    {{ customerClusters.length - data.index }}
                 </template>
                 <template slot="clusterName" slot-scope="data">
                     <router-link :to="{ name: 'ClusterDetail', params: { id: data.item.id, name: data.item.clusterName }}">
@@ -59,17 +47,13 @@ export default {
                 useBothWheelAxes: true
             }
         },
-        customerProjectsClusters: function() {
-            return this.$store.state.customer.customerProjectsClusters
+        customerClusters: function() {
+            return this.$store.state.customer.customerClusters
         }
     },
     data()  {
         return {
             clusters_fields: [
-                { key: 'no', label: 'No', tdClass: 'text-center' },
-                { key: 'projectName', label: 'Project Name', tdClass: 'text-left' },
-                { key: 'customerCloudAccountCspCode', label: 'Cloud', tdClass: 'text-center' },
-                { key: 'projectEnviromentType', label: 'Project Env', tdClass: 'text-center' },
                 { key: 'no', label: 'No', tdClass: 'text-center' },
                 { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left' },
                 { key: 'clusterName', label: 'Cluster Name' },
@@ -109,7 +93,7 @@ export default {
                 this.isActive = this.$route.params.active === 'Clusters' ? true : false
             }
 
-            this.$store.dispatch('customer/getCustomerProjectsClusters', {id: this.id})
+            this.$store.dispatch('customer/getCustomerClusters', {id: this.id})
         },
         variant (status) {
             let val
