@@ -58,7 +58,7 @@ export default {
                 { key: 'clusterId', label: 'Cluster ID', tdClass: 'text-left' },
                 { key: 'clusterName', label: 'Cluster Name' },
                 { key: 'clusterStatus', label: 'Status', tdClass: 'text-center' },
-                { key: 'clusterEnviromentType', label: 'Cluster Env', tdClass: 'text-center' },
+                { key: 'clusterEnviromentType', label: 'Environment Type', tdClass: 'text-center' },
                 { key: 'nwArchTypeName', label: 'n/w arch', tdClass: 'text-left' },
                 { key: 'sreIntegrationYn', label: 'SRE Intergration', tdClass: 'text-center' },
                 { key: 'multiTenantYn', label: 'Multi Tenant', tdClass: 'text-center' },
