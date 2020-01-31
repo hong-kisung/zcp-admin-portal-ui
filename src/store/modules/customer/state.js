@@ -16,5 +16,5 @@ export default {
     customerCloudAccounts: [],
     customerCloudAccount: {},
     customerProjects: [],
-    customerProjectsClusters: []
+    customerClusters: []
 }
