@@ -87,6 +87,18 @@
             <b-form-group label="Slack Channel" label-for="slackChannel" :label-cols="3">
                 <b-form-input type="text" id="slackChannel" v-model="project.slackChannel"></b-form-input>
             </b-form-group>
+            <b-form-group label="MIS Project Name" label-for="misProjectName" :label-cols="3">
+                <b-form-input type="text" id="misProjectName" required placeholder="MIS Project Name을 입력하세요." v-model="project.misProjectName" maxlength="100"></b-form-input>
+                <b-form-invalid-feedback id="misProjectName">
+                    MIS Project Name을 입력해주세요.
+                </b-form-invalid-feedback>
+            </b-form-group>
+            <b-form-group label="MIS Project Code" label-for="misProjectCode" :label-cols="3">
+                <b-form-input type="text" id="misProjectCode" required placeholder="MIS Project Code를 입력하세요." v-model="project.misProjectCode" maxlength="50"></b-form-input>
+                <b-form-invalid-feedback id="misProjectCode">
+                    MIS Project Code를 입력해주세요.
+                </b-form-invalid-feedback>
+            </b-form-group>
         </b-form>
         <div class="tab-bottom-btn">
             <router-link :to="{ path: '/project/' }">

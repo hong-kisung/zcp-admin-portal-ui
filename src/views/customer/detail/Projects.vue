@@ -70,6 +70,8 @@ export default {
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center' },
                 { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center' },
                 { key: 'slackChannel', label: 'Slack Channel', tdClass: 'text-left' },
+                { key: 'misProjectName', label: 'MIS Project Name', tdClass: 'text-left' },
+                { key: 'misProjectCode', label: 'MIS Project Code', tdClass: 'text-left' },
                 { key: 'activation', label: 'Activation', tdClass: 'text-center' },
                 { key: 'createdDt', label: 'Created Date', tdClass: 'text-center' }
             ],
