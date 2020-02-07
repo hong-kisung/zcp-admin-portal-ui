@@ -158,6 +158,7 @@ export default {
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center', sortable: true },
                 { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center', sortable: true },
+                { key: 'misProjectName', label: 'MIS Project Name', tdClass: 'text-left', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
                 { key: 'projects_clusters', label: 'Clusters', tdClass: 'text-center' },

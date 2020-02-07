@@ -40,6 +40,7 @@
                         <option value="IFM">Infrastructure Manager</option>
                         <option value="CNM">Contract Manager</option>
                         <option value="MSP">Managed Service Provider Manager</option>
+                        <option value="MPM">MIS Project Manager</option>
                     </b-form-select>
                     <b-form-invalid-feedback id="stakeholdersRole">
                         Role을 선택해주세요.
