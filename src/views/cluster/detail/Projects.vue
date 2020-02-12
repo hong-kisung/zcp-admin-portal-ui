@@ -24,11 +24,11 @@
                         <th>Project</th>
                         <th>Cloud</th>
                         <th>Environment Type</th>
+                        <th>Created Date</th>
                         <th>Product</th>
                         <th>Contract Size</th>
                         <th>Billing YN</th>
                         <th>Billing Start Date</th>
-                        <th>Created Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,15 +46,17 @@
                                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'GCP'">
                                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AWS'">
                                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'CLOUDZ'">
-                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCodecspCode == 'IBM'">
+                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'IBM'">
                                         <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AZURE'">
                                     </td>
                                     <td class="text-left">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
+                                    <td class="text-center">
+                                        {{ projectCluster.createdDt }}
+                                    </td>
                                     <td class="text-center">&nbsp;</td>
                                     <td class="text-right">&nbsp;</td>
-                                    <td class="text-center">&nbsp;</td>
                                     <td class="text-center">&nbsp;</td>
                                     <td class="text-center">&nbsp;</td>
                                 </tr>
@@ -71,17 +73,19 @@
                                         <img src="img/img_logo_gcs.png" width="22" height="22" alt="Google Clould System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'GCP'">
                                         <img src="img/img_logo_aws.png" width="22" alt="Amazon Web System Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AWS'">
                                         <img src="img/img_logo_cloud.png" width="22" alt="Cloud Z Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'CLOUDZ'">
-                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCodecspCode == 'IBM'">
+                                        <img src="img/img_logo_ibm.png" width="22" alt="IBM Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'IBM'">
                                         <img src="img/img_logo_azure.png" width="22" alt="Azure Logo" class="mx-1" v-if="item.customerCloudAccountCspCode == 'AZURE'">
                                     </td>
                                     <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
                                         <b-link @click="getProjectCluster(item.projectId, projectCluster.id)">{{ projectCluster.enviromentType }}</b-link>
                                     </td>
+                                    <td class="text-center" v-if="clusterProductIndex == 0" :rowspan="projectCluster.projectClusterProducts.length">
+                                        {{ projectCluster.createdDt }}
+                                    </td>
                                     <td class="text-left">{{ projectClusterProduct.productName }}</td>
                                     <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
                                     <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
                                     <td class="text-center">{{ projectClusterProduct.billingStartDt }}</td>
-                                    <td class="text-center">{{ projectClusterProduct.createdDt }}</td>
                                 </tr>
                             </template>
                         </template>
