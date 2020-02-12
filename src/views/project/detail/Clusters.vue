@@ -21,11 +21,11 @@
                     <tr>
                         <th>Cluster</th>
                         <th>Environment Type</th>
+                        <th>Created Date</th>
                         <th>Product</th>
                         <th>Contract Size</th>
                         <th>Billing YN</th>
                         <th>Billing Start Date</th>
-                        <th>Created Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,11 +49,11 @@
                                     <b-link @click="getProjectCluster(item.id)">{{ item.clusterName }}</b-link>
                                 </th>
                                 <td class="text-left" v-if="clusterProductIndex == 0" :rowspan="item.projectClusterProducts.length">{{ item.enviromentType }}</td>
+                                <td class="text-center" v-if="clusterProductIndex == 0" :rowspan="item.projectClusterProducts.length">{{ item.createdDt }}</td>
                                 <td class="text-center">{{ projectClusterProduct.productName }}</td>
                                 <td class="text-right">{{ projectClusterProduct.contractSize }}GB</td>
                                 <td class="text-center">{{ projectClusterProduct.billingYn }}</td>
                                 <td class="text-center">{{ projectClusterProduct.billingStartDt }}</td>
-                                <td class="text-center">{{ projectClusterProduct.createdDt }}</td>
                             </tr>
                         </template>
                     </template>
