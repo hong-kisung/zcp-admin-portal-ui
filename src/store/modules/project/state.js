@@ -11,7 +11,7 @@ export default {
             customerId: '',
             name: '',
             status: '',
-            estimatedYn: '',
+            customerCloudAccountCspCode: '',
             activation: 'Y'
         },
         sortBy: 'createdDt',

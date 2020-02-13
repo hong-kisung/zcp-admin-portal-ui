@@ -68,7 +68,6 @@ export default {
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center' },
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center' },
-                { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center' },
                 { key: 'slackChannel', label: 'Slack Channel', tdClass: 'text-left' },
                 { key: 'misProjectName', label: 'MIS Project Name', tdClass: 'text-left' },
                 { key: 'misProjectCode', label: 'MIS Project Code', tdClass: 'text-left' },

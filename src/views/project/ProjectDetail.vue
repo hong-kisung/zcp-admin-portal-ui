@@ -5,12 +5,6 @@
             <basic-infomation />
             <clusters />
             <stakeholders />
-
-            <b-tab>
-                <template slot="title">
-                    <i class="icon-calculator mr-1"></i> Estimate Sheet
-                </template>
-            </b-tab>
             <orders />
             <sizing />
         </b-tabs>

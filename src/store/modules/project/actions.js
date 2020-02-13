@@ -7,10 +7,10 @@ export default {
 		let customerId = 'customerId=' + payload.filter.customerId
 		let name = ',name=' + payload.filter.name
 		let status = ',status=' + payload.filter.status
+		let customerCloudAccountCspCode = ',customerCloudAccountCspCode=' + payload.filter.customerCloudAccountCspCode
 		let activation = ',activation=' + payload.filter.activation
-		let estimatedYn = ',estimatedYn=' + payload.filter.estimatedYn
 
-		let q = encodeURIComponent(customerId + name + status + estimatedYn + activation)
+		let q = encodeURIComponent(customerId + name + status + customerCloudAccountCspCode + activation)
 
 		// set page
 		let pageNo = payload.page.pageNo

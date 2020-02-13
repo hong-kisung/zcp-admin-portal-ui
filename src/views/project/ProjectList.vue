@@ -40,14 +40,15 @@
                         </b-col>
                         <b-col lg="4">
                             <b-form-group>
-                                <label for="activation">Estimated YN</label>
-                                <div>
-                                    <b-form-radio-group id="estimatedYn" name="estimatedYn" v-model="projectsCondition.filter.estimatedYn">
-                                        <b-form-radio value="">All</b-form-radio>
-                                        <b-form-radio value="Y">Yes</b-form-radio>
-                                        <b-form-radio value="N">No</b-form-radio>
-                                    </b-form-radio-group>
-                                </div>
+                                <label for="cloud">Cloud</label>
+                                <b-form-select id="cloud" :plain="true" value="선택" v-model="projectsCondition.filter.customerCloudAccountCspCode">
+                                    <option value="">All</option>
+                                    <option value="AWS">AWS</option>
+                                    <option value="AZURE">Azure</option>
+                                    <option value="GCP">GCP</option>
+                                    <option value="CLOUDZ">CloudZ</option>
+                                    <option value="IBM">IBM</option>
+                                </b-form-select>
                             </b-form-group>
                         </b-col>
                         <b-col lg="4">
@@ -109,7 +110,9 @@
                         </router-link>
                     </template>
                     <template slot="projects_estimates" slot-scope="data">
-                        <b-button variant="warning" size="sm"><i class="icons cui-note"></i></b-button>
+                        <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'Sizing' }}">
+                            <b-button variant="warning" size="sm"><i class="icons cui-note"></i></b-button>
+                        </router-link>
                     </template>
                     <template slot="projects_clusters" slot-scope="data">
                         <router-link :to="{ name: 'ProjectDetail', params: { id: data.item.id, name: data.item.name, active: 'Clusters' }}">
@@ -157,7 +160,6 @@ export default {
                 { key: 'period', label: 'Dev. Period', tdClass: 'text-center' },
                 { key: 'launchDt', label: 'Launching Date', tdClass: 'text-center', sortable: true },
                 { key: 'closedDt', label: 'Closed Date', tdClass: 'text-center', sortable: true },
-                { key: 'estimatedYn', label: 'Estimated YN', tdClass: 'text-center', sortable: true },
                 { key: 'misProjectName', label: 'MIS Project Name', tdClass: 'text-left', sortable: true },
                 { key: 'projects_stakeholder', label: 'Stakeholder', tdClass: 'text-center' },
                 { key: 'projects_estimates', label: 'Estimates', tdClass: 'text-center' },
@@ -227,7 +229,6 @@ export default {
                     resource: {
                         customerId: '',
                         status: '',
-                        estimatedYn: 'Y',
                         parentId: '',
                         customerCloudAccountCspCode: '',
                         customerCloudAccountId: ''

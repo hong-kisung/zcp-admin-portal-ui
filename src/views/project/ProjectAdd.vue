@@ -40,41 +40,25 @@
             <b-form-group label="Description" label-for="description" :label-cols="3">
                 <b-form-input type="text" id="description" placeholder="Description을 입력하세요." v-model="project.description" maxlength="50"></b-form-input>
             </b-form-group>
-            <b-form-group label="Estimated YN" label-for="estimatedYn" :label-cols="3">
-                <b-form-radio-group id="estimatedYn" name="estimatedYn" class="mt-1" v-model="project.estimatedYn">
-                    <b-form-radio value="Y">Yes</b-form-radio>
-                    <b-form-radio value="N">No</b-form-radio>
-                </b-form-radio-group>
-            </b-form-group>
-            <template v-if="project.estimatedYn === 'Y'">
-                <b-form-group label="Cloud Account" label-for="cloudAccount" :label-cols="3">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <b-form-select id="cloudAccount" :plain="true" class="mr-2" required style="width: 30%;" v-model="project.customerCloudAccountCspCode" v-on:change="changeCspCode">
-                            <option value="">선택</option>
-                            <option v-for="(item, index) in customerCloudAccountCspCodes" :value="item.cspCode">{{ item.displayName }}</option>
-                        </b-form-select>
-                        <b-form-select id="customerCloudAccountId" :plain="true" required v-model="project.customerCloudAccountId">
-                            <option value="">선택</option>
-                            <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }} ({{ item.accountAlias }})</option>
-                        </b-form-select>
-
-                        <b-form-invalid-feedback id="cloudAccount">
-                            Cloud Account를 선택해주세요.
-                        </b-form-invalid-feedback>
-                        <b-form-invalid-feedback id="cloudAccountId">
-                            Cloud Account 항목을 선택해주세요.
-                        </b-form-invalid-feedback>
-                    </div>
-                </b-form-group>
-            </template>
-            <template v-if="project.estimatedYn === 'N'">
-                <b-form-group label="Cost estimate parent" label-for="parentId" :label-cols="3" label-class="required">
-                    <b-form-select id="parentId" :plain="true" v-model="project.parentId">
+            <b-form-group label="Cloud Account" label-for="cloudAccount" :label-cols="3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <b-form-select id="cloudAccount" :plain="true" class="mr-2" required style="width: 30%;" v-model="project.customerCloudAccountCspCode" v-on:change="changeCspCode">
                         <option value="">선택</option>
-                        <option v-for="(item, index) in projectsAll" :value="item.id">{{ item.name }}</option>
+                        <option v-for="(item, index) in customerCloudAccountCspCodes" :value="item.cspCode">{{ item.displayName }}</option>
                     </b-form-select>
-                </b-form-group>
-            </template>
+                    <b-form-select id="customerCloudAccountId" :plain="true" required v-model="project.customerCloudAccountId">
+                        <option value="">선택</option>
+                        <option v-for="(item, index) in customerCloudAccounts" :value="item.id">{{ item.cspId }} ({{ item.accountAlias }})</option>
+                    </b-form-select>
+
+                    <b-form-invalid-feedback id="cloudAccount">
+                        Cloud Account를 선택해주세요.
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback id="cloudAccountId">
+                        Cloud Account 항목을 선택해주세요.
+                    </b-form-invalid-feedback>
+                </div>
+            </b-form-group>
             <b-form-group label="MIS Project Name" label-for="misProjectName" :label-cols="3">
                 <b-form-input type="text" id="misProjectName" required placeholder="MIS Project Name을 입력하세요." v-model="project.misProjectName" maxlength="100"></b-form-input>
                 <b-form-invalid-feedback id="misProjectName">
@@ -156,12 +140,7 @@ export default {
                 e.preventDefault()
                 return false
             }
-            if (this.project.estimatedYn === 'N' && !this.project.parentId) {
-                this.$zadmin.alert('원가견적 상위 프로젝트를 선택하세요.')
-                e.preventDefault()
-                return false
-            }
-
+            
             this.$zadmin.confirm('저장 하시겠습니까?', (result) => {
                 if (!result) return false
 
