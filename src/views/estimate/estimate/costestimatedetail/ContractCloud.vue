@@ -4,8 +4,8 @@
             <h5 class="mb-3">
             	<i class="icon-calculator mr-1"></i> 계약된 원가견적
 	            <div class="float-right">
-	                <b-button variant="secondary" size="sm" class="mr-2" @click="goCloudDetail()"><i class="icon-arrow-left-circle"></i> 상세보기</b-button>
-	                <b-button variant="secondary" size="sm" @click="downloadExcel()"><i class="icon-arrow-down-circle"></i> Excel Download</b-button>
+	                <b-button variant="secondary" size="sm" class="mr-2" @click="goCloudDetail()" v-if="contractCloud.id > 0"><i class="icon-arrow-left-circle"></i> 상세보기</b-button>
+	                <b-button variant="secondary" size="sm" @click="downloadExcel()" v-if="contractCloud.id > 0"><i class="icon-arrow-down-circle"></i> Excel Download</b-button>
 	            </div>
             </h5>
             <b-form>

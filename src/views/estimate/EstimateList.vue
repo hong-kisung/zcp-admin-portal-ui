@@ -211,6 +211,7 @@ export default {
             })
 		},
 		addEstimate() {
+			this.$store.commit('estimate/setCostEstimateDetail', {})
 			this.$router.push({ name: 'CostEstimateDetail', params: {estimateId: null, editable: true }});
 		}
     }
