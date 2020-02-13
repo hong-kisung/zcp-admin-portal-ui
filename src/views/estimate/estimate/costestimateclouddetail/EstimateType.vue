@@ -64,7 +64,12 @@
 				                            </div>
 				                        </th>
 				                        <th v-if="index == 0" v-show="estimateType == 'CloudZService'" v-bind:rowspan="service.classifications.length">{{ service.serviceName }}</th>
-				                        <td :class="classification.updated ? 'text-danger':''">{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}</td>
+				                        <td :class="classification.updated ? 'text-danger':''" :id="getPopoverId(classification.id)">
+				                        	{{ classification.classificationName + (classification.addonApplicationName != '' ? ' - ' + classification.addonApplicationName : '') }}
+							              	<b-popover :target="getPopoverId(classification.id)" v-if="classification.description" triggers="hover focus" placement="auto">
+								          		{{ classification.description }}
+							              	</b-popover>
+				                        </td>
 				                        <td>{{ classification.classificationType }}</td>
 				                        <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.iksVmName }}</td>
 				                        <td class="text-center" v-show="estimateType == 'CloudZService'">{{ classification.hardwareType }}</td>
@@ -205,6 +210,9 @@ export default {
 			}
 			return rowCount
 		},
+    	getPopoverId(id) {
+    		return '"popover-' + id
+    	},
 		deleteProduct() {
 			this.$zadmin.confirm('삭제하시겠습니까?', (result) => {
 				if(result) {

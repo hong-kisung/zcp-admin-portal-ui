@@ -186,29 +186,22 @@ export default {
 		})
 	},
 	
-	//project
-	getProjects: function (store, payload) {
-		axios.get('/api/estimate/project').then(response => {
-			store.commit('setProjects', response.data)
-		}).catch(error => {
-			console.log('failed get getProjects')
-		})
-	},
+	//estimate
 	getProjectVolume: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/volume').then(response => {
+		axios.get('/api/estimate/projects/' + payload.projectId + '/volume').then(response => {
 			store.commit('setProjectVolume', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectVolume')
 		})
 	},
 	saveProjectVolume: function (store, payload) {
-		axios.put('/api/estimate/project/' + payload.projectId + '/volume', payload.volumes).then(response => {
+		axios.put('/api/estimate/projects/' + payload.projectId + '/volume', payload.volumes).then(response => {
 			this._vm.$zadmin.alert('저장되었습니다.')
 			store.dispatch('getProjectVolume', {projectId: payload.projectId})
 		})
 	},
 	getProjectCostEstimate: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/estimate').then(response => {
+		axios.get('/api/estimate/cost-estimates/' + payload.estimateId + '/clouds/' + payload.cspCode).then(response => {
 			let estimate = response.data
 			//store.commit('setProjectCostEstimate', response.data)
 			
@@ -220,26 +213,25 @@ export default {
 			store.dispatch('getProductMspCost')
 			
 			//editable이 아닐 경우 처리하지 말것
-			axios.get('/api/estimate/project/' + payload.projectId + '/environment').then(response => {
+			axios.get('/api/estimate/cost-estimates/' + payload.estimateId + '/environment').then(response => {
 				for(let target of estimate.environments) {
-					let envData = response.data.find(environment => environment.id === target.environmentId);
+					let envData = response.data.find(environmentType => environmentType === target.environmentType);
 					if(!envData) {
-						target.environmentName += " (Removed)";
+						target.environmentTypeLabel = target.environmentType + " (Removed)";
 						target.environmentDisabled = true;
 						target.cloudZService.disabled = true;
 						target.cloudZService.products.length = 0;
 						target.storageService.disabled = true;
 						target.storageService.products.length = 0;
-						estimate.summary.environments.find(env => env.environmentId === target.environmentId).environmentName +=  " (Removed)"
+						estimate.summary.environments.find(env => env.environmentType === target.environmentType).environmentTypeLabel =  target.environmentType + " (Removed)"
 					}
 				}
 				
 				for(let item of response.data) {
-					let envData = estimate.environments.find(env => env.environmentId === item.id);
+					let envData = estimate.environments.find(env => env.environmentType === item);
 					if(!envData) {
 			 			envData = {};
-			 			envData.environmentId = item.id;
-			 			envData.environmentName = item.name;
+			 			envData.environmentType = item;
 			 			envData.cloudZService = {};
 			 			envData.cloudZService.products = new Array();
 			 			envData.storageService = {};
@@ -247,8 +239,7 @@ export default {
 			 			estimate.environments.push(envData);
 			 			
 			 			let envSum = {}
-			 			envSum.environmentId = item.id
-			 			envSum.environmentName = item.name
+			 			envSum.environmentType = item
 			 			envSum.products = new Array()
 			 			estimate.summary.environments.push(envSum)
 					}	 		
@@ -286,21 +277,21 @@ export default {
 	},
 	saveProjectCostEstimate: function (store, payload) {
 		payload.estimate.created = store.rootGetters.getUserId
-		axios.put('/api/estimate/project/' + payload.projectId + '/estimate', payload.estimate).then(response => {
+		axios.put('/api/estimate/cost-estimates/' + payload.estimateId + '/clouds/' + payload.cspCode, payload.estimate).then(response => {
 			this._vm.$zadmin.alert('저장되었습니다.')
-			store.dispatch('getProjectCostEstimate', {projectId: payload.projectId})
-			store.dispatch('getProjectCostEstimateHistory', {projectId: payload.projectId})
+			store.dispatch('getProjectCostEstimate', {estimateId: payload.estimateId, cspCode: payload.cspCode})
+			store.dispatch('getProjectCostEstimateHistory', {estimateId: payload.estimateId, cspCode: payload.cspCode})
 		})
 	},
 	getProjectCostEstimateHistory: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history').then(response => {
+		axios.get('/api/estimate/cost-estimates/' + payload.estimateId + '/clouds/' + payload.cspCode + '/history').then(response => {
 			store.commit('setProjectCostEstimateHistory', response.data)
 		}).catch(error => {
 			console.log('failed get getProjectCostEstimateHistory')
 		})
 	},
 	getProjectCostEstimateHistoryDetail: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
+		axios.get('/api/estimate/cost-estimates/' + payload.estimateId + '/clouds/' + payload.cspCode + '/history/' + payload.estimateCspId).then(response => {
 			let estimate = response.data
 			store.commit('setProjectCostEstimate', response.data)
 		}).catch(error => {
@@ -308,24 +299,19 @@ export default {
 		})
 	},
 	removeProjectCostEstimateHistoryDetail: function (store, payload) {
-		axios.delete('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId).then(response => {
+		axios.delete('/api/estimate/cost-estimates/' + payload.estimateId + '/clouds/' + payload.cspCode + '/history/' + payload.estimateCspId).then(response => {
 			this._vm.$zadmin.alert('삭제되었습니다.')
 			history.go(-1);
-		})
-	},
-	getCustomers: function (store, payload) {
-		axios.get('/api/estimate/project/customer').then(response => {
-			store.commit('setCustomers', response.data)
 		}).catch(error => {
-			console.log('failed get getCustomers')
+			this._vm.$zadmin.alert(error.response.data.message)
 		})
 	},
 	downloadExcel: function (store, payload) {
-		axios.get('/api/estimate/project/' + payload.projectId + '/estimate/history/' + payload.estimateId + '/download?type=excel', {responseType: 'blob'}).then(response => {
+		axios.get('/api/estimate/cost-estimates/' + payload.estimateId +'/clouds/' + payload.cspCode +'/history/' + payload.estimateCspId +'/download?type=excel', {responseType: 'blob'}).then(response => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', payload.projectName + '_원가견적_v' + payload.version + '.xlsx')
+			link.setAttribute('download', payload.estimateName + '_원가견적_' + payload.cspCode + '_v' + payload.version + '.xlsx')
 			document.body.appendChild(link)
 			link.click()
 		}).catch(error => {

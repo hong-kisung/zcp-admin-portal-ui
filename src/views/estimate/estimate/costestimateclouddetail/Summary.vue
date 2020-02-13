@@ -22,7 +22,7 @@
             	<template v-for="(item) in estimate.summary.environments">
             		<template v-for="(product, productIndex) in item.products">
                 <tr>
-                    <th class="bg-dark" v-if="productIndex == 0" :rowspan="item.products.length">{{ item.environmentName }}</th>
+                    <th class="bg-dark" v-if="productIndex == 0" :rowspan="item.products.length">{{ item.environmentTypeLabel || item.environmentType }}</th>
                     <th>{{ product.estimateType == 'CloudZService' ? product.productName : product.productName + ' Storage' }}</th>
                     <td class="text-right">{{ product.cloudCost | formatNumber | toKRW }}</td>
                     <td class="text-right">{{ product.laborCost | formatNumber | toKRW }}</td>

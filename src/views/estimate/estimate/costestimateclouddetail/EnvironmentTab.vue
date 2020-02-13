@@ -1,14 +1,14 @@
 <template>
 	<div>
-	    <b-tab v-for="(environment, index) in estimate.environments" :key="environment.environmentId" :disabled="environment.environmentDisabled">
+	    <b-tab v-for="(environment, index) in estimate.environments" :key="environment.environmentType" :disabled="environment.environmentDisabled">
 	        <template slot="title">
-	            <i class="icons cui-screen-desktop mr-1"></i> {{ environment.environmentName }}
+	            <i class="icons cui-screen-desktop mr-1"></i> {{ environment.environmentTypeLabel || environment.environmentType }}
 	        </template>
 	        
 	        <!-- Cloud Z Service -->
-	        <cost-estimate-type 
+	        <estimate-type 
 				v-bind:title="'Cloud Z Service'"
-				v-bind:estimateEnvironment="environment.environmentName"
+				v-bind:estimateEnvironment="environment.environmentType"
 				v-bind:estimateType="cloudZServiceEstimateType"
 				v-bind:environmentIndex="index"
 	 			v-bind:editable="editable"
@@ -18,9 +18,9 @@
 	        <hr> 
 	        
 	        <!-- Application Storage Service -->
-	        <cost-estimate-type 
+	        <estimate-type 
 				v-bind:title="'Application Storage Service'"
-				v-bind:estimateEnvironment="environment.environmentName"
+				v-bind:estimateEnvironment="environment.environmentType"
 				v-bind:estimateType="storageServiceEstimateType"
 				v-bind:environmentIndex="index"
 	 			v-bind:editable="editable"
@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import CostEstimateType from './CostEstimateType'
+import EstimateType from './EstimateType'
 
 export default {
     components: {
-        CostEstimateType
+        EstimateType
     },
 	data: () => ({
 		cloudZServiceEstimateType: 'CloudZService',

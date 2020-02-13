@@ -28,19 +28,22 @@ export default {
 	costEstimateTemplate: {},
 	
 	//프로젝트 원가견적
-	projectListCondition: {
+	estimateListCondition: {
 		currentPage: 1,
 		perPage: 50,
     	filter: {
-    		customerId: null,
-    		status: null,
-    		cspCode: null,
-    		estimateActivationYn: 'Y'
+    		name: null,
+    		contractCspCode: null,
+    		activationYn: 'Y'
     	},
-    	sortBy: 'updatedDt',
+    	sortBy: 'estimateLastUpdatedDt',
     	sortDesc: true
 	},
-	projects: [],
+	costEstimateDetail: {
+		estimateId: null,
+		estimateName: null,
+		editable: false
+	},
 	projectVolume: {},
 	projectCostEstimate: {	//편집중인 원가견적
   		environments: [],
@@ -50,7 +53,6 @@ export default {
 	projectCostEstimateHistory: [],
 	projectCostEstimateHistoryDetailStatus: false,
 	projectCostEstimateHistoryDetail: {},
-	customers: [],
 	costEstimateReferenceUpdateStatus: false
 	
 }

@@ -12,6 +12,7 @@
                 </template>
             </b-tab>
             <orders />
+            <sizing />
         </b-tabs>
     </div>
 </template>
@@ -21,6 +22,7 @@ import BasicInfomation from './detail/BasicInfomation'
 import Clusters from './detail/Clusters'
 import Stakeholders from './detail/Stakeholders'
 import Orders from './detail/Orders'
+import Sizing from '@/views/estimate/project/ProjectVolume'
 
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import { Switch as cSwitch } from '@coreui/vue'
@@ -32,7 +34,8 @@ export default {
         BasicInfomation,
         Clusters,
         Stakeholders,
-        Orders
+        Orders,
+        Sizing
     },
     data()  {
         return {

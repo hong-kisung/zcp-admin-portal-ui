@@ -1,12 +1,8 @@
 <template>
-    <div class="animated fadeIn">
-        <h1 class="display-tit mb-3">
-        	{{ volumes.projectName }}
-            <div class="float-right">
-                <b-button variant="secondary" @click="goCostEstimate()"><i class="icon-arrow-left-circle"></i> 원가견적 이동</b-button>
-            </div>
-        </h1>
-        <b-card>
+    <b-tab v-bind="{ active: isActive }">
+        <template slot="title">
+            <i class="icon-info mr-1"></i> Sizing
+        </template>
             <b-form-group>
                 <b-button variant="success" size="sm" class="mr-2" @click="openClusterDialog"><i class="icon-plus"></i> Environment 추가</b-button>
                 <b-button variant="secondary" size="sm" class="mr-2" @click="editCluster" v-bind:disabled="selected.length != 1"><i class="icon-reload"></i> Environment 수정</b-button>
@@ -214,14 +210,11 @@
                 </template>
             </b-modal>
             <!-- // modal : Application -->
-        </b-card>
-        <div class="mb-4">
-            <router-link :to="{ path: '/estimate/' }">
-                <b-button variant="warning"><i class="icon-list"></i> 목록</b-button>
-            </router-link>
-            <b-button variant="primary" class="float-right" @click="save"><i class="icon-check"></i> 저장</b-button>
+        <div class="tab-bottom-btn">
+            <b-button variant="warning" class="left" @click="goList"><i class="icon-list"></i> 목록</b-button>
+            <b-button variant="primary" class="right" @click="save"><i class="icon-check"></i> 저장</b-button>
         </div>
-    </div>
+    </b-tab>
 </template>
 
 <script>
@@ -246,7 +239,9 @@ export default {
 	  	editedProductIndex: -1,
       	editedAppsIndex: -1,
       	defaultAppsItem: {},
-      	editedAppsItem: {}
+      	editedAppsItem: {},
+      	
+      	isActive: false
 	}),
     computed: {
         volumes: function() {
@@ -266,14 +261,18 @@ export default {
 		this.initialize()
 	},
     methods: {
-    	goCostEstimate() {
-    		this.$router.push({name: 'ProjectCostEstimate', params: { projectId: this.projectId, editable: true }})
+    	goList() {
+    		this.$router.go(-1)
     	},
         initialize() {
-			if(this.$route.params.projectId) {
-				this.projectId = this.$route.params.projectId;
+			if(this.$route.params.id) {
+				this.projectId = this.$route.params.id;
 			}
 			
+            if (this.$route.params.active) {
+                this.isActive = this.$route.params.active === 'Sizing' ? true : false
+            }
+
 			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getEnvironmentTypes')
 			this.$store.dispatch('estimate/getProducts')

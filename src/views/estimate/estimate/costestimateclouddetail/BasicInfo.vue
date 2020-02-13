@@ -1,17 +1,20 @@
 <template>
     <div>
         <b-form>
-            <b-form-group label="버전" label-for="version" :label-cols="3">
+            <b-form-group label="Cloud" label-for="cloud" :label-cols="3">
+                <b-form-input type="text" id="cloud" v-model="estimate.cspCode" readonly></b-form-input>
+            </b-form-group>
+            <b-form-group label="Version" label-for="version" :label-cols="3">
                 <b-form-input type="text" id="version" v-model="estimate.version" readonly></b-form-input>
             </b-form-group>
-            <b-form-group label="생성일시" label-for="createdDt" :label-cols="3">
+            <b-form-group label="Created Date" label-for="createdDt" :label-cols="3">
                 <b-form-input type="text" id="createdDt" v-model="estimate.createdDt" readonly></b-form-input>
             </b-form-group>
-            <b-form-group label="라벨" label-for="label" :label-cols="3">
+            <b-form-group label="Label" label-for="label" :label-cols="3">
                 <b-form-input type="text" id="label" v-model="estimate.label"></b-form-input>
             </b-form-group>
-            <b-form-group label="설명" label-for="description" :label-cols="3">
-                <b-form-input type="text" id="description" v-model="estimate.description"></b-form-input>
+            <b-form-group label="Description" label-for="description" :label-cols="3">
+                <b-form-textarea type="text" id="description" v-model="estimate.description" maxlength="100"></b-form-textarea>
             </b-form-group>
             <b-form-group>
             	<b-form-row>

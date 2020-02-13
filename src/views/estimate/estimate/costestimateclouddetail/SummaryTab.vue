@@ -3,19 +3,19 @@
         <template slot="title">
             <i class="icons cui-justify-left mr-1"></i> 요약
         </template>
-    	<cost-estimate-info />
+    	<basic-info />
         <hr>
-        <cost-estimate-summary />
+        <estimate-summary />
     </b-tab>
 </template>
 
 <script>
-import CostEstimateInfo from './CostEstimateInfo'
-import CostEstimateSummary from './CostEstimateSummary'
+import BasicInfo from './BasicInfo'
+import EstimateSummary from './Summary'
 
 export default {
     components: {
-        CostEstimateInfo, CostEstimateSummary
+        BasicInfo, EstimateSummary
     }
 }
 </script>
