@@ -153,8 +153,8 @@ export function calculateTotal(estimate) {
 }
 
 function summary(estimate, environment, product, estimateType) {
-	const environmentIndex =estimate.summary.environments.findIndex(item => item.environmentId === environment.environmentId) 
-	const productIndex = estimate.summary.environments[environmentIndex].products.findIndex(item => item.productId === product.productId && item.estimateType === estimateType)
+	const environmentIndex = estimate.summary.environments.findIndex(item => item.environmentType === environment.environmentType) 
+	const productIndex = estimate.summary.environments[environmentIndex].products.findIndex(item => item.productId == product.productId && item.estimateType == estimateType)
 
 	for(const service of product.services) {
 		for(const classification of service.classifications) {

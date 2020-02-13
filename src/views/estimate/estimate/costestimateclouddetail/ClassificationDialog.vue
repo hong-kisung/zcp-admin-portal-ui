@@ -74,6 +74,9 @@
 	        <b-form-group :label="this.editedItem.classificationName + ' 직접 입력(₩)'" label-for="pricePerMonthly" :label-cols="4" v-show="showLaborCostInput">
 	            <b-form-input type="number" id="pricePerMonthly" v-model.number="editedItem.pricePerMonthly"></b-form-input>
 	        </b-form-group>
+	        <b-form-group label="Description" label-for="description" :label-cols="4">
+	            <b-form-textarea type="text" id="description" v-model.number="editedItem.description" maxlength="100"></b-form-textarea>
+	        </b-form-group>
 	    </b-form>
 	    <template v-slot:modal-footer="{ ok, cancel }">
 	        <b-button variant="secondary" @click="cancel()">취소</b-button>

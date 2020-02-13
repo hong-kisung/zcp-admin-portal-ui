@@ -27,9 +27,11 @@ const ClusterList = () => import('@/views/cluster/ClusterList')
 const ClusterDetail = () => import('@/views/cluster/ClusterDetail')
 
 // Estimate Management
-const ProjectEstimateList = () => import('@/views/estimate/ProjectList')
+//const ProjectEstimateList = () => import('@/views/estimate/ProjectList')
+const EstimateList = () => import('@/views/estimate/EstimateList')
 const ProjectVolume = () => import('@/views/estimate/project/ProjectVolume') // Estimates 용량산정
-const ProjectCostEstimate = () => import('@/views/estimate/project/CostEstimate') // Estimates 원가견적
+const CostEstimateDetail = () => import('@/views/estimate/estimate/CostEstimateDetail')
+const CostEstimateCloudDetail = () => import('@/views/estimate/estimate/CostEstimateCloudDetail')
 const StandardInfomation = () => import('@/views/estimate/StandardInfo')
 const VMCost = () => import('@/views/estimate/VmCost')
 const StorageCost = () => import('@/views/estimate/StorageCost')
@@ -197,7 +199,7 @@ const router = new VueRouter({
                 },
                 {
                     path: 'estimate',
-                    redirect: '/estimate/project',
+                    redirect: '/estimate/estimates',
                     name: 'Estimate Management',
                     component: {
                         render(c) {
@@ -206,8 +208,8 @@ const router = new VueRouter({
                     },
                     children: [
                         {
-                            path: 'project',
-                            redirect: '/estimate/project',
+                            path: 'estimates',
+                            redirect: '/estimate/estimates',
                             name: 'Estimates',
                             component: {
                                 render(c) {
@@ -217,7 +219,7 @@ const router = new VueRouter({
                             children: [
                                 {
                                     path: '',
-                                    component: ProjectEstimateList
+                                    component: EstimateList
                                 },
                                 {
                                     path: ':projectId/volume',
@@ -228,9 +230,17 @@ const router = new VueRouter({
                                     }
                                 },
                                 {
-                                    path: ':projectId/cost',
-                                    name: 'ProjectCostEstimate',
-                                    component: ProjectCostEstimate,
+                                    path: 'cost-estimate',
+                                    name: 'CostEstimateDetail',
+                                    component: CostEstimateDetail,
+                                    meta: {
+                                        label: 'Estimates 원가견적',
+                                    }
+                                },
+                                {
+                                    path: 'cost-estimate-cloud',
+                                    name: 'CostEstimateCloudDetail',
+                                    component: CostEstimateCloudDetail,
                                     meta: {
                                         label: 'Estimates 원가견적',
                                     }

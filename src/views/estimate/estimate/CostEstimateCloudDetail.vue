@@ -1,45 +1,48 @@
 <template>
     <div class="animated fadeIn">
         <h1 class="display-tit mb-3">
-            {{ estimate.projectName }}
+            {{ estimate.estimateName }} 
+            <b-badge variant="success" v-if="estimate.contractVersionYn == 'Y'">계약된 버전입니다</b-badge>
             <div class="float-right">
-                <b-button variant="secondary" class="mr-2" @click="goProjectVolume()"><i class="icon-arrow-left-circle"></i> 용량산정 이동</b-button>
                 <b-button variant="secondary" class="mr-2" @click="downloadExcel()"><i class="icon-arrow-down-circle"></i> Excel Download</b-button>
                 <b-button variant="secondary" class="mr-2" @click="showHistory()"><i class="icon-clock"></i> History 조회</b-button>
+                <b-button variant="primary" class="mr-2" @click="tagContractVersion()" v-if="estimate.contractVersionYn == 'N'"><i class="icon-check"></i> 계약 태깅</b-button>
                 <b-button variant="primary" @click="updateEstimate" v-if="editable && showEstimateUpdate"><i class="icon-refresh"></i> 견적서 Update</b-button>
             </div>
         </h1>
         <b-tabs class="mb-4">
-            <cost-estimate-summary-tab />
-            <cost-estimate-environment-tab />
+            <summary-tab />
+            <environment-tab />
         </b-tabs>
         <div class="mb-4">
-            <router-link :to="{ path: '/estimate/' }">
-                <b-button variant="warning"><i class="icon-list"></i> 목록</b-button>
-            </router-link>
+            <b-button variant="warning" @click="goList"><i class="icon-list"></i> 목록</b-button>
             <b-button variant="primary" class="float-right" v-if="editable" @click="save"><i class="icon-check"></i> 저장</b-button>
             <b-button variant="danger" class="float-right" v-if="!editable" @click="remove"><i class="icon-close"></i> 삭제</b-button>
         </div>
         
         <!-- local-aside : history -->
         <aside class="local-aside-menu">
-        	<cost-estimate-history />
+        	<history />
         </aside>
         <!-- // local-aside : history -->
     </div>
 </template>
 
 <script>
-import CostEstimateHistory from './costestimate/CostEstimateHistory'
-import CostEstimateSummaryTab from './costestimate/CostEstimateSummaryTab'
-import CostEstimateEnvironmentTab from './costestimate/CostEstimateEnvironmentTab'
+import History from './costestimateclouddetail/History'
+import SummaryTab from './costestimateclouddetail/SummaryTab'
+import EnvironmentTab from './costestimateclouddetail/EnvironmentTab'
+import variant from '@/mixins/variant'
 
 export default {
+	mixins: [variant],
     components: {
-        CostEstimateHistory, CostEstimateSummaryTab, CostEstimateEnvironmentTab
+        History, SummaryTab, EnvironmentTab
     },
 	data: () => ({
-      	projectId: 0
+      	estimateId: 0,
+      	cspCode: null,
+      	estimateCspId: 0
 	}),
     computed: {
 		editable: function() {
@@ -54,9 +57,9 @@ export default {
 		productReferences: function() {
 			return this.$store.state.estimate.productReferences
 		},
-		projectVolumes: function() {
-			return this.$store.state.estimate.projectVolume
-		},
+//		projectVolumes: function() {
+//			return this.$store.state.estimate.projectVolume
+//		},
 		iksGeneral: function() {
 			return this.$store.state.estimate.general
 		},
@@ -96,27 +99,43 @@ export default {
 		this.initialize();
 	},
     methods: {
-    	goProjectVolume() {
-    		this.$router.push({name: 'ProjectVolume', params: {projectId: this.projectId }})
-    	},
     	downloadExcel() {
-    		this.$store.dispatch('estimate/downloadExcel', {projectId: this.projectId, projectName: this.estimate.projectName, estimateId: this.estimate.id, version: this.estimate.version})
+    		this.$store.dispatch('estimate/downloadExcel', {
+    			estimateId: this.estimate.estimateId, 
+    			cspCode: this.estimate.cspCode, 
+    			estimateCspId: this.estimate.id, 
+    			version: this.estimate.version, 
+    			estimateName: this.estimate.estimateName}
+    		)
     	},
         showHistory () {
             document.body.classList.toggle("local-aside-show")
         },
 		initialize() {
-			if(this.$route.params.projectId) {
-				this.projectId = this.$route.params.projectId;
+			if(this.$route.params.estimateId) {
+				this.estimateId = this.$route.params.estimateId;
+			}
+			if(this.$route.params.cspCode) {
+				this.cspCode = this.$route.params.cspCode;
 			}
 			
+			if(this.$route.params.estimateCspId) {
+				this.estimateCspId = this.$route.params.estimateCspId;
+			}
+
 			if(!this.editable) {
 				return;
 			}
+			
+			if(this.estimateCspId > 0) {
+				this.$store.dispatch('estimate/getProjectCostEstimateHistoryDetail', {estimateId: this.estimateId, cspCode: this.cspCode, estimateCspId: this.estimateCspId})
+			
+			} else {
+				this.$store.dispatch('estimate/getProjectCostEstimate', {estimateId: this.estimateId, cspCode: this.cspCode})
+			}
 
-			this.$store.dispatch('estimate/getProjectCostEstimate', {projectId: this.projectId})
-			this.$store.dispatch('estimate/getProjectCostEstimateHistory', {projectId: this.projectId})
-			this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
+			this.$store.dispatch('estimate/getProjectCostEstimateHistory', {estimateId: this.estimateId, cspCode: this.cspCode})
+			//this.$store.dispatch('estimate/getProjectVolume', {projectId: this.projectId})
 			this.$store.dispatch('estimate/getProductReferences')
 			
 			this.$store.dispatch('estimate/getHardwareTypes')
@@ -162,14 +181,28 @@ export default {
 					this.estimate.iksStorageVersionId = this.storageVersion.id
 					this.estimate.mspCostVersionId = this.productMspCostVersion.id
 	
-					this.$store.dispatch('estimate/saveProjectCostEstimate', {projectId: this.projectId, estimate: this.estimate})
+					this.$store.dispatch('estimate/saveProjectCostEstimate', {estimateId: this.estimateId, cspCode: this.cspCode, estimate: this.estimate})
 				}
 			})
 		},
 		remove() {
 			this.$zadmin.confirm('삭제하시겠습니까?', (result) => {
-				result && this.$store.dispatch('estimate/removeProjectCostEstimateHistoryDetail', {projectId: this.projectId, estimateId: this.estimate.id})
+				result && this.$store.dispatch('estimate/removeProjectCostEstimateHistoryDetail', {estimateId: this.estimate.estimateId, cspCode: this.estimate.cspCode, estimateCspId: this.estimate.id})
 			})
+		},
+		tagContractVersion() {
+			this.$zadmin.confirm('계약된 버전으로 변경하시겠습니까?', (result) => {
+				result && this.$http.put('/api/estimate/cost-estimates/' + this.estimate.estimateId + '/estimateCspId', {id: this.estimate.estimateId, estimateCspId: this.estimate.id}).then(response => {
+					this.$zadmin.alert('저장되었습니다.')
+					this.$store.dispatch('estimate/getProjectCostEstimate', {estimateId: this.estimate.estimateId, cspCode: this.estimate.cspCode})
+					this.$store.dispatch('estimate/getProjectCostEstimateHistory', {estimateId: this.estimate.estimateId, cspCode: this.estimate.cspCode})
+				}).catch(error => {
+	                this.$zadmin.alert(error.data.message)
+	            })
+			})
+		},
+		goList() {
+			this.$router.go(-1)
 		}
     }
 }

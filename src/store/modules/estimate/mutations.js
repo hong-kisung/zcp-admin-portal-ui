@@ -72,12 +72,12 @@ export default {
 		state.costEstimateTemplate = data
 	},
 	
-	//project
-	setProjectListCondition: function(state, data) {
-		state.projectListCondition = data
+	//estimate
+	setEstimateListCondition: function(state, data) {
+		state.estimateListCondition = data
 	},
-	setProjects: function(state, data) {
-		state.projects = data
+	setCostEstimateDetail: function(state, data) {
+		state.costEstimateDetail = data
 	},
 	setProjectVolume: function (state, data) {
 		state.projectVolume = data
@@ -96,9 +96,6 @@ export default {
 	},
 	setProjectCostEstimateHistoryDetail: function (state, data) {
 		state.projectCostEstimateHistoryDetail = data
-	},
-	setCustomers: function(state, data) {
-		state.customers = data
 	},
 	
 	updateCostEstimateReference: function(state, isUpdate) {
