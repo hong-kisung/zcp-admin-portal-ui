@@ -15,6 +15,12 @@
                 <b-form-group label="버전" label-for="version" :label-cols="3">
                     <b-form-input type="text" id="version" v-model="contractCloud.version" readonly></b-form-input>
                 </b-form-group>
+                <b-form-group label="Description" label-for="description" :label-cols="3">
+                    <b-form-input type="text" id="description" v-model="contractCloud.description" readonly></b-form-input>
+                </b-form-group>
+                <b-form-group label="Created Date" label-for="created_dt" :label-cols="3">
+                    <b-form-input type="text" id="created_dt" v-model="contractCloud.createdDt" readonly></b-form-input>
+                </b-form-group>
             </b-form>
             <VuePerfectScrollbar class="scroll-area" :settings="psSettings" @ps-scroll-x="scrollHandle">
                 <table class="table table-sm table-bordered">
